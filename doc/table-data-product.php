@@ -147,7 +147,7 @@ include "connect.php";
                     if (!empty($row['URL']) && file_exists($row['URL'])) {
                       echo "<img src='{$row['URL']}' alt='{$row['TenSP']}' width='100px'>";
                     } else {
-                      echo "<img src='assets/images/default-image.jpg' alt='No image' width='100px'>";
+                      echo "<img src='../img-sanpham/no-image.svg' alt='No image' width='100px'>";
                     }
                     echo "</td>
                           <td>{$row['SoLuong']}</td>
