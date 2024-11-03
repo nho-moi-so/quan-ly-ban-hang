@@ -1,6 +1,5 @@
 <?php
 include "connect.php";
-//  if(isset($_POST))
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -204,66 +203,65 @@ include "connect.php";
                     class="fas fa-folder-plus"></i> Thêm tình trạng</a>
               </div>
             </div>
-            <form id="form-tao-san-pham" method="post" enctype="multipart/form-data" class="row">
-              <div class="form-group col-md-3">
-                <label class="control-label">Mã sản phẩm </label>
-                <input class="form-control" type="number" placeholder="">
-              </div>
+            <form method="POST" action="./xu-li-them-sp.php" enctype="multipart/form-data" class="row">
               <div class="form-group col-md-3">
                 <label class="control-label">Tên sản phẩm</label>
-                <input class="form-control" type="text">
+                <input class="form-control" name="TenSP" type="text">
               </div>
 
 
               <div class="form-group  col-md-3">
                 <label class="control-label">Số lượng</label>
-                <input class="form-control" type="number">
-              </div>
-              <div class="form-group col-md-3 ">
-                <label for="exampleSelect1" class="control-label">Tình trạng</label>
-                <select class="form-control" id="exampleSelect1">
-                  <option>-- Chọn tình trạng --</option>
-                  <option>Còn hàng</option>
-                  <option>Hết hàng</option>
-                </select>
+                <input class="form-control" name="SoLuong" type="number">
               </div>
               <div class="form-group col-md-3">
-                <label for="exampleSelect1" class="control-label">Danh mục</label>
-                <select class="form-control" id="exampleSelect1">
+                <label for="danhMucSP" name="MaDanhMuc" class="control-label">Danh mục</label>
+                <select class="form-control" name="MaDanhMuc" id="danhMucSP">
                   <option>-- Chọn danh mục --</option>
-                  <option>Bàn ăn</option>
-                  <option>Bàn thông minh</option>
-                  <option>Tủ</option>
-                  <option>Ghế gỗ</option>
-                  <option>Ghế sắt</option>
-                  <option>Giường người lớn</option>
-                  <option>Giường trẻ em</option>
-                  <option>Bàn trang điểm</option>
-                  <option>Giá đỡ</option>
+                  <?php
+                  // Truy vấn lấy danh mục từ database
+                  $sql = "SELECT MaDanhMuc, TenDanhMuc FROM danhmucsp";
+                  $result = $conn->query($sql);
+
+                  if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                      echo '<option value="' . $row['MaDanhMuc'] . '">' . $row['TenDanhMuc'] . '</option>';
+                    }
+                  }
+                  ?>
                 </select>
               </div>
               <div class="form-group col-md-3 ">
-                <label for="exampleSelect1" class="control-label">Nhà cung cấp</label>
-                <select class="form-control" id="exampleSelect1">
-                  <option>-- Chọn nhà cung cấp --</option>
-                  <option>Phong vũ</option>
-                  <option>Thế giới di động</option>
-                  <option>FPT</option>
-                  <option>Võ Trường</option>
+                <label for="exampleSelect1" name="MaXuatXu" class="control-label">Xuất Xứ</label>
+                <select class="form-control" name="MaXuatXu" id="exampleSelect1">
+                  <option value="null">-- Chọn Xuất Xứ --</option>
+                  <?php
+                  // Truy vấn lấy xuất xứ từ database
+                  $sql = "SELECT MaXuatXu, TenXuatXu FROM xuatxu";
+                  $result = $conn->query($sql);
+
+                  if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                      echo '<option value="' . $row['MaXuatXu'] . '">' . $row['TenXuatXu'] . '</option>';
+                    }
+                  }
+                  ?>
                 </select>
               </div>
               <div class="form-group col-md-3">
-                <label class="control-label">Giá bán</label>
-                <input class="form-control" type="text">
+                <label class="control-label">Đơn Giá</label>
+                <input class="form-control" name="DonGia" type="text">
               </div>
               <div class="form-group col-md-3">
-                <label class="control-label">Giá vốn</label>
-                <input class="form-control" type="text">
+                <label for="selectDVT" class="control-label">Đơn Vị Tính </label>
+                <select class="form-control" name="MaDVT" id="selectDVT">
+                  <option value="VND">VND</option>
+                </select>
               </div>
               <div class="form-group col-md-12">
                 <label class="control-label">Ảnh sản phẩm</label>
                 <div id="myfileupload">
-                  <input type="file" id="uploadfile" name="ImageUpload" onchange="readURL(this);" />
+                  <input type="file" id="uploadfile" name="imageUploadfile" onchange="readURL(this);" />
                 </div>
                 <div id="thumbbox">
                   <img height="450" width="400" alt="Thumb image" id="thumbimage" style="display: none" />
@@ -276,13 +274,13 @@ include "connect.php";
               </div>
               <div class="form-group col-md-12">
                 <label class="control-label">Mô tả sản phẩm</label>
-                <textarea class="form-control" name="mota" id="mota"></textarea>
+                <textarea class="form-control" name="MoTa" id="mota"></textarea>
                 <script>
-                  CKEDITOR.replace('mota');
+                  CKEDITOR.replace('MoTa');
                 </script>
               </div>
               <div class="form-group col-md-12">
-                <button class="btn btn-save" type="button">Lưu lại</button>
+                <button class="btn btn-save" name="TaoSPMoi" value="TaoSPMoi" type="submit">Lưu lại</button>
                 <a class="btn btn-cancel" href="table-data-product.php">Hủy bỏ</a>
               </div>
             </form>
