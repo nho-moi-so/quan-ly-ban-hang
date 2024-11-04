@@ -139,30 +139,33 @@ include "connect.php";
                   // Lặp qua từng dòng dữ liệu và xuất ra bảng
                   while ($row = $result->fetch_assoc()) {
                     echo "
-                        <tr>
-                          <td width='10'><input type='checkbox' name='check1' value='1'></td>
-                          <td>{$row['MaSP']}</td>
-                          <td>{$row['TenSP']}</td>
-                          <td>";
-                    if (!empty($row['URL']) && file_exists($row['URL'])) {
-                      echo "<img src='{$row['URL']}' alt='{$row['TenSP']}' width='100px'>";
-                    } else {
-                      echo "<img src='../img-sanpham/no-image.svg' alt='No image' width='100px'>";
-                    }
-                    echo "</td>
-                          <td>{$row['SoLuong']}</td>
-                          <td>" . number_format($row['DonGia']) . " VNĐ</td>
-                          <td>{$row['TenDanhMuc']}</td>
-                          <td>
-                            <button class='btn btn-primary btn-sm trash' type='button' title='Xóa' onclick='myFunction(this)'>
-                              <i class='fas fa-trash-alt'></i>
-                            </button>
-                            <button class='btn btn-primary btn-sm edit' type='button' title='Sửa' id='show-emp' data-toggle='modal' data-target='#ModalUP'>
-                              <i class='fas fa-edit'></i>
-                            </button>
-                          </td>
-                        </tr>";
-                  }
+                    <tr>
+                        <td width='10'><input type='checkbox' name='check1' value='1'></td>
+                        <td>{$row['MaSP']}</td>
+                        <td>{$row['TenSP']}</td>
+                        <td>";
+                        if (!empty($row['URL']) && file_exists($row['URL'])) {
+                            echo "<img src='{$row['URL']}' alt='{$row['TenSP']}' width='100px'>";
+                        } else {
+                            echo "<img src='../img-sanpham/no-image.svg' alt='No image' width='100px'>";
+                        }
+                        echo "</td>
+                        <td>{$row['SoLuong']}</td>
+                        <td>" . number_format($row['DonGia']) . " VNĐ</td>
+                        <td>{$row['TenDanhMuc']}</td>
+                        <td>
+                          <form action='./deleted-products.php?id={$row['MaSP']}' method='post' onsubmit='return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');'>
+                                <button class='btn btn-primary btn-sm trash' type='submit' title='Xóa'>
+                                    <i class='fas fa-trash-alt'></i>
+                                </button>
+                          </form>
+                                <button class='btn btn-primary btn-sm edit' type='submit' title='Sửa' id='show-emp' data-toggle='modal' data-target='#ModalUP'>
+                                    <i class='fas fa-edit'></i>
+                                </button>
+                          
+                        </td>
+                    </tr>";
+                } 
                 }
                 ?>
               </tbody>
