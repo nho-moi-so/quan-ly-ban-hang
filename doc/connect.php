@@ -1,14 +1,13 @@
 <?php
-header("Content-type: text/html; charset=utf-8");
+
 $servername = "localhost";
 $username = "root";
 $password = "";
 $db_name = "quanlibanhang";
-$port = 3307;
 
 // Tạo kết nối
 try {
-    $conn = new mysqli($servername, $username, $password, $db_name, $port);
+    $conn = new mysqli($servername, $username, $password, $db_name);
 
     // Kiểm tra kết nối
     mysqli_set_charset($conn, 'UTF8');
