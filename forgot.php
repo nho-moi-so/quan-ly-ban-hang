@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,7 +34,7 @@
                     <span class="login100-form-title">
                         <b>KHÔI PHỤC MẬT KHẨU</b>
                     </span>
-                    <form action="custommer.html">
+                    <form action="custommer.php">
                         <div class="wrap-input100 validate-input"
                             data-validate="Bạn cần nhập đúng thông tin như: ex@abc.xyz">
                             <input class="input100" type="text" placeholder="Nhập email" name="emailInput"
@@ -47,7 +49,7 @@
                         </div>
 
                         <div class="text-center p-t-12">
-                            <a class="txt2" href="/index.html">
+                            <a class="txt2" href="/index.php">
                                 Trở về đăng nhập
                             </a>
                         </div>

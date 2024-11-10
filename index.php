@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -59,7 +60,7 @@
                         </div>
                         <!--=====LINK TÌM MẬT KHẨU======-->
                         <div class="text-right p-t-12">
-                            <a class="txt2" href="./forgot.html">
+                            <a class="txt2" href="./forgot.php">
                                 Bạn quên mật khẩu?
                             </a>
                         </div>
@@ -67,8 +68,8 @@
                     <!--=====FOOTER======-->
                     <div class="text-center p-t-70 txt2">
                         Phần mềm quản lý bán hàng <i class="far fa-copyright" aria-hidden="true"></i>
-                        <script type="text/javascript">document.write(new Date().getFullYear());</script> <a
-                            class="txt2" href="https://www.facebook.com/truongvo.vd1503/"> Code bởi Trường </a>
+                        <script type="text/javascript">document.write(new Date().getFullYear());</script> 
+                        <a class="txt2" href="#"></a>
                     </div>
                 </form>
             </div>

@@ -1,11 +1,3 @@
-<!---
-
-
-
-              FILE NÀY LÀ FILE CŨ NHÉ  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
--->
-
 
 
 <!DOCTYPE html>
@@ -150,7 +142,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown">
-                            <li><a href="/index.html" data-toggle="tooltip" data-placement="bottom"
+                            <li><a href="/index.php" data-toggle="tooltip" data-placement="bottom"
                                     title="ĐĂNG XUẤT"><b>Đăng xuất <i class="fas fa-sign-out-alt"></i></b></a></li>
                         </ul>
                     </li>
@@ -245,22 +237,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Trần Trúc An</td>
-                    <td>Nữ</td>
-                    <td>22/12/1999</td>
-                    <td>Số 3 Hòa Bình, Phường 3, Quận 11, Hồ Chí Minh</td>
-
-                    <td>Phục Vụ</td>
-                    <td>
-                        <a class="add" title="Lưu Lại" data-toggle="tooltip"><i class="fa fa-floppy-o"
-                                aria-hidden="true"></i></a>
-                        <a class="edit" title="Sửa" data-toggle="tooltip"><i class="fa fa-pencil"
-                                aria-hidden="true"></i></a>
-                        <a class="delete" title="Xóa" data-toggle="tooltip"><i class="fa fa-trash-o"
-                                aria-hidden="true"></i></a>
-                    </td>
-                </tr>
-                <tr>
                     <td>Phạm Thu Cúc</td>
                     <td>Nữ</td>
                     <td>02/06/1998</td>
@@ -276,36 +252,7 @@
                                 aria-hidden="true"></i></a>
                     </td>
                 </tr>
-                <tr>
-                    <td>Nguyễn Thị Kim Ngân</td>
-                    <td>Nữ</td>
-                    <td>06/04/1998</td>
-                    <td>Số 13, Tân Thuận Đông, Quận 7, Hồ Chí Minh</td>
-                    <td>Phục Vụ</td>
-                    <td>
-                        <a class="add" title="Lưu Lại" data-toggle="tooltip"><i class="fa fa-floppy-o"
-                                aria-hidden="true"></i></a>
-                        <a class="edit" title="Sửa" data-toggle="tooltip"><i class="fa fa-pencil"
-                                aria-hidden="true"></i></a>
-                        <a class="delete" title="Xóa" data-toggle="tooltip"><i class="fa fa-trash-o"
-                                aria-hidden="true"></i></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Nguyễn Anh Tuấn</td>
-                    <td>Nam</td>
-                    <td>23/07/1996</td>
-                    <td>59C Nguyễn Đình Chiểu, Quận 3, Hồ Chí Minh</td>
-                    <td>Dịch Vụ</td>
-                    <td>
-                        <a class="add" title="Lưu Lại" data-toggle="tooltip"><i class="fa fa-floppy-o"
-                                aria-hidden="true"></i></a>
-                        <a class="edit" title="Sửa" data-toggle="tooltip"><i class="fa fa-pencil"
-                                aria-hidden="true"></i></a>
-                        <a class="delete" title="Xóa" data-toggle="tooltip"><i class="fa fa-trash-o"
-                                aria-hidden="true"></i></a>
-                    </td>
-                </tr>
+                
                 <tr>
                     <td>Huỳnh Cẩm Thu</td>
                     <td>Nữ</td>

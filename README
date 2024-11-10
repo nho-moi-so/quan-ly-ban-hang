@@ -168,8 +168,3 @@ function RegexEmail(emailInputBox) {
     }
 }
 
-
-
-
-
-
