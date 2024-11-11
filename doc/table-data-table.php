@@ -123,7 +123,9 @@ $result = $conn->query($sql);
                         </thead>
                         <tbody>
                             <?php
-                            if ($result->num_rows > 0) {
+                            $sql = "SELECT * FROM nhanvien"; 
+                            $result = $conn->query($sql);
+                            if ($result && $result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td width='10'><input type='checkbox' name='check' value='{$row['id']}'></td>";
