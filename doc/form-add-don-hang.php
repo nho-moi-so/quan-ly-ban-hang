@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <title>Danh sách đơn hàng | Quản trị Admin</title>
   <meta charset="utf-8">
@@ -58,7 +57,7 @@
       <li><a class="app-menu__item" href="table-data-product.php"><i
             class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
       </li>
-      <li><a class="app-menu__item active" href="table-data-oder.html"><i class='app-menu__icon bx bx-task'></i><span
+      <li><a class="app-menu__item active" href="table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
             class="app-menu__label">Quản lý đơn hàng</span></a></li>
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
@@ -78,45 +77,39 @@
             <div class="tile-body">
               <form class="row">
                 <div class="form-group  col-md-4">
-                  <label class="control-label">ID đơn hàng ( Nếu không nhập sẽ tự động phát sinh )</label>
+                  <label class="control-label"> ( Nếu không nhập sẽ tự động phát sinh )</label>
                   <input class="form-control" type="text">
                 </div>
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Tên khách hàng</label>
+                  <label class="control-label">Mã hóa đơn</label>
                   <input class="form-control" type="text" >
                 </div>
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Số điện thoại khách hàng</label>
-                  <input class="form-control" type="number" >
-                </div>
+                  <label class="control-label">Mã Khách hàng</label>
+                  <input class="form-control" type="customerId">
+                </div> 
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Địa chỉ khách hàng</label>
-                  <input class="form-control" type="text" >
-                </div>
+                  <label class="control-label">Mã nhân viên </label>
+                  <input class="form-control" type="employeeId" >
+                </div>               
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Tên người bán</label>
-                  <input class="form-control" type="text">
-                </div>
+                  <label class="control-label">Ngày giờ bán</label>
+                  <input class="form-control" type="datetime" >
+                </div>              
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Số hiệu người bán</label>
-                  <input class="form-control" type="text">
-                </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Ngày làm đơn hàng</label>
-                  <input class="form-control" type="date" >
-                </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Tên sản phẩm cần bán</label>
-                  <input class="form-control" type="text">
-                </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Mã sản phẩm</label>
-                  <input class="form-control" type="text">
-                </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Số lượng</label>
-                  <input class="form-control" type="number">
-                </div>
+                  <label class="control-label">Mã Khách hàng</label>
+                  <input class="form-control" type="customerId">
+                </div> 
+                <div class="form-group col-md-4">
+                  <label for="paymentMethod" class="control-label">Phương Thức Thanh Toán:</label>
+                  <select class="form-control" id="paymentMethod">
+                      <option value="">Chọn phương thức thanh toán</option>
+                      <option value="cash">Tiền mặt</option>
+                      <option value="card">Thẻ ngân hàng</option>
+                      <option value="transfer">Chuyển khoản</option>
+                      <option value="momo">Ví MoMo</option>
+                  </select>
+              </div>
                 <div class="form-group col-md-4">
                   <label for="exampleSelect1" class="control-label">Tình trạng</label>
                   <select class="form-control" id="exampleSelect1">
@@ -126,14 +119,10 @@
                     <option>Đã hủy</option>
                   </select>
                 </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Ghi chú đơn hàng</label>
-                  <textarea class="form-control" rows="4" ></textarea>
-                </div>  
-                
+
           </div>
           <button class="btn btn-save" type="button">Lưu lại</button>
-          <a class="btn btn-cancel" href="/doc/table-data-oder.html">Hủy bỏ</a>
+          <a class="btn btn-cancel" href="/doc/table-data-oder.php">Hủy bỏ</a>
         </div>
     </main>
    <!-- Essential javascripts for application to work-->
@@ -143,5 +132,106 @@
   <script src="js/main.js"></script>
   <!-- The javascript plugin to display page loading on top-->
   <script src="js/plugins/pace.min.js"></script>
+  <script>
+    // Lưu dữ liệu từ form vào localStorage
+const orderForm = document.querySelector('#orderForm');
+orderForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const orderData = {
+    orderNumber: document.querySelector('#orderNumber').value,
+    customerId: document.querySelector('#customerId').value,
+    employeeId: document.querySelector('#employeeId').value,
+    orderDate: document.querySelector('#orderDate').value,
+    paymentMethod: document.querySelector('#paymentMethod').value,
+    status: document.querySelector('#status').value
+  };
+
+  // Lưu dữ liệu vào localStorage
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+  orders.push(orderData);
+  localStorage.setItem('orders', JSON.stringify(orders));
+
+  // Hiển thị danh sách đơn hàng
+  renderOrderList();
+
+  // Reset form
+  orderForm.reset();
+});
+
+// Hiển thị danh sách đơn hàng
+function renderOrderList() {
+  const orderList = document.querySelector('#orderList');
+  orderList.innerHTML = '';
+
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+  orders.forEach((order, index) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${order.orderNumber}</td>
+      <td>${order.customerId}</td>
+      <td>${order.employeeId}</td>
+      <td>${order.orderDate}</td>
+      <td>${order.paymentMethod}</td>
+      <td>${order.status}</td>
+      <td>
+        <button class="btn btn-primary btn-sm edit-order" data-index="${index}">Sửa</button>
+        <button class="btn btn-danger btn-sm delete-order" data-index="${index}">Xóa</button>
+      </td>
+    `;
+    orderList.appendChild(tr);
+  });
+
+  // Thêm sự kiện sửa và xóa
+  const editButtons = document.querySelectorAll('.edit-order');
+  editButtons.forEach((button) => {
+    button.addEventListener('click', editOrder);
+  });
+
+  const deleteButtons = document.querySelectorAll('.delete-order');
+  deleteButtons.forEach((button) => {
+    button.addEventListener('click', deleteOrder);
+  });
+}
+
+// Sửa đơn hàng
+function editOrder(event) {
+  const index = event.target.dataset.index;
+  const orders = JSON.parse(localStorage.getItem('orders'));
+  const order = orders[index];
+
+  document.querySelector('#orderNumber').value = order.orderNumber;
+  document.querySelector('#customerId').value = order.customerId;
+  document.querySelector('#employeeId').value = order.employeeId;
+  document.querySelector('#orderDate').value = order.orderDate;
+  document.querySelector('#paymentMethod').value = order.paymentMethod;
+  document.querySelector('#status').value = order.status;
+}
+
+// Xóa đơn hàng
+function deleteOrder(event) {
+  const index = event.target.dataset.index;
+  const orders = JSON.parse(localStorage.getItem('orders'));
+  orders.splice(index, 1);
+  localStorage.setItem('orders', JSON.stringify(orders));
+  renderOrderList();
+}
+
+// Hiển thị danh sách đơn hàng khi trang được tải
+renderOrderList();
+
+// Hiển thị ngày giờ bán hàng
+const orderDateInput = document.querySelector('#orderDate');
+
+function updateOrderDate() {
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString();
+  orderDateInput.value = formattedDate;
+}
+
+updateOrderDate();
+setInterval(updateOrderDate, 1000); // Cập nhật mỗi giây
+  </script>
   </body>
 </html>
