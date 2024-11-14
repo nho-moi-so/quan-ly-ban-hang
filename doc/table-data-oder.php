@@ -78,7 +78,7 @@
               <div class="row element-button">
                 <div class="col-sm-2">
   
-                  <a class="btn btn-add btn-sm" href="./form-add-don-hang.php" title="Thêm"><i class="fas fa-plus"></i>
+                  <a class="btn btn-add btn-sm" href="./form-add-don-hang.html" title="Thêm"><i class="fas fa-plus"></i>
                     Tạo mới đơn hàng</a>
                 </div>
                 <div class="col-sm-2">
@@ -111,12 +111,13 @@
                 <thead>
                   <tr>
                     <th width="10"><input type="checkbox" id="all"></th>
-                    <th>ID đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Đơn hàng</th>
-                    <th>Số lượng</th>
+                    <!-- <th>ID đơn hàng</th> -->
+                    <th>Mã hóa đơn</th>
+                    <th>Mã khách hàng</th>
+                    <th>Mã nhân viên </th>
+                    <th>Ngày giờ bán</th>
                     <th>Tổng tiền</th>
-                    <th>Tình trạng</th>
+                    <th>Phương thức thanh toán</th>
                     <th>Tính năng</th>
                   </tr>
                 </thead>
@@ -141,47 +142,107 @@
   <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
   <script type="text/javascript">$('#sampleTable').DataTable();</script>
-<script>// Lấy dữ liệu từ localStorage và hiển thị vào select
-function loadOrders() {
+  <script>
+    // Lưu dữ liệu từ form vào localStorage
+const orderForm = document.querySelector('#orderForm');
+orderForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const orderData = {
+    orderNumber: document.querySelector('#orderNumber').value,
+    customerId: document.querySelector('#customerId').value,
+    employeeId: document.querySelector('#employeeId').value,
+    orderDate: document.querySelector('#orderDate').value,
+    paymentMethod: document.querySelector('#paymentMethod').value,
+    status: document.querySelector('#status').value
+  };
+
+  // Lưu dữ liệu vào localStorage
   const orders = JSON.parse(localStorage.getItem('orders')) || [];
-  const selectElement = document.querySelector('#selectedOrder');
+  orders.push(orderData);
+  localStorage.setItem('orders', JSON.stringify(orders));
 
-  // Xóa các tùy chọn hiện có
-  selectElement.innerHTML = '<option value="">Chọn đơn hàng</option>';
+  // Hiển thị danh sách đơn hàng
+  renderOrderList();
 
-  // Thêm các tùy chọn mới từ dữ liệu đơn hàng
+  // Reset form
+  orderForm.reset();
+});
+
+// Hiển thị danh sách đơn hàng
+function renderOrderList() {
+  const orderList = document.querySelector('#orderList');
+  orderList.innerHTML = '';
+
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
   orders.forEach((order, index) => {
-    const option = document.createElement('option');
-    option.value = index;
-    option.textContent = `Đơn hàng ${order.orderId}`;
-    selectElement.add(option);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${order.orderNumber}</td>
+      <td>${order.customerId}</td>
+      <td>${order.employeeId}</td>
+      <td>${order.orderDate}</td>
+      <td>${order.paymentMethod}</td>
+      <td>${order.status}</td>
+      <td>
+        <button class="btn btn-primary btn-sm edit-order" data-index="${index}">Sửa</button>
+        <button class="btn btn-danger btn-sm delete-order" data-index="${index}">Xóa</button>
+      </td>
+    `;
+    orderList.appendChild(tr);
+  });
+
+  // Thêm sự kiện sửa và xóa
+  const editButtons = document.querySelectorAll('.edit-order');
+  editButtons.forEach((button) => {
+    button.addEventListener('click', editOrder);
+  });
+
+  const deleteButtons = document.querySelectorAll('.delete-order');
+  deleteButtons.forEach((button) => {
+    button.addEventListener('click', deleteOrder);
   });
 }
 
-// Lấy dữ liệu đơn hàng được chọn và điền vào form
-const selectElement = document.querySelector('#selectedOrder');
-selectElement.addEventListener('change', () => {
-  const orders = JSON.parse(localStorage.getItem('orders')) || [];
-  const selectedIndex = selectElement.value;
+// Sửa đơn hàng
+function editOrder(event) {
+  const index = event.target.dataset.index;
+  const orders = JSON.parse(localStorage.getItem('orders'));
+  const order = orders[index];
 
-  if (selectedIndex !== '') {
-    const selectedOrder = orders[selectedIndex];
+  document.querySelector('#orderNumber').value = order.orderNumber;
+  document.querySelector('#customerId').value = order.customerId;
+  document.querySelector('#employeeId').value = order.employeeId;
+  document.querySelector('#orderDate').value = order.orderDate;
+  document.querySelector('#paymentMethod').value = order.paymentMethod;
+  document.querySelector('#status').value = order.status;
+}
 
-    document.querySelector('#orderId').value = selectedOrder.orderId;
-    document.querySelector('#customerPhone').value = selectedOrder.customerPhone;
-    document.querySelector('#employeeId').value = selectedOrder.employeeId;
-    document.querySelector('#orderDate').value = selectedOrder.orderDate;
-    document.querySelector('#productName').value = selectedOrder.productName;
-    document.querySelector('#productId').value = selectedOrder.productId;
-    document.querySelector('#quantity').value = selectedOrder.quantity;
-    document.querySelector('#paymentMethod').value = selectedOrder.paymentMethod;
-    document.querySelector('#note').value = selectedOrder.note;
-  }
-});
+// Xóa đơn hàng
+function deleteOrder(event) {
+  const index = event.target.dataset.index;
+  const orders = JSON.parse(localStorage.getItem('orders'));
+  orders.splice(index, 1);
+  localStorage.setItem('orders', JSON.stringify(orders));
+  renderOrderList();
+}
 
 // Hiển thị danh sách đơn hàng khi trang được tải
-loadOrders();
-</script>
+renderOrderList();
 
+// Hiển thị ngày giờ bán hàng
+const orderDateInput = document.querySelector('#orderDate');
+
+function updateOrderDate() {
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString();
+  orderDateInput.value = formattedDate;
+}
+
+updateOrderDate();
+setInterval(updateOrderDate, 1000); // Cập nhật mỗi giây
+  </script>
+    
 </body>
 </html>
