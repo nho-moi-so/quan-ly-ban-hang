@@ -89,15 +89,29 @@
         </div>
       </div>
        <!-- col-6 -->
-          <div class="col-md-6">
-            <div class="widget-small info coloured-icon"><i class='icon bx bxs-data fa-3x'></i>
-              <div class="info">
-                <h4>Tổng sản phẩm</h4>
-                <p><b>1850 sản phẩm</b></p>
-                <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
-              </div>
+       <?php
+        include "connect.php";
+        $query = "SELECT COUNT(*) AS total_products FROM sanpham";
+        $result = $conn->query($query);
+
+        if ($result) {
+            $row = $result->fetch_assoc();
+            $total_products = $row['total_products'];
+        } else {
+            $total_products = 0;
+        }
+        ?>
+
+        <div class="col-md-6">
+            <div class="widget-small info coloured-icon">
+                <i class='icon bx bxs-data fa-3x'></i>
+                <div class="info">
+                    <h4>Tổng sản phẩm</h4>
+                    <p><b><?php echo number_format($total_products); ?> sản phẩm</b></p>
+                    <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
+                </div>
             </div>
-          </div>
+        </div>
            <!-- col-6 -->
           <div class="col-md-6">
             <div class="widget-small warning coloured-icon"><i class='icon bx bxs-shopping-bags fa-3x'></i>
@@ -109,15 +123,32 @@
             </div>
           </div>
            <!-- col-6 -->
-          <div class="col-md-6">
-            <div class="widget-small danger coloured-icon"><i class='icon bx bxs-error-alt fa-3x'></i>
-              <div class="info">
-                <h4>Sắp hết hàng</h4>
-                <p><b>4 sản phẩm</b></p>
-                <p class="info-tong">Số sản phẩm cảnh báo hết cần nhập thêm.</p>
-              </div>
+           <?php
+            include "connect.php";
+
+            // nguong het hang
+            $threshold = 5;
+            $query = "SELECT COUNT(*) AS low_stock_products FROM sanpham WHERE SoLuong < $threshold";
+            $result = $conn->query($query);
+
+            if ($result) {
+                $row = $result->fetch_assoc();
+                $low_stock_products = $row['low_stock_products'];
+            } else {
+                $low_stock_products = 0;
+            }
+            ?>
+
+            <div class="col-md-6">
+                <div class="widget-small danger coloured-icon">
+                    <i class='icon bx bxs-error-alt fa-3x'></i>
+                    <div class="info">
+                        <h4>Sắp hết hàng</h4>
+                        <p><b><?php echo number_format($low_stock_products); ?> sản phẩm</b></p>
+                        <p class="info-tong">Số sản phẩm cảnh báo hết cần nhập thêm.</p>
+                    </div>
+                </div>
             </div>
-          </div>
            <!-- col-12 -->
            <div class="col-md-12">
             <div class="tile">

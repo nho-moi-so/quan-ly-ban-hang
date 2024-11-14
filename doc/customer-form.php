@@ -92,7 +92,7 @@
         }
 
         .btn-primary {
-            background-color: #f5f5f5/*#4CAF50;*/
+            background-color: #f5f5f5/*#4CAF50;*/;
             color: white;
             width: 100%;
         }
