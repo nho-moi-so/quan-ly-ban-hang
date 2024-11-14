@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<?php
+include "connect.php";
+?>
+   <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -78,7 +81,7 @@
               <div class="row element-button">
                 <div class="col-sm-2">
   
-                  <a class="btn btn-add btn-sm" href="./form-add-don-hang.html" title="Thêm"><i class="fas fa-plus"></i>
+                  <a class="btn btn-add btn-sm" href="./form-add-don-hang.php" title="Thêm"><i class="fas fa-plus"></i>
                     Tạo mới đơn hàng</a>
                 </div>
                 <div class="col-sm-2">
@@ -111,22 +114,231 @@
                 <thead>
                   <tr>
                     <th width="10"><input type="checkbox" id="all"></th>
-                    <!-- <th>ID đơn hàng</th> -->
-                    <th>Mã hóa đơn</th>
-                    <th>Mã khách hàng</th>
-                    <th>Mã nhân viên </th>
-                    <th>Ngày giờ bán</th>
+                    <th>ID đơn hàng</th>
+                    <th>Khách hàng</th>
+                    <th>Đơn hàng</th>
+                    <th>Số lượng</th>
                     <th>Tổng tiền</th>
-                    <th>Phương thức thanh toán</th>
+                    <th>Tình trạng</th>
                     <th>Tính năng</th>
                   </tr>
                 </thead>
+                <tbody>
+                <tr>
+                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
+                    <td>MD0837</td>
+                    <td>Triệu Thanh Phú</td>
+                    <td>Ghế làm việc Zuno, Bàn ăn gỗ Theresa</td>
+                    <td>2</td>
+                    <td>9.400.000 đ</td>
+                    <td><span class="badge bg-success">Hoàn thành</span></td>
+                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"><i class="fas fa-trash-alt"></i> </button>
+                      <button class="btn btn-primary btn-sm edit" type="button" title="Sửa"><i class="fa fa-edit"></i></button></td>
+                  </tr>
+                  <tr>
+                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
+                    <td>MD0837</td>
+                    <td>Triệu Thanh Phú</td>
+                    <td>Ghế làm việc Zuno, Bàn ăn gỗ Theresa</td>
+                    <td>2</td>
+                    <td>9.400.000 đ</td>
+                    <td><span class="badge bg-success">Hoàn thành</span></td>
+                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"><i class="fas fa-trash-alt"></i> </button>
+                      <button class="btn btn-primary btn-sm edit" type="button" title="Sửa"><i class="fa fa-edit"></i></button></td>
+                  </tr>
+                  <tr>
+                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
+                    <td>MD0837</td>
+                    <td>Triệu Thanh Phú</td>
+                    <td>Ghế làm việc Zuno, Bàn ăn gỗ Theresa</td>
+                    <td>2</td>
+                    <td>9.400.000 đ</td>
+                    <td><span class="badge bg-success">Hoàn thành</span></td>
+                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"><i class="fas fa-trash-alt"></i> </button>
+                      <button class="btn btn-primary btn-sm edit" type="button" title="Sửa"><i class="fa fa-edit"></i></button></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
     </main>
+    <?php
+// Kết nối database
+require_once 'connect.php';
+
+// Function lấy trạng thái đơn hàng
+function getOrderStatus($status) {
+    switch($status) {
+        case 1:
+            return '<span class="badge bg-success">Hoàn thành</span>';
+        case 2:
+            return '<span class="badge bg-warning">Đang xử lý</span>';
+        case 3:
+            return '<span class="badge bg-danger">Đã hủy</span>';
+        default:
+            return '<span class="badge bg-info">Mới</span>';
+    }
+}
+
+// Function format tiền tệ
+function formatMoney($amount) {
+    return number_format($amount, 0, ',', '.') . ' đ';
+}
+
+// Xử lý xóa đơn hàng
+if(isset($_POST['delete_order'])) {
+    $order_id = $_POST['order_id'];
+    $delete_sql = "DELETE FROM orders WHERE id = ?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("s", $order_id);
+    if($stmt->execute()) {
+        $_SESSION['success'] = "Xóa đơn hàng thành công";
+    } else {
+        $_SESSION['error'] = "Xóa đơn hàng thất bại";
+    }
+}
+
+// Lấy danh sách đơn hàng
+$sql = "SELECT o.*, c.customer_name, 
+        GROUP_CONCAT(p.product_name SEPARATOR ', ') as products,
+        SUM(od.quantity) as total_quantity,
+        SUM(od.quantity * od.price) as total_amount
+        FROM orders o
+        LEFT JOIN customers c ON o.customer_id = c.id
+        LEFT JOIN order_details od ON o.id = od.order_id
+        LEFT JOIN products p ON od.product_id = p.id
+        GROUP BY o.id
+        ORDER BY o.created_at DESC";
+
+$result = $conn->query($sql);
+?>
+
+<!-- Hiển thị thông báo -->
+<?php if(isset($_SESSION['success'])): ?>
+    <div class="alert alert-success">
+        <?php 
+            echo $_SESSION['success'];
+            unset($_SESSION['success']);
+        ?>
+    </div>
+<?php endif; ?>
+
+<?php if(isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger">
+        <?php 
+            echo $_SESSION['error'];
+            unset($_SESSION['error']);
+        ?>
+    </div>
+<?php endif; ?>
+
+<!-- Phần hiển thị bảng dữ liệu -->
+<table class="table table-hover table-bordered" id="sampleTable">
+    <!-- <thead>
+        <tr>
+            <th width="10"><input type="checkbox" id="all"></th>
+            <th>ID đơn hàng</th>
+            <th>Khách hàng</th>
+            <th>Đơn hàng</th>
+            <th>Số lượng</th>
+            <th>Tổng tiền</th>
+            <th>Tình trạng</th>
+            <th>Tính năng</th>
+        </tr>
+    </thead> -->
+    <tbody>
+        <?php while($row = $result->fetch_assoc()): ?>
+        <tr>
+            <td width="10"><input type="checkbox" name="check1" value="<?php echo $row['id']; ?>"></td>
+            <td><?php echo $row['id']; ?></td>
+            <td><?php echo htmlspecialchars($row['MaKKH']); ?></td>
+            <td><?php echo htmlspecialchars($row['SanPham']); ?></td>
+            <td><?php echo $row['DonGia']; ?></td>
+            <td><?php echo formatMoney($row['total_amount']); ?></td>
+            <td><?php echo getOrderStatus($row['status']); ?></td>
+            <td>
+                <button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
+                    onclick="deleteOrder('<?php echo $row['id']; ?>')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+                <a href="edit-order.php?id=<?php echo $row['id']; ?>" 
+                   class="btn btn-primary btn-sm edit" title="Sửa">
+                    <i class="fa fa-edit"></i>
+                </a>
+            </td>
+        </tr>
+        <?php endwhile; ?>
+    </tbody>
+</table>
+
+<!-- Script xử lý -->
+<script>
+// Xử lý check all
+document.getElementById('all').onclick = function() {
+    var checkboxes = document.getElementsByName('check1');
+    for(var checkbox of checkboxes) {
+        checkbox.checked = this.checked;
+    }
+}
+
+// Function xóa đơn hàng
+function deleteOrder(orderId) {
+    swal({
+        title: "Cảnh báo",
+        text: "Bạn có chắc chắn muốn xóa đơn hàng này?",
+        buttons: ["Hủy bỏ", "Đồng ý"],
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '';
+
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'delete_order';
+            input.value = '1';
+            form.appendChild(input);
+
+            var input2 = document.createElement('input');
+            input2.type = 'hidden';
+            input2.name = 'order_id';
+            input2.value = orderId;
+            form.appendChild(input2);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
+// Xử lý xuất Excel
+$('.btn-excel').click(function(e){
+    e.preventDefault();
+    $("#sampleTable").table2excel({
+        exclude: ".noExl",
+        name: "Excel Document Name",
+        filename: "DanhSachDonHang",
+        fileext: ".xls",
+        exclude_img: true,
+        exclude_links: true,
+        exclude_inputs: true
+    });
+});
+
+// Xử lý in dữ liệu
+var myApp = new function () {
+    this.printTable = function () {
+        var tab = document.getElementById('sampleTable');
+        var win = window.open('', '', 'height=700,width=700');
+        win.document.write(tab.outerHTML);
+        win.document.close();
+        win.print();
+    }
+}
+</script>
   <!-- Essential javascripts for application to work-->
   <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/popper.min.js"></script>
@@ -142,107 +354,6 @@
   <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
   <script type="text/javascript">$('#sampleTable').DataTable();</script>
-  <script>
-    // Lưu dữ liệu từ form vào localStorage
-const orderForm = document.querySelector('#orderForm');
-orderForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const orderData = {
-    orderNumber: document.querySelector('#orderNumber').value,
-    customerId: document.querySelector('#customerId').value,
-    employeeId: document.querySelector('#employeeId').value,
-    orderDate: document.querySelector('#orderDate').value,
-    paymentMethod: document.querySelector('#paymentMethod').value,
-    status: document.querySelector('#status').value
-  };
-
-  // Lưu dữ liệu vào localStorage
-  const orders = JSON.parse(localStorage.getItem('orders')) || [];
-  orders.push(orderData);
-  localStorage.setItem('orders', JSON.stringify(orders));
-
-  // Hiển thị danh sách đơn hàng
-  renderOrderList();
-
-  // Reset form
-  orderForm.reset();
-});
-
-// Hiển thị danh sách đơn hàng
-function renderOrderList() {
-  const orderList = document.querySelector('#orderList');
-  orderList.innerHTML = '';
-
-  const orders = JSON.parse(localStorage.getItem('orders')) || [];
-
-  orders.forEach((order, index) => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${order.orderNumber}</td>
-      <td>${order.customerId}</td>
-      <td>${order.employeeId}</td>
-      <td>${order.orderDate}</td>
-      <td>${order.paymentMethod}</td>
-      <td>${order.status}</td>
-      <td>
-        <button class="btn btn-primary btn-sm edit-order" data-index="${index}">Sửa</button>
-        <button class="btn btn-danger btn-sm delete-order" data-index="${index}">Xóa</button>
-      </td>
-    `;
-    orderList.appendChild(tr);
-  });
-
-  // Thêm sự kiện sửa và xóa
-  const editButtons = document.querySelectorAll('.edit-order');
-  editButtons.forEach((button) => {
-    button.addEventListener('click', editOrder);
-  });
-
-  const deleteButtons = document.querySelectorAll('.delete-order');
-  deleteButtons.forEach((button) => {
-    button.addEventListener('click', deleteOrder);
-  });
-}
-
-// Sửa đơn hàng
-function editOrder(event) {
-  const index = event.target.dataset.index;
-  const orders = JSON.parse(localStorage.getItem('orders'));
-  const order = orders[index];
-
-  document.querySelector('#orderNumber').value = order.orderNumber;
-  document.querySelector('#customerId').value = order.customerId;
-  document.querySelector('#employeeId').value = order.employeeId;
-  document.querySelector('#orderDate').value = order.orderDate;
-  document.querySelector('#paymentMethod').value = order.paymentMethod;
-  document.querySelector('#status').value = order.status;
-}
-
-// Xóa đơn hàng
-function deleteOrder(event) {
-  const index = event.target.dataset.index;
-  const orders = JSON.parse(localStorage.getItem('orders'));
-  orders.splice(index, 1);
-  localStorage.setItem('orders', JSON.stringify(orders));
-  renderOrderList();
-}
-
-// Hiển thị danh sách đơn hàng khi trang được tải
-renderOrderList();
-
-// Hiển thị ngày giờ bán hàng
-const orderDateInput = document.querySelector('#orderDate');
-
-function updateOrderDate() {
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleString();
-  orderDateInput.value = formattedDate;
-}
-
-updateOrderDate();
-setInterval(updateOrderDate, 1000); // Cập nhật mỗi giây
-  </script>
-    
 </body>
 </html>
+
