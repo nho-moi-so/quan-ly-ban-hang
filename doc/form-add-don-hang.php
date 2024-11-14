@@ -75,52 +75,50 @@
           <div class="tile">
             <h3 class="tile-title">Tạo mới đơn hàng</h3>
             <div class="tile-body">
-            <form class="row">
+              <form class="row">
                 <div class="form-group  col-md-4">
-                  <label class="control-label">ID đơn hàng ( Nếu không nhập sẽ tự động phát sinh )</label>
+                  <label class="control-label"> ( Nếu không nhập sẽ tự động phát sinh )</label>
                   <input class="form-control" type="text">
                 </div>
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Số điện thoại khách hàng</label>
-                  <input class="form-control" type="number" >
-                </div>
-               
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Mã nhân viên</label>
-                  <input class="form-control" type="text">
-                </div>
-               
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Ngày làm đơn hàng</label>
-                  <input class="form-control" type="date" >
+                  <label class="control-label">Mã hóa đơn</label>
+                  <input class="form-control" type="text" >
                 </div>
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Tên sản phẩm cần bán</label>
-                  <input class="form-control" type="text">
-                </div>
+                  <label class="control-label">Mã Khách hàng</label>
+                  <input class="form-control" type="customerId">
+                </div> 
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Mã sản phẩm</label>
-                  <input class="form-control" type="text">
-                </div>
+                  <label class="control-label">Mã nhân viên </label>
+                  <input class="form-control" type="employeeId" >
+                </div>               
                 <div class="form-group  col-md-4">
-                  <label class="control-label">Số lượng</label>
-                  <input class="form-control" type="number">
-                </div>
+                  <label class="control-label">Ngày giờ bán</label>
+                  <input class="form-control" type="datetime" >
+                </div>              
+                <div class="form-group  col-md-4">
+                  <label class="control-label">Mã Khách hàng</label>
+                  <input class="form-control" type="customerId">
+                </div> 
                 <div class="form-group col-md-4">
-                  <label for="paymentMethod" class="control-lpayabel">Phương thức thanh toán</label>
+                  <label for="paymentMethod" class="control-label">Phương Thức Thanh Toán:</label>
                   <select class="form-control" id="paymentMethod">
-                    <option value="">Chọn phương thức thanh toán</option>
-                    <option value="cash">Tiền mặt</option>
-                    <option value="card">Thẻ ngân hàng</option>
-                    <option value="transfer">Chuyển khoản</ption>
-                    <option value="momo">Ví MoMo</option>
+                      <option value="">Chọn phương thức thanh toán</option>
+                      <option value="cash">Tiền mặt</option>
+                      <option value="card">Thẻ ngân hàng</option>
+                      <option value="transfer">Chuyển khoản</option>
+                      <option value="momo">Ví MoMo</option>
+                  </select>
+              </div>
+                <div class="form-group col-md-4">
+                  <label for="exampleSelect1" class="control-label">Tình trạng</label>
+                  <select class="form-control" id="exampleSelect1">
+                    <option>-- Chọn tình trạng --</option>
+                    <option>Đã xử lý</option>
+                    <option>Đang chờ</option>
+                    <option>Đã hủy</option>
                   </select>
                 </div>
-                <div class="form-group  col-md-4">
-                  <label class="control-label">Ghi chú đơn hàng</label>
-                  <textarea class="form-control" rows="4" ></textarea>
-                </div>  
-             </form> 
 
           </div>
           <button class="btn btn-save" type="button">Lưu lại</button>
@@ -141,15 +139,12 @@ orderForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const orderData = {
-    orderId: document.querySelector('#orderId').value,
-    customerPhone: document.querySelector('#customerPhone').value,
+    orderNumber: document.querySelector('#orderNumber').value,
+    customerId: document.querySelector('#customerId').value,
     employeeId: document.querySelector('#employeeId').value,
     orderDate: document.querySelector('#orderDate').value,
-    productName: document.querySelector('#productName').value,
-    productId: document.querySelector('#productId').value,
-    quantity: document.querySelector('#quantity').value,
     paymentMethod: document.querySelector('#paymentMethod').value,
-    note: document.querySelector('#note').value
+    status: document.querySelector('#status').value
   };
 
   // Lưu dữ liệu vào localStorage
@@ -174,15 +169,12 @@ function renderOrderList() {
   orders.forEach((order, index) => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${order.orderId}</td>
-      <td>${order.customerPhone}</td>
+      <td>${order.orderNumber}</td>
+      <td>${order.customerId}</td>
       <td>${order.employeeId}</td>
       <td>${order.orderDate}</td>
-      <td>${order.productName}</td>
-      <td>${order.productId}</td>
-      <td>${order.quantity}</td>
       <td>${order.paymentMethod}</td>
-      <td>${order.note}</td>
+      <td>${order.status}</td>
       <td>
         <button class="btn btn-primary btn-sm edit-order" data-index="${index}">Sửa</button>
         <button class="btn btn-danger btn-sm delete-order" data-index="${index}">Xóa</button>
@@ -209,15 +201,12 @@ function editOrder(event) {
   const orders = JSON.parse(localStorage.getItem('orders'));
   const order = orders[index];
 
-  document.querySelector('#orderId').value = order.orderId;
-  document.querySelector('#customerPhone').value = order.customerPhone;
+  document.querySelector('#orderNumber').value = order.orderNumber;
+  document.querySelector('#customerId').value = order.customerId;
   document.querySelector('#employeeId').value = order.employeeId;
   document.querySelector('#orderDate').value = order.orderDate;
-  document.querySelector('#productName').value = order.productName;
-  document.querySelector('#productId').value = order.productId;
-  document.querySelector('#quantity').value = order.quantity;
   document.querySelector('#paymentMethod').value = order.paymentMethod;
-  document.querySelector('#note').value = order.note;
+  document.querySelector('#status').value = order.status;
 }
 
 // Xóa đơn hàng
@@ -231,6 +220,18 @@ function deleteOrder(event) {
 
 // Hiển thị danh sách đơn hàng khi trang được tải
 renderOrderList();
+
+// Hiển thị ngày giờ bán hàng
+const orderDateInput = document.querySelector('#orderDate');
+
+function updateOrderDate() {
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString();
+  orderDateInput.value = formattedDate;
+}
+
+updateOrderDate();
+setInterval(updateOrderDate, 1000); // Cập nhật mỗi giây
   </script>
   </body>
 </html>
