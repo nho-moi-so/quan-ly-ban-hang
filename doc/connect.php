@@ -4,7 +4,7 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $db_name = "quanlidoan";
-$port = 3307;
+$port = 3306;
 
 
 // Tạo kết nối

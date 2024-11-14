@@ -176,25 +176,18 @@
     </ul>
   </aside>
 
-
-
 <?php
 include 'connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $ho_ten = $_POST['ho_ten'];
-  $email = $_POST['email'];
   $dia_chi = $_POST['dia_chi'];
   $sdt = $_POST['sdt'];
   $ngay_sinh = $_POST['ngay_sinh'];
-  $noi_sinh = $_POST['noi_sinh'];
   $cmnd = $_POST['cmnd'];
-  $ngay_cap = $_POST['ngay_cap'];
-  $noi_cap = $_POST['noi_cap'];
   $gioi_tinh = $_POST['gioi_tinh'];
   $chuc_vu = $_POST['chuc_vu'];
-  $bang_cap = $_POST['bang_cap'];
-  $tinh_trang_hon_nhan = $_POST['tinh_trang_hon_nhan'];
+  $ngay_vao_lam = $_POST['ngay_vao_lam'];
 
   $upload_dir = "../img-anhthe/uploads/";
   $file_name = basename($_FILES['anh_3x4']['name']);
@@ -206,21 +199,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $anh_3x4 = $file_path;
     } else {
       $anh_3x4 = NULL;
-        echo "<script>alert('Không thể tải ảnh lên.');</script>";
-      }
-    } else {
-      $anh_3x4 = NULL;
-      echo "<script>alert('Lỗi khi tải ảnh lên.');</script>";
+      echo "<script>alert('Không thể tải ảnh lên.');</script>";
     }
+  } else {
+    $anh_3x4 = NULL;
+    echo "<script>alert('Lỗi khi tải ảnh lên.');</script>";
+  }
 
-    $sql = "INSERT INTO nhanvien (ho_ten, email, dia_chi, sdt, ngay_sinh, noi_sinh, cmnd, ngay_cap, noi_cap, gioi_tinh, chuc_vu, bang_cap, tinh_trang_hon_nhan, anh_3x4)
-            VALUES ('$ho_ten', '$email', '$dia_chi', '$sdt', '$ngay_sinh', '$noi_sinh', '$cmnd', '$ngay_cap', '$noi_cap', '$gioi_tinh', '$chuc_vu', '$bang_cap', '$tinh_trang_hon_nhan', '$anh_3x4')";
+  $sql = "INSERT INTO nhanvien (ho_ten, dia_chi, sdt, ngay_sinh, cmnd, gioi_tinh, chuc_vu, ngay_vao_lam, anh_3x4)
+          VALUES ('$ho_ten', '$dia_chi', '$sdt', '$ngay_sinh', '$cmnd', '$gioi_tinh', '$chuc_vu', '$ngay_vao_lam', '$anh_3x4')";
 
-    if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Thêm nhân viên thành công!'); window.location.href='table-data-table.php';</script>";
-    } else {
-        echo "Lỗi: " . $sql . "<br>" . $conn->error;
-    }
+  if ($conn->query($sql) === TRUE) {
+      echo "<script>alert('Thêm nhân viên thành công!'); window.location.href='table-data-table.php';</script>";
+  } else {
+      echo "Lỗi: " . $sql . "<br>" . $conn->error;
+  }
 }
 $conn->close();
 ?>
@@ -237,9 +230,6 @@ $conn->close();
             <div class="tile">
                 <h3 class="tile-title">Tạo mới nhân viên</h3>
                 <div class="tile-body">
-                    <div class="row element-button">
-                        
-                    </div>
                     <form class="row" method="POST" enctype="multipart/form-data">
                         <div class="form-group col-md-4">
                             <label class="control-label">ID nhân viên</label>
@@ -250,11 +240,7 @@ $conn->close();
                             <input class="form-control" type="text" name="ho_ten" required>
                         </div>
                         <div class="form-group col-md-4">
-                            <label class="control-label">Địa chỉ email</label>
-                            <input class="form-control" type="email" name="email" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Địa chỉ thường trú</label>
+                            <label class="control-label">Địa chỉ</label>
                             <input class="form-control" type="text" name="dia_chi" required>
                         </div>
                         <div class="form-group col-md-4">
@@ -265,23 +251,11 @@ $conn->close();
                             <label class="control-label">Ngày sinh</label>
                             <input class="form-control" type="date" name="ngay_sinh">
                         </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Nơi sinh</label>
-                            <input class="form-control" type="text" name="noi_sinh" required>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Số CMND</label>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Số CCCD</label>
                             <input class="form-control" type="number" name="cmnd" required>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Ngày cấp</label>
-                            <input class="form-control" type="date" name="ngay_cap" required>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Nơi cấp</label>
-                            <input class="form-control" type="text" name="noi_cap" required>
-                        </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label class="control-label">Giới tính</label>
                             <select class="form-control" name="gioi_tinh" required>
                                 <option>-- Chọn giới tính --</option>
@@ -289,7 +263,7 @@ $conn->close();
                                 <option>Nữ</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <label class="control-label">Chức vụ</label>
                             <select class="form-control" name="chuc_vu">
                                 <option>-- Chọn chức vụ --</option>
@@ -304,56 +278,29 @@ $conn->close();
                                 <option>Tạp vụ</option>
                             </select>
                         </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Bằng cấp</label>
-                            <select class="form-control" name="bang_cap">
-                                <option>-- Chọn bằng cấp --</option>
-                                <option>Tốt nghiệp Đại Học</option>
-                                <option>Tốt nghiệp Cao Đẳng</option>
-                                <option>Tốt nghiệp Phổ Thông</option>
-                                <option>Chưa tốt nghiệp</option>
-                                <option>Không bằng cấp</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
-                            <label class="control-label">Tình trạng hôn nhân</label>
-                            <select class="form-control" name="tinh_trang_hon_nhan">
-                                <option>-- Chọn tình trạng hôn nhân --</option>
-                                <option>Độc thân</option>
-                                <option>Đã kết hôn</option>
-                                <option>Góa</option>
-                                <option>Khác</option>
-                            </select>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Ngày vào làm</label>
+                            <input class="form-control" type="date" name="ngay_vao_lam" required>
                         </div>
                         <div class="form-group col-md-12">
                             <label class="control-label">Ảnh 3x4 nhân viên</label>
                             <input type="file" name="anh_3x4" class="form-control" accept="image/*" />
                         </div>
                         <button class="btn btn-save" type="submit">Lưu lại</button>
-                        <a class="btn btn-cancel" href="/doc/table-data-table.php">Hủy bỏ</a>
+                        <a class="btn btn-cancel" href="table-data-table.php">Hủy bỏ</a>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </main>
-
-
-  <!--MODAL-->
-
-
-  <!-- Essential javascripts for application to work-->
-  <script src="js/jquery-3.2.1.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/main.js"></script>
-  <!-- The javascript plugin to display page loading on top-->
-  <script src="js/plugins/pace.min.js"></script>
-
-
-
-
+<!-- Essential javascripts for application to work-->
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+<!-- The javascript plugin to display page loading on top-->
+<script src="js/plugins/pace.min.js"></script>
 
 </body>
-
 </html>
