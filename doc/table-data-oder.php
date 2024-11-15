@@ -64,69 +64,117 @@
             đặt hệ thống</span></a></li>
     </ul>
   </aside>
-    <main class="app-content">
-      <div class="app-title">
-        <ul class="app-breadcrumb breadcrumb side">
-          <li class="breadcrumb-item active"><a href="#"><b>Danh sách đơn hàng</b></a></li>
-        </ul>
-        <div id="clock"></div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="tile">
-            <div class="tile-body">
-              <div class="row element-button">
-                <div class="col-sm-2">
-  
-                  <a class="btn btn-add btn-sm" href="./form-add-don-hang.html" title="Thêm"><i class="fas fa-plus"></i>
-                    Tạo mới đơn hàng</a>
-                </div>
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm nhap-tu-file" type="button" title="Nhập" onclick="myFunction(this)"><i
-                      class="fas fa-file-upload"></i> Tải từ file</a>
-                </div>
-  
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
-                      class="fas fa-print"></i> In dữ liệu</a>
-                </div>
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
-                      class="fas fa-copy"></i> Sao chép</a>
-                </div>
-  
-                <div class="col-sm-2">
-                  <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
-                </div>
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
-                      class="fas fa-file-pdf"></i> Xuất PDF</a>
-                </div>
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
-                      class="fas fa-trash-alt"></i> Xóa tất cả </a>
-                </div>
-              </div>
-              <table class="table table-hover table-bordered" id="sampleTable">
-                <thead>
-                  <tr>
-                    <th width="10"><input type="checkbox" id="all"></th>
-                    <!-- <th>ID đơn hàng</th> -->
-                    <th>Mã hóa đơn</th>
-                    <th>Mã khách hàng</th>
-                    <th>Mã nhân viên </th>
-                    <th>Ngày giờ bán</th>
-                    <th>Tổng tiền</th>
-                    <th>Phương thức thanh toán</th>
-                    <th>Tính năng</th>
-                  </tr>
-                </thead>
-              </table>
+
+<!--------------------------------- danh sach don hang ------------------------------------------------>
+<?php
+include 'connect.php';
+
+$sql = "SELECT donhang.*, khachhang.MaKH, khachhang.TenKH 
+        FROM donhang 
+        LEFT JOIN khachhang ON donhang.khach_hang = khachhang.MaKH";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0): ?>
+<main class="app-content">
+  <div class="app-title">
+    <ul class="app-breadcrumb breadcrumb side">
+      <li class="breadcrumb-item active"><a href="#"><b>Danh sách đơn hàng</b></a></li>
+    </ul>
+    <div id="clock"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tile">
+        <div class="tile-body">
+          <div class="row element-button">
+            <div class="col-sm-2">
+              <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
             </div>
           </div>
+          <table class="table table-hover table-bordered" id="table-data-order">
+            <thead>
+              <tr>
+                
+                <th>Mã đơn hàng</th>
+                <th>Mã khách hàng</th>
+                <th>Ngày bán</th>
+                <th>Tổng tiền</th>
+                <th>Tính năng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php while ($row = $result->fetch_assoc()): ?>
+                <tr>
+                  
+                  <td><?php echo isset($row['ma_don_hang']) ? $row['ma_don_hang'] : 'Không có dữ liệu'; ?></td>
+                  <td><?php 
+                    echo isset($row['MaKH']) && isset($row['TenKH']) ? $row['MaKH'] . '-' . $row['TenKH'] : 'Không có dữ liệu'; 
+                  ?></td>
+                  <td><?php echo isset($row['ngay_ban']) ? $row['ngay_ban'] : 'Không có dữ liệu'; ?></td>
+                  <td><?php echo isset($row['tong_tien']) ? number_format($row['tong_tien'], 0, ',', '.').'VNĐ' : 'Không có dữ liệu'; ?></td>
+                  <td>
+                    <a href="#" class="btn btn-info" 
+                       data-toggle="modal" data-target="#viewOrderModal"
+                       data-id="<?php echo $row['id_don_hang']; ?>"
+                       data-ma-don-hang="<?php echo $row['ma_don_hang']; ?>"
+                       data-khach-hang="<?php echo $row['MaKH'] . '-' . $row['TenKH']; ?>" 
+                       data-ngay-ban="<?php echo $row['ngay_ban']; ?>"
+                       data-tong-tien="<?php echo number_format($row['tong_tien'], 0, ',', '.').'VNĐ'; ?>"
+                       onclick="viewOrderDetails(this)">Xem đơn hàng</a>
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            </tbody>
+          </table>
         </div>
       </div>
-    </main>
+    </div>
+  </div>
+<!-------------------------- MODAL XEM DON HANG --------------------------->
+<div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewOrderModalLabel">Chi tiết đơn hàng</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Mã đơn hàng:</strong> <span id="order-id"></span></p>
+        <p><strong>Mã khách hàng:</strong> <span id="customer-id"></span></p>
+        <p><strong>Ngày bán:</strong> <span id="order-date"></span></p>
+        <p><strong>Tổng tiền:</strong> <span id="total-amount"></span></p>
+        
+        <h5>Chi tiết các sản phẩm:</h5>
+        <table class="table table-bordered" id="order-details-table">
+          <thead>
+            <tr>
+              <th>Mã sản phẩm</th>
+              <th>Tên sản phẩm</th>
+              <th>Số lượng</th>
+              <th>Đơn giá</th>
+              <th>Tổng</th>
+            </tr>
+          </thead>
+          <tbody id="order-details-body">
+          </tbody>
+        </table>
+        
+      </div>
+      <div class="modal-footer">
+      <button class="btn btn-primary" onclick="printOrderDetails()">In chi tiết đơn hàng</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php else: ?>
+    <p>Không có dữ liệu đơn hàng nào.</p>
+<?php endif; ?>
+<!----------------- MODAL XEM DON HANG --------------------->
+
   <!-- Essential javascripts for application to work-->
   <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/popper.min.js"></script>
@@ -243,6 +291,80 @@ function updateOrderDate() {
 updateOrderDate();
 setInterval(updateOrderDate, 1000); // Cập nhật mỗi giây
   </script>
-    
+
+
+
+
+<script>
+function viewOrderDetails(element) {
+  var orderId = $(element).data('id');
+  var maDonHang = $(element).data('ma-don-hang');
+  var khachHang = $(element).data('khach-hang');
+  var ngayBan = $(element).data('ngay-ban');
+  var tongTien = $(element).data('tong-tien');
+
+  // Cập nhật thông tin đơn hàng trong modal
+  $('#order-id').text(maDonHang);
+  $('#customer-id').text(khachHang);
+  $('#order-date').text(ngayBan);
+  $('#total-amount').text(tongTien);
+
+  // Lấy chi tiết sản phẩm của đơn hàng từ cơ sở dữ liệu
+  $.ajax({
+    url: 'get_order_details.php', // Tạo một file PHP để lấy chi tiết đơn hàng từ DB
+    method: 'GET',
+    data: { order_id: orderId },
+    success: function(response) {
+      var details = JSON.parse(response);
+      var detailsTableBody = $('#order-details-body');
+      detailsTableBody.empty(); // Xóa dữ liệu cũ
+
+      details.forEach(function(item) {
+        detailsTableBody.append(
+          '<tr>' +
+            '<td>' + item.MaSP + '</td>' +
+            '<td>' + item.TenSP + '</td>' +
+            '<td>' + item.SoLuong + '</td>' +
+            '<td>' + item.GiaBan + '</td>' +
+            '<td>' + (item.SoLuong * item.GiaBan) + '</td>' +
+          '</tr>'
+        );
+      });
+    }
+  });
+}
+</script>
+
+
+<script>
+  // Hàm in dữ liệu
+function printTable() {
+  var table = document.getElementById('table-data-order'); // Lấy bảng dữ liệu cần in
+  var printWindow = window.open('', '', 'height=500, width=800'); // Mở cửa sổ mới
+  printWindow.document.write('<html><head><title>In dữ liệu đơn hàng</title>'); // Thêm tiêu đề cho trang in
+  printWindow.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">'); // Thêm CSS cho bảng
+  printWindow.document.write('</head><body>');
+  printWindow.document.write(table.outerHTML); // Thêm nội dung bảng vào cửa sổ in
+  printWindow.document.write('</body></html>');
+  printWindow.document.close(); // Đóng cửa sổ document để tải xong
+  printWindow.print(); // Thực hiện in
+}
+</script>
+
+<script>
+  // Hàm in chi tiết đơn hàng
+function printOrderDetails() {
+  var modalContent = document.querySelector('#viewOrderModal .modal-body'); // Lấy phần nội dung của modal
+  var printWindow = window.open('', '', 'height=500, width=800'); // Mở cửa sổ mới
+  printWindow.document.write('<html><head><title>In chi tiết đơn hàng</title>'); // Thêm tiêu đề cho trang in
+  printWindow.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">'); // Thêm CSS cho bảng
+  printWindow.document.write('</head><body>');
+  printWindow.document.write(modalContent.outerHTML); // Thêm nội dung modal vào cửa sổ in
+  printWindow.document.write('</body></html>');
+  printWindow.document.close(); // Đóng cửa sổ document để tải xong
+  printWindow.print(); // Thực hiện in
+}
+
+</script>
 </body>
 </html>
