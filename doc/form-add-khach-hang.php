@@ -212,13 +212,10 @@ include "connect.php";
                 <input class="form-control" type="date" name="NgayLap" required>
               </div>
               <BR>
-              <!-- <div class="form-group col-md-12">
+              <div class="form-group col-md-12">
                 <label class="control-label">Mô tả</label>
-                <textarea class="form-control" name="MoTa" id="mota"></textarea>
-                <script>
-                  CKEDITOR.replace('MoTa');
-                </script>
-              </div> -->
+                <textarea class="form-control"></textarea>
+              </div>
               <button class="btn btn-save" name="Taokhmoi" value="Taokhmoi" type="submit">Lưu lại</button>
               <a class="btn btn-cancel" href="table-data-table.php">Hủy bỏ</a>
             </form>
