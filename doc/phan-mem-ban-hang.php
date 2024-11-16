@@ -281,7 +281,7 @@ if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
       $maSP = $item['MaSP']; 
       $soLuong = $item['quantity']; 
       $donGia = $item['DonGia']; 
-      $tamtinh += $soLuong * $donGia;  // Tính tổng tạm tính tiền hàng
+      $tamtinh += $soLuong * $donGia;  
     }
 }
 $tongcong = $tamtinh;
@@ -404,40 +404,53 @@ $conn->close();
 <?php
 include 'connect.php'; 
 
-if (isset($_POST['ten_kh']) && isset($_POST['ngay_sinh']) && isset($_POST['dien_thoai']) && isset($_POST['ngay_them'])) {
-  $ten_kh = $_POST['ten_kh'];
-  $ngay_sinh = $_POST['ngay_sinh'];
-  $dien_thoai = $_POST['dien_thoai'];
-  $ngay_them = $_POST['ngay_them'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Lấy dữ liệu từ form
+    $ten_kh = $_POST['ten_kh'];
+    $ngay_sinh = $_POST['ngay_sinh'];
+    $dien_thoai = $_POST['dien_thoai'];
+    $ngay_them = $_POST['ngay_them'];
 
-  $ngayHienTai = date('Ymd'); 
-  $sql_max = "SELECT MAX(MaKH) AS last_ma_kh FROM khachhang WHERE MaKH LIKE 'KH-$ngayHienTai-%'";
-  $result_max = $conn->query($sql_max);
-  $last_ma_kh = $result_max->fetch_assoc();
-    
-  if ($last_ma_kh && $last_ma_kh['last_ma_kh']) {
-    $last_number = substr($last_ma_kh['last_ma_kh'], -3); 
-    $new_number = str_pad($last_number + 1, 3, '0', STR_PAD_LEFT); 
-  } else {
-    $new_number = '001';
-  }
+    // Tạo mã khách hàng mới
+    $ngayHienTai = date('Ymd');
+    $sql_max = "SELECT MAX(MaKH) AS last_ma_kh FROM khachhang WHERE MaKH LIKE 'KH-$ngayHienTai-%'";
+    $result_max = $conn->query($sql_max);
+    $last_ma_kh = $result_max->fetch_assoc();
 
-  $maKHFormatted = "KH-$ngayHienTai-$new_number"; 
+    if ($last_ma_kh && $last_ma_kh['last_ma_kh']) {
+        $last_number = substr($last_ma_kh['last_ma_kh'], -3);
+        $new_number = str_pad($last_number + 1, 3, '0', STR_PAD_LEFT);
+    } else {
+        $new_number = '001';
+    }
 
-  $check_sdt = "SELECT * FROM khachhang WHERE DienThoai = '$dien_thoai'";
-  $result = $conn->query($check_sdt);
-  if ($result->num_rows > 0) {
-    echo "<script>alert('Số điện thoại này đã tồn tại trong hệ thống!');</script>";
-  } else {
-      $sql_insert = "INSERT INTO khachhang (MaKH, TenKH, DienThoai, NgayLap) 
-                    VALUES ('$maKHFormatted', '$ten_kh', '$dien_thoai', '$ngay_them')";
-      if ($conn->query($sql_insert) === TRUE) {
-          echo "<script>alert('Khách hàng mới đã được thêm thành công!');</script>";
-      }else {
-          echo "Lỗi: " . $conn->error;
-      }
-  }
+    $maKHFormatted = "KH-$ngayHienTai-$new_number";
+
+    // Kiểm tra số điện thoại đã tồn tại chưa
+    $check_sdt = $conn->prepare("SELECT * FROM khachhang WHERE DienThoai = ?");
+    $check_sdt->bind_param("s", $dien_thoai);
+    $check_sdt->execute();
+    $result = $check_sdt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "<script>alert('Số điện thoại này đã tồn tại trong hệ thống!');</script>";
+    } else {
+        // Chèn khách hàng mới vào cơ sở dữ liệu
+        $sql_insert = $conn->prepare("INSERT INTO khachhang (MaKH, TenKH, DienThoai, NgayLap) VALUES (?, ?, ?, ?)");
+        $sql_insert->bind_param("ssss", $maKHFormatted, $ten_kh, $dien_thoai, $ngay_them);
+
+        if ($sql_insert->execute()) {
+            echo "<script>alert('Khách hàng mới đã được thêm thành công!');</script>";
+        } else {
+            echo "<script>alert('Lỗi: " . $conn->error . "');</script>";
+        }
+    }
+
+    // Đóng các prepared statements
+    $check_sdt->close();
+    $sql_insert->close();
 }
+
 $sql = "SELECT * FROM khachhang ORDER BY MaKH DESC";
 $result = $conn->query($sql);
 ?>
@@ -484,9 +497,11 @@ $result = $conn->query($sql);
         </div>
     </div>
 </div>
+
 <?php
 $conn->close(); 
 ?>
+
 <!--MODAL-->
 
   <!-- The Modal -->

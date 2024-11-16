@@ -72,6 +72,7 @@ include 'connect.php';
 $sql = "SELECT donhang.*, khachhang.MaKH, khachhang.TenKH 
         FROM donhang 
         LEFT JOIN khachhang ON donhang.khach_hang = khachhang.MaKH";
+
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0): ?>
@@ -131,6 +132,7 @@ if ($result && $result->num_rows > 0): ?>
     </div>
   </div>
 <!-------------------------- MODAL XEM DON HANG --------------------------->
+
 <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -145,7 +147,7 @@ if ($result && $result->num_rows > 0): ?>
         <p><strong>Mã khách hàng:</strong> <span id="customer-id"></span></p>
         <p><strong>Ngày bán:</strong> <span id="order-date"></span></p>
         <p><strong>Tổng tiền:</strong> <span id="total-amount"></span></p>
-        
+
         <h5>Chi tiết các sản phẩm:</h5>
         <table class="table table-bordered" id="order-details-table">
           <thead>
