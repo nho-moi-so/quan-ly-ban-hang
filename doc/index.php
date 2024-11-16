@@ -78,17 +78,34 @@
       <!--Left-->
       <div class="col-md-12 col-lg-6">
         <div class="row">
-       <!-- col-6 -->
-       <div class="col-md-6">
-        <div class="widget-small primary coloured-icon"><i class='icon bx bxs-user-account fa-3x'></i>
-          <div class="info">
-            <h4>Tổng khách hàng</h4>
-            <p><b>56 khách hàng</b></p>
-            <p class="info-tong">Tổng số khách hàng được quản lý.</p>
-          </div>
+<!----------------------------------------- tong khach hang --------------------------------->
+
+      <?php
+        include "connect.php";
+        $query = "SELECT COUNT(*) AS total_customers FROM khachhang";
+        $result = $conn->query($query);
+
+        if ($result) {
+            $row = $result->fetch_assoc();
+            $totalCustomers = $row['total_customers']; 
+        } else {
+            $totalCustomers = 0; 
+        }
+
+        $conn->close();
+        ?>
+        <div class="col-md-6">
+            <div class="widget-small primary coloured-icon">
+                <i class='icon bx bxs-user-account fa-3x'></i>
+                <div class="info">
+                    <h4>Tổng khách hàng</h4>
+                    <p><b><?php echo number_format($totalCustomers); ?> khách hàng</b></p>
+                    <p class="info-tong">Tổng số khách hàng được quản lý.</p>
+                </div>
+            </div>
         </div>
-      </div>
-       <!-- col-6 -->
+
+<!----------------------------------------- tong san pham ----------------------------->
        <?php
         include "connect.php";
         $query = "SELECT COUNT(*) AS total_products FROM sanpham";
@@ -112,17 +129,42 @@
                 </div>
             </div>
         </div>
-           <!-- col-6 -->
+<!----------------------------------- tong don hang ----------------------------->
+          <?php
+          include 'connect.php';  // Kết nối cơ sở dữ liệu
+
+          // Lấy tháng và năm hiện tại
+          $currentMonth = date('m');
+          $currentYear = date('Y');
+
+          // Truy vấn tổng số đơn hàng trong tháng hiện tại
+          $sql = "SELECT COUNT(*) AS total_orders 
+                  FROM donhang 
+                  WHERE MONTH(ngay_ban) = ? AND YEAR(ngay_ban) = ?";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("ii", $currentMonth, $currentYear);
+          $stmt->execute();
+          $result = $stmt->get_result();
+
+          if ($result && $row = $result->fetch_assoc()) {
+              $totalOrders = $row['total_orders'];
+          } else {
+              $totalOrders = 0;
+          }
+          ?>
+
           <div class="col-md-6">
-            <div class="widget-small warning coloured-icon"><i class='icon bx bxs-shopping-bags fa-3x'></i>
-              <div class="info">
-                <h4>Tổng đơn hàng</h4>
-                <p><b>247 đơn hàng</b></p>
-                <p class="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
+              <div class="widget-small warning coloured-icon">
+                  <i class='icon bx bxs-shopping-bags fa-3x'></i>
+                  <div class="info">
+                      <h4>Tổng đơn hàng</h4>
+                      <p><b><?php echo number_format($totalOrders); ?> đơn hàng</b></p>
+                      <p class="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
+                  </div>
               </div>
-            </div>
           </div>
-           <!-- col-6 -->
+
+<!--------------------------- thong ke san pham sap het ---------------------->
            <?php
             include "connect.php";
 
@@ -149,8 +191,8 @@
                     </div>
                 </div>
             </div>
-           <!-- col-12 -->
-           <div class="col-md-12">
+<!-------------------------------------------- tinh trang don hang ---------------------------------->
+           <!-- <div class="col-md-12">
             <div class="tile">
                 <h3 class="tile-title">Tình trạng đơn hàng</h3>
               <div>
@@ -199,82 +241,225 @@
                   </tbody>
                 </table>
               </div>
-              <!-- / div trống-->
-            </div>
+              / div trống-->
+            <!-- </div>
            </div>
-            <!-- / col-12 -->
-             <!-- col-12 -->
+            / col-12 -->
+<!--------------------------------------------------- khach hang moi ----------------------------------->
             <div class="col-md-12">
                 <div class="tile">
-                  <h3 class="tile-title">Khách hàng mới</h3>
-                <div>
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>Tên khách hàng</th>
-                        <th>Ngày sinh</th>
-                        <th>Số điện thoại</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>#183</td>
-                        <td>Hột vịt muối</td>
-                        <td>21/7/1992</td>
-                        <td><span class="tag tag-success">0921387221</span></td>
-                      </tr>
-                      <tr>
-                        <td>#219</td>
-                        <td>Bánh tráng trộn</td>
-                        <td>30/4/1975</td>
-                        <td><span class="tag tag-warning">0912376352</span></td>
-                      </tr>
-                      <tr>
-                        <td>#627</td>
-                        <td>Cút rang bơ</td>
-                        <td>12/3/1999</td>
-                        <td><span class="tag tag-primary">01287326654</span></td>
-                      </tr>
-                      <tr>
-                        <td>#175</td>
-                        <td>Hủ tiếu nam vang</td>
-                        <td>4/12/20000</td>
-                        <td><span class="tag tag-danger">0912376763</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                    <h3 class="tile-title">Sản phẩm bán chạy nhất</h3>
+                    <div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã sản phẩm</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Số lượng bán</th>
+                                    <th>Doanh thu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include 'connect.php'; 
+                                $sql = "SELECT p.MaSP, p.TenSP, SUM(cthd.SoLuong) AS so_luong_ban, SUM(cthd.SoLuong * cthd.GiaBan) AS doanh_thu
+                                        FROM chitiethoadon cthd
+                                        JOIN sanpham p ON cthd.MaSP = p.MaSP
+                                        GROUP BY p.MaSP, p.TenSP
+                                        ORDER BY doanh_thu DESC
+                                        LIMIT 10";  
 
-              </div>
+                                $result = $conn->query($sql);
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>";
+                                        echo "<td>#{$row['MaSP']}</td>";
+                                        echo "<td>{$row['TenSP']}</td>";
+                                        echo "<td>{$row['so_luong_ban']}</td>";
+                                        echo "<td>" . number_format($row['doanh_thu'], 0, ',', '.') . " VNĐ</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='4'>Không có dữ liệu</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-             <!-- / col-12 -->
-        </div>
-      </div>
+            <!-- / col-12 -->
+            </div>
+            </div>
       <!--END left-->
       <!--Right-->
+<!------------------------------------------- thong ke san pham ------------------------------------>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div class="col-md-12 col-lg-6">
         <div class="row">
           <div class="col-md-12">
             <div class="tile">
-              <h3 class="tile-title">Dữ liệu 6 tháng đầu vào</h3>
+              <h3 class="tile-title">Thống kê sản phẩm</h3>
               <div class="embed-responsive embed-responsive-16by9">
                 <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
               </div>
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="tile">
-              <h3 class="tile-title">Thống kê 6 tháng doanh thu</h3>
-              <div class="embed-responsive embed-responsive-16by9">
-                <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
+<!-------------------------------------------- thong ke doanh thu -------------------------------->
 
-      </div>
-      <!--END right-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+include 'connect.php';  
+
+$fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d', strtotime('-7 days'));
+$toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
+
+$sql = "SELECT DATE(ngay_ban) as ngay, SUM(tong_tien) AS doanh_thu 
+        FROM donhang 
+        WHERE ngay_ban BETWEEN ? AND ? 
+        GROUP BY DATE(ngay_ban) 
+        ORDER BY DATE(ngay_ban)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $fromDate, $toDate);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$labels = [];
+$data = [];
+while ($row = $result->fetch_assoc()) {
+    $labels[] = $row['ngay'];
+    $data[] = $row['doanh_thu'] ? $row['doanh_thu'] : 0;
+}
+?>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Thống kê doanh thu</h3>
+        <form method="GET" id="filterForm">
+            <label for="from_date">Từ ngày:</label>
+            <input type="date" id="from_date" name="from_date" value="<?php echo $fromDate; ?>">
+            <label for="to_date">Đến ngày:</label>
+            <input type="date" id="to_date" name="to_date" value="<?php echo $toDate; ?>">
+            <button type="submit">Thống kê</button>
+        </form>
+        <div class="embed-responsive embed-responsive-16by9">
+            <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
+        </div>
+    </div>
+</div>
+<style>
+#filterForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+#filterForm label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+#filterForm input[type="date"] {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+#filterForm button {
+  padding: 8px 15px;
+  background-color: #ffc107; /* Màu cam */
+  color: #212529; /* Màu chữ đậm */
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+#filterForm button:hover {
+  background-color: #e0a800; /* Màu cam đậm hơn khi hover */
+  transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+}
+</style>
+<!------ thong ke doanh thu ------>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var labels = <?php echo json_encode($labels); ?>;
+    var data = <?php echo json_encode($data); ?>;
+
+    var ctx = document.getElementById('barChartDemo').getContext('2d');
+    var barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: data,
+                backgroundColor: '#4e73df',
+                borderColor: '#4e73df',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<!---------------------------------------------------END right------------------------------------------->
     </div>
 
 
@@ -297,7 +482,7 @@
   <!--===============================================================================================-->
   <script src="js/plugins/pace.min.js"></script>
   <!--===============================================================================================-->
-  <script type="text/javascript" src="js/plugins/chart.js"></script>
+  <!-- <script type="text/javascript" src="js/plugins/chart.js"></script> -->
   <!--===============================================================================================-->
   <script type="text/javascript">
     var data = {
@@ -380,6 +565,8 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 ?>
+
+
 
 </body>
 
