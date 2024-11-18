@@ -151,13 +151,11 @@ $currentRole = $_SESSION['user_role'];
           </div>
           <!----------------------------------- tong don hang ----------------------------->
           <?php
-          include 'connect.php';  // Kết nối cơ sở dữ liệu
+          include 'connect.php';  
 
-          // Lấy tháng và năm hiện tại
           $currentMonth = date('m');
           $currentYear = date('Y');
 
-          // Truy vấn tổng số đơn hàng trong tháng hiện tại
           $sql = "SELECT COUNT(*) AS total_orders 
                   FROM donhang 
                   WHERE MONTH(ngay_ban) = ? AND YEAR(ngay_ban) = ?";
@@ -172,7 +170,6 @@ $currentRole = $_SESSION['user_role'];
             $totalOrders = 0;
           }
           ?>
-
           <div class="col-md-6">
             <div class="widget-small warning coloured-icon">
               <i class='icon bx bxs-shopping-bags fa-3x'></i>
@@ -313,34 +310,48 @@ $currentRole = $_SESSION['user_role'];
       </div>
       <!--END left-->
       <!--Right-->
+<<<<<<< HEAD
       <!------------------------------------------- thong ke san pham ------------------------------------>
+=======
+<!------------------------------------------- thong ke san pham ------------------------------------>
+<?php
+include "connect.php";
+>>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
 
+$query = "
+    SELECT sp.MaSP, sp.TenSP, SUM(cthd.SoLuong) AS soLuongBanDuoc
+    FROM chitiethoadon cthd
+    INNER JOIN sanpham sp ON cthd.MaSP = sp.MaSP
+    GROUP BY sp.MaSP, sp.TenSP
+";
 
+$result = $conn->query($query);
+$labels = [];
+$data = [];
 
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $labels[] = $row['TenSP'];  
+        $data[] = $row['soLuongBanDuoc']; 
+    }
+} else {
+    echo "Không có dữ liệu!";
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <div class="col-md-12 col-lg-6">
+$conn->close();
+?>
+<div class="col-md-12 col-lg-6">
         <div class="row">
           <div class="col-md-12">
             <div class="tile">
               <h3 class="tile-title">Thống kê sản phẩm</h3>
+              
               <div class="embed-responsive embed-responsive-16by9">
                 <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
               </div>
             </div>
           </div>
+<<<<<<< HEAD
           <!-------------------------------------------- thong ke doanh thu -------------------------------->
 
 
@@ -480,15 +491,133 @@ $currentRole = $_SESSION['user_role'];
                       callback: function(value) {
                         return value.toLocaleString();
                       }
+=======
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('lineChartDemo').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',  
+        data: {
+            labels: <?php echo json_encode($labels); ?>, 
+            datasets: [{
+                label: 'Số lượng bán được',
+                data: <?php echo json_encode($data); ?>,  
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+               
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return 'Số lượng: ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+<!-------------------------------------------- thong ke doanh thu -------------------------------->
+<?php
+include 'connect.php';
+
+$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '2024-11-15';
+$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '2024-11-20';
+$sql = "SELECT DATE(ngay_ban) AS ngay_ban, SUM(tong_tien) AS doanh_thu
+        FROM donhang
+        WHERE ngay_ban BETWEEN '$start_date' AND '$end_date'
+        GROUP BY DATE(ngay_ban)
+        ORDER BY ngay_ban";
+
+$result = $conn->query($sql);
+$dates = [];
+$revenue = [];
+
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $dates[] = $row['ngay_ban'];
+        $revenue[] = $row['doanh_thu'];
+    }
+} else {
+    $dates[] = 'Không có dữ liệu';
+    $revenue[] = 0;
+}
+
+$conn->close();
+?>
+<div class="col-md-12">
+    <div class="tile">
+        <h3 class="tile-title">Thống kê doanh thu</h3>
+        <form method="GET" action="">
+            <label for="start_date">Từ ngày:</label>
+            <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" required>
+  
+            <label for="end_date">Đến ngày:</label>
+            <input type="date" id="end_date" name="end_date" value="<?php echo $end_date; ?>" required>
+
+            <button type="submit" class="btn btn-primary">Thống kê</button>
+        </form>
+        <div class="embed-responsive embed-responsive-16by9">
+            <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var dates = <?php echo json_encode($dates); ?>;
+    var revenue = <?php echo json_encode($revenue); ?>;
+
+    var ctx = document.getElementById('barChartDemo').getContext('2d');
+    var barChartDemo = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,  
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',  
+                data: revenue, 
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' VNĐ';  
+                        }
+>>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
                     }
                   }
                 }
+<<<<<<< HEAD
               }
             });
           </script>
 
           <!---------------------------------------------------END right------------------------------------------->
         </div>
+=======
+            }
+        }
+    });
+</script>
+<!---------------------------------------------------END right------------------------------------------->
+    </div>
+>>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
 
 
         <div class="text-center" style="font-size: 13px">
