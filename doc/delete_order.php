@@ -1,5 +1,8 @@
 <?php
+session_start();
 include 'connect.php';
+checkLogin();
+checkAdmin((['Admin']));
 if (isset($_POST['id'])) {
     $id = $_POST['id'];
     $sql = "DELETE FROM donhang WHERE id = ?";

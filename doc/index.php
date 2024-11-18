@@ -1,3 +1,10 @@
+<?php
+session_start();
+require_once 'auth.php';
+checkLogin();
+checkAdmin(['Admin', 'NV']);
+$currentRole = $_SESSION['user_role'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,19 +53,32 @@
     </div>
     <hr>
     <ul class="app-menu">
-      <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.html"><i class='app-menu__icon bx bx-cart-alt'></i>
-          <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-            class="app-menu__label">Bảng điều khiển</span></a></li>
-      <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-            class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-            class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <li><a class="app-menu__item" href="./table-data-product.php"><i
-            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-      </li>
-      <li><a class="app-menu__item" href="./table-data-oder.html"><i class='app-menu__icon bx bx-task'></i><span
-            class="app-menu__label">Quản lý đơn hàng</span></a></li>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+            <span class="app-menu__label">POS Bán Hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+              class="app-menu__label">Bảng điều khiển</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+              class="app-menu__label">Quản lý nhân viên</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+              class="app-menu__label">Quản lý khách hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-product.php"><i
+              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+        </li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn hàng</span></a></li>
+      <?php endif; ?>
+
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
     </ul>
@@ -78,58 +98,58 @@
       <!--Left-->
       <div class="col-md-12 col-lg-6">
         <div class="row">
-<!----------------------------------------- tong khach hang --------------------------------->
+          <!----------------------------------------- tong khach hang --------------------------------->
 
-      <?php
-        include "connect.php";
-        $query = "SELECT COUNT(*) AS total_customers FROM khachhang";
-        $result = $conn->query($query);
+          <?php
+          include "connect.php";
+          $query = "SELECT COUNT(*) AS total_customers FROM khachhang";
+          $result = $conn->query($query);
 
-        if ($result) {
+          if ($result) {
             $row = $result->fetch_assoc();
-            $totalCustomers = $row['total_customers']; 
-        } else {
-            $totalCustomers = 0; 
-        }
+            $totalCustomers = $row['total_customers'];
+          } else {
+            $totalCustomers = 0;
+          }
 
-        $conn->close();
-        ?>
-        <div class="col-md-6">
+          $conn->close();
+          ?>
+          <div class="col-md-6">
             <div class="widget-small primary coloured-icon">
-                <i class='icon bx bxs-user-account fa-3x'></i>
-                <div class="info">
-                    <h4>Tổng khách hàng</h4>
-                    <p><b><?php echo number_format($totalCustomers); ?> khách hàng</b></p>
-                    <p class="info-tong">Tổng số khách hàng được quản lý.</p>
-                </div>
+              <i class='icon bx bxs-user-account fa-3x'></i>
+              <div class="info">
+                <h4>Tổng khách hàng</h4>
+                <p><b><?php echo number_format($totalCustomers); ?> khách hàng</b></p>
+                <p class="info-tong">Tổng số khách hàng được quản lý.</p>
+              </div>
             </div>
-        </div>
+          </div>
 
-<!----------------------------------------- tong san pham ----------------------------->
-       <?php
-        include "connect.php";
-        $query = "SELECT COUNT(*) AS total_products FROM sanpham";
-        $result = $conn->query($query);
+          <!----------------------------------------- tong san pham ----------------------------->
+          <?php
+          include "connect.php";
+          $query = "SELECT COUNT(*) AS total_products FROM sanpham";
+          $result = $conn->query($query);
 
-        if ($result) {
+          if ($result) {
             $row = $result->fetch_assoc();
             $total_products = $row['total_products'];
-        } else {
+          } else {
             $total_products = 0;
-        }
-        ?>
+          }
+          ?>
 
-        <div class="col-md-6">
+          <div class="col-md-6">
             <div class="widget-small info coloured-icon">
-                <i class='icon bx bxs-data fa-3x'></i>
-                <div class="info">
-                    <h4>Tổng sản phẩm</h4>
-                    <p><b><?php echo number_format($total_products); ?> sản phẩm</b></p>
-                    <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
-                </div>
+              <i class='icon bx bxs-data fa-3x'></i>
+              <div class="info">
+                <h4>Tổng sản phẩm</h4>
+                <p><b><?php echo number_format($total_products); ?> sản phẩm</b></p>
+                <p class="info-tong">Tổng số sản phẩm được quản lý.</p>
+              </div>
             </div>
-        </div>
-<!----------------------------------- tong don hang ----------------------------->
+          </div>
+          <!----------------------------------- tong don hang ----------------------------->
           <?php
           include 'connect.php';  // Kết nối cơ sở dữ liệu
 
@@ -147,52 +167,52 @@
           $result = $stmt->get_result();
 
           if ($result && $row = $result->fetch_assoc()) {
-              $totalOrders = $row['total_orders'];
+            $totalOrders = $row['total_orders'];
           } else {
-              $totalOrders = 0;
+            $totalOrders = 0;
           }
           ?>
 
           <div class="col-md-6">
-              <div class="widget-small warning coloured-icon">
-                  <i class='icon bx bxs-shopping-bags fa-3x'></i>
-                  <div class="info">
-                      <h4>Tổng đơn hàng</h4>
-                      <p><b><?php echo number_format($totalOrders); ?> đơn hàng</b></p>
-                      <p class="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
-                  </div>
+            <div class="widget-small warning coloured-icon">
+              <i class='icon bx bxs-shopping-bags fa-3x'></i>
+              <div class="info">
+                <h4>Tổng đơn hàng</h4>
+                <p><b><?php echo number_format($totalOrders); ?> đơn hàng</b></p>
+                <p class="info-tong">Tổng số hóa đơn bán hàng trong tháng.</p>
               </div>
+            </div>
           </div>
 
-<!--------------------------- thong ke san pham sap het ---------------------->
-           <?php
-            include "connect.php";
+          <!--------------------------- thong ke san pham sap het ---------------------->
+          <?php
+          include "connect.php";
 
-            // nguong het hang
-            $threshold = 5;
-            $query = "SELECT COUNT(*) AS low_stock_products FROM sanpham WHERE SoLuong < $threshold";
-            $result = $conn->query($query);
+          // nguong het hang
+          $threshold = 5;
+          $query = "SELECT COUNT(*) AS low_stock_products FROM sanpham WHERE SoLuong < $threshold";
+          $result = $conn->query($query);
 
-            if ($result) {
-                $row = $result->fetch_assoc();
-                $low_stock_products = $row['low_stock_products'];
-            } else {
-                $low_stock_products = 0;
-            }
-            ?>
+          if ($result) {
+            $row = $result->fetch_assoc();
+            $low_stock_products = $row['low_stock_products'];
+          } else {
+            $low_stock_products = 0;
+          }
+          ?>
 
-            <div class="col-md-6">
-                <div class="widget-small danger coloured-icon">
-                    <i class='icon bx bxs-error-alt fa-3x'></i>
-                    <div class="info">
-                        <h4>Sắp hết hàng</h4>
-                        <p><b><?php echo number_format($low_stock_products); ?> sản phẩm</b></p>
-                        <p class="info-tong">Số sản phẩm cảnh báo hết cần nhập thêm.</p>
-                    </div>
-                </div>
+          <div class="col-md-6">
+            <div class="widget-small danger coloured-icon">
+              <i class='icon bx bxs-error-alt fa-3x'></i>
+              <div class="info">
+                <h4>Sắp hết hàng</h4>
+                <p><b><?php echo number_format($low_stock_products); ?> sản phẩm</b></p>
+                <p class="info-tong">Số sản phẩm cảnh báo hết cần nhập thêm.</p>
+              </div>
             </div>
-<!-------------------------------------------- tinh trang don hang ---------------------------------->
-           <!-- <div class="col-md-12">
+          </div>
+          <!-------------------------------------------- tinh trang don hang ---------------------------------->
+          <!-- <div class="col-md-12">
             <div class="tile">
                 <h3 class="tile-title">Tình trạng đơn hàng</h3>
               <div>
@@ -242,58 +262,58 @@
                 </table>
               </div>
               / div trống-->
-            <!-- </div>
+          <!-- </div>
            </div>
             / col-12 -->
-<!--------------------------------------------------- khach hang moi ----------------------------------->
-            <div class="col-md-12">
-                <div class="tile">
-                    <h3 class="tile-title">Sản phẩm bán chạy nhất</h3>
-                    <div>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Mã sản phẩm</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Số lượng bán</th>
-                                    <th>Doanh thu</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                include 'connect.php'; 
-                                $sql = "SELECT p.MaSP, p.TenSP, SUM(cthd.SoLuong) AS so_luong_ban, SUM(cthd.SoLuong * cthd.GiaBan) AS doanh_thu
+          <!--------------------------------------------------- khach hang moi ----------------------------------->
+          <div class="col-md-12">
+            <div class="tile">
+              <h3 class="tile-title">Sản phẩm bán chạy nhất</h3>
+              <div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Mã sản phẩm</th>
+                      <th>Tên sản phẩm</th>
+                      <th>Số lượng bán</th>
+                      <th>Doanh thu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    include 'connect.php';
+                    $sql = "SELECT p.MaSP, p.TenSP, SUM(cthd.SoLuong) AS so_luong_ban, SUM(cthd.SoLuong * cthd.GiaBan) AS doanh_thu
                                         FROM chitiethoadon cthd
                                         JOIN sanpham p ON cthd.MaSP = p.MaSP
                                         GROUP BY p.MaSP, p.TenSP
                                         ORDER BY doanh_thu DESC
-                                        LIMIT 10";  
+                                        LIMIT 10";
 
-                                $result = $conn->query($sql);
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo "<tr>";
-                                        echo "<td>#{$row['MaSP']}</td>";
-                                        echo "<td>{$row['TenSP']}</td>";
-                                        echo "<td>{$row['so_luong_ban']}</td>";
-                                        echo "<td>" . number_format($row['doanh_thu'], 0, ',', '.') . " VNĐ</td>";
-                                        echo "</tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='4'>Không có dữ liệu</td></tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) {
+                      while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>#{$row['MaSP']}</td>";
+                        echo "<td>{$row['TenSP']}</td>";
+                        echo "<td>{$row['so_luong_ban']}</td>";
+                        echo "<td>" . number_format($row['doanh_thu'], 0, ',', '.') . " VNĐ</td>";
+                        echo "</tr>";
+                      }
+                    } else {
+                      echo "<tr><td colspan='4'>Không có dữ liệu</td></tr>";
+                    }
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <!-- / col-12 -->
-            </div>
-            </div>
+          </div>
+          <!-- / col-12 -->
+        </div>
+      </div>
       <!--END left-->
       <!--Right-->
-<!------------------------------------------- thong ke san pham ------------------------------------>
+      <!------------------------------------------- thong ke san pham ------------------------------------>
 
 
 
@@ -321,7 +341,7 @@
               </div>
             </div>
           </div>
-<!-------------------------------------------- thong ke doanh thu -------------------------------->
+          <!-------------------------------------------- thong ke doanh thu -------------------------------->
 
 
 
@@ -351,125 +371,133 @@
 
 
 
-<?php
-include 'connect.php';  
+          <?php
+          include 'connect.php';
 
-$fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d', strtotime('-7 days'));
-$toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
+          $fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d', strtotime('-7 days'));
+          $toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
 
-$sql = "SELECT DATE(ngay_ban) as ngay, SUM(tong_tien) AS doanh_thu 
+          $sql = "SELECT DATE(ngay_ban) as ngay, SUM(tong_tien) AS doanh_thu 
         FROM donhang 
         WHERE ngay_ban BETWEEN ? AND ? 
         GROUP BY DATE(ngay_ban) 
         ORDER BY DATE(ngay_ban)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $fromDate, $toDate);
-$stmt->execute();
-$result = $stmt->get_result();
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param("ss", $fromDate, $toDate);
+          $stmt->execute();
+          $result = $stmt->get_result();
 
-$labels = [];
-$data = [];
-while ($row = $result->fetch_assoc()) {
-    $labels[] = $row['ngay'];
-    $data[] = $row['doanh_thu'] ? $row['doanh_thu'] : 0;
-}
-?>
-<div class="col-md-12">
-    <div class="tile">
-        <h3 class="tile-title">Thống kê doanh thu</h3>
-        <form method="GET" id="filterForm">
-            <label for="from_date">Từ ngày:</label>
-            <input type="date" id="from_date" name="from_date" value="<?php echo $fromDate; ?>">
-            <label for="to_date">Đến ngày:</label>
-            <input type="date" id="to_date" name="to_date" value="<?php echo $toDate; ?>">
-            <button type="submit">Thống kê</button>
-        </form>
-        <div class="embed-responsive embed-responsive-16by9">
-            <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
-        </div>
-    </div>
-</div>
-<style>
-#filterForm {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-#filterForm label {
-  font-size: 16px;
-  font-weight: bold;
-  margin-right: 5px;
-}
-#filterForm input[type="date"] {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-}
-#filterForm button {
-  padding: 8px 15px;
-  background-color: #ffc107; /* Màu cam */
-  color: #212529; /* Màu chữ đậm */
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-#filterForm button:hover {
-  background-color: #e0a800; /* Màu cam đậm hơn khi hover */
-  transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
-}
-</style>
-<!------ thong ke doanh thu ------>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    var labels = <?php echo json_encode($labels); ?>;
-    var data = <?php echo json_encode($data); ?>;
+          $labels = [];
+          $data = [];
+          while ($row = $result->fetch_assoc()) {
+            $labels[] = $row['ngay'];
+            $data[] = $row['doanh_thu'] ? $row['doanh_thu'] : 0;
+          }
+          ?>
+          <div class="col-md-12">
+            <div class="tile">
+              <h3 class="tile-title">Thống kê doanh thu</h3>
+              <form method="GET" id="filterForm">
+                <label for="from_date">Từ ngày:</label>
+                <input type="date" id="from_date" name="from_date" value="<?php echo $fromDate; ?>">
+                <label for="to_date">Đến ngày:</label>
+                <input type="date" id="to_date" name="to_date" value="<?php echo $toDate; ?>">
+                <button type="submit">Thống kê</button>
+              </form>
+              <div class="embed-responsive embed-responsive-16by9">
+                <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
+              </div>
+            </div>
+          </div>
+          <style>
+            #filterForm {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 20px;
+            }
 
-    var ctx = document.getElementById('barChartDemo').getContext('2d');
-    var barChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Doanh thu (VNĐ)',
-                data: data,
-                backgroundColor: '#4e73df',
-                borderColor: '#4e73df',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
+            #filterForm label {
+              font-size: 16px;
+              font-weight: bold;
+              margin-right: 5px;
+            }
+
+            #filterForm input[type="date"] {
+              padding: 5px 10px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              font-size: 14px;
+            }
+
+            #filterForm button {
+              padding: 8px 15px;
+              background-color: #ffc107;
+              /* Màu cam */
+              color: #212529;
+              /* Màu chữ đậm */
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              font-weight: bold;
+              cursor: pointer;
+              transition: background-color 0.3s, transform 0.2s;
+            }
+
+            #filterForm button:hover {
+              background-color: #e0a800;
+              /* Màu cam đậm hơn khi hover */
+              transform: scale(1.05);
+              /* Hiệu ứng phóng to nhẹ */
+            }
+          </style>
+          <!------ thong ke doanh thu ------>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            var labels = <?php echo json_encode($labels); ?>;
+            var data = <?php echo json_encode($data); ?>;
+
+            var ctx = document.getElementById('barChartDemo').getContext('2d');
+            var barChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Doanh thu (VNĐ)',
+                  data: data,
+                  backgroundColor: '#4e73df',
+                  borderColor: '#4e73df',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString();
-                        }
+                      callback: function(value) {
+                        return value.toLocaleString();
+                      }
                     }
+                  }
                 }
-            }
-        }
-    });
-</script>
+              }
+            });
+          </script>
 
-<!---------------------------------------------------END right------------------------------------------->
-    </div>
+          <!---------------------------------------------------END right------------------------------------------->
+        </div>
 
 
-    <div class="text-center" style="font-size: 13px">
-      <p><b>Copyright
-          <script type="text/javascript">
-            document.write(new Date().getFullYear());
-          </script> Phần mềm quản lý bán hàng
-        </b></p>
-    </div>
+        <div class="text-center" style="font-size: 13px">
+          <p><b>Copyright
+              <script type="text/javascript">
+                document.write(new Date().getFullYear());
+              </script> Phần mềm quản lý bán hàng
+            </b></p>
+        </div>
   </main>
   <script src="js/jquery-3.2.1.min.js"></script>
   <!--===============================================================================================-->
@@ -488,25 +516,25 @@ while ($row = $result->fetch_assoc()) {
     var data = {
       labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6"],
       datasets: [{
-        label: "Dữ liệu đầu tiên",
-        fillColor: "rgba(255, 213, 59, 0.767), 212, 59)",
-        strokeColor: "rgb(255, 212, 59)",
-        pointColor: "rgb(255, 212, 59)",
-        pointStrokeColor: "rgb(255, 212, 59)",
-        pointHighlightFill: "rgb(255, 212, 59)",
-        pointHighlightStroke: "rgb(255, 212, 59)",
-        data: [20, 59, 90, 51, 56, 100]
-      },
-      {
-        label: "Dữ liệu kế tiếp",
-        fillColor: "rgba(9, 109, 239, 0.651)  ",
-        pointColor: "rgb(9, 109, 239)",
-        strokeColor: "rgb(9, 109, 239)",
-        pointStrokeColor: "rgb(9, 109, 239)",
-        pointHighlightFill: "rgb(9, 109, 239)",
-        pointHighlightStroke: "rgb(9, 109, 239)",
-        data: [48, 48, 49, 39, 86, 10]
-      }
+          label: "Dữ liệu đầu tiên",
+          fillColor: "rgba(255, 213, 59, 0.767), 212, 59)",
+          strokeColor: "rgb(255, 212, 59)",
+          pointColor: "rgb(255, 212, 59)",
+          pointStrokeColor: "rgb(255, 212, 59)",
+          pointHighlightFill: "rgb(255, 212, 59)",
+          pointHighlightStroke: "rgb(255, 212, 59)",
+          data: [20, 59, 90, 51, 56, 100]
+        },
+        {
+          label: "Dữ liệu kế tiếp",
+          fillColor: "rgba(9, 109, 239, 0.651)  ",
+          pointColor: "rgb(9, 109, 239)",
+          strokeColor: "rgb(9, 109, 239)",
+          pointStrokeColor: "rgb(9, 109, 239)",
+          pointHighlightFill: "rgb(9, 109, 239)",
+          pointHighlightStroke: "rgb(9, 109, 239)",
+          data: [48, 48, 49, 39, 86, 10]
+        }
       ]
     };
     var ctxl = $("#lineChartDemo").get(0).getContext("2d");
@@ -558,13 +586,13 @@ while ($row = $result->fetch_assoc()) {
     }
   </script>
 
-<?php
+  <?php
 
-if (!isset($_SESSION['username'])) { 
+  if (!isset($_SESSION['username'])) {
     //header("Location: ../index.php");   
     exit();
-}
-?>
+  }
+  ?>
 
 
 

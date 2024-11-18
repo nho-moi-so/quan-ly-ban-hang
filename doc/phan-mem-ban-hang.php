@@ -1,3 +1,11 @@
+<?php
+session_start();
+include "connect.php";
+require_once 'auth.php';
+checkLogin(); 
+checkAdmin(['Admin', 'NV']);
+$currentRole = $_SESSION['user_role'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,9 +55,6 @@
 
 <!------------------------------------------ TIM KIEM VA GIO HANG ------------------------------>
 <?php
-include "connect.php";
-session_start();
-
 if (!isset($_SESSION['cart'])) {
   $_SESSION['cart'] = [];
 }

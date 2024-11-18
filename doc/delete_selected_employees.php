@@ -1,6 +1,8 @@
 <?php
+session_start();
 include 'connect.php';
-
+checkLogin();
+checkAdmin((['Admin']));
 if (isset($_POST['ids'])) {
     $ids = $_POST['ids'];
     $id_list = implode(',', array_map('intval', $ids));

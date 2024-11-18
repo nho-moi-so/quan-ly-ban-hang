@@ -1,3 +1,8 @@
+<?php
+require_once 'auth.php';
+checkAdmin((['Admin', 'NV']));
+$currentRole = $_SESSION['user_role'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,25 +46,38 @@
     <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="../img-sanpham/avatar-trang-2.jpg" width="50px"
         alt="User Image">
       <div>
-        <p class="app-sidebar__user-name"><b>Võ Trường</b></p>
+        <p class="app-sidebar__user-name"><b>User</b></p>
         <p class="app-sidebar__user-designation">Chào mừng bạn trở lại</p>
       </div>
     </div>
     <hr>
     <ul class="app-menu">
-      <li><a class="app-menu__item haha" href="phan-mem-ban-hang.html"><i class='app-menu__icon bx bx-cart-alt'></i>
-          <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <li><a class="app-menu__item " href="index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-            class="app-menu__label">Bảng điều khiển</span></a></li>
-      <li><a class="app-menu__item " href="table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i>
-          <span class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-            class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <li><a class="app-menu__item" href="table-data-product.php"><i
-            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-      </li>
-      <li><a class="app-menu__item active" href="table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-            class="app-menu__label">Quản lý đơn hàng</span></a></li>
+    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+            <span class="app-menu__label">POS Bán Hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+              class="app-menu__label">Bảng điều khiển</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+              class="app-menu__label">Quản lý nhân viên</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+              class="app-menu__label">Quản lý khách hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-product.php"><i
+              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+        </li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn hàng</span></a></li>
+      <?php endif; ?>
+
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
     </ul>

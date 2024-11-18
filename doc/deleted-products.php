@@ -1,5 +1,8 @@
 <?php
-  include"connect.php";
+  session_start();
+  include "connect.php";
+  checkLogin();
+  checkAdmin((['Admin']));
   $id= $_GET['id'];
   echo $id;
   $sql = "DELETE from sanpham Where MaSP='$id'";

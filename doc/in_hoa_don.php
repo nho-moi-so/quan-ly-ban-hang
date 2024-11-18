@@ -1,6 +1,7 @@
 <?php
+session_start();
 include 'connect.php';
-
+checkAdmin((['Admin','NV']));
 if (isset($_GET['id'])) {
     $idDonHang = $_GET['id'];
     $sql_donhang = "SELECT * FROM donhang WHERE id_don_hang = '$idDonHang'";

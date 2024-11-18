@@ -6,4 +6,6 @@ session_destroy();
 
 header("Location: ../index.php"); 
 exit();
+require_once 'auth.php';
+logout();
 ?>
