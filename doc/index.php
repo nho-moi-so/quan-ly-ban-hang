@@ -151,7 +151,7 @@ $currentRole = $_SESSION['user_role'];
           </div>
           <!----------------------------------- tong don hang ----------------------------->
           <?php
-          include 'connect.php';  
+          include 'connect.php';
 
           $currentMonth = date('m');
           $currentYear = date('Y');
@@ -310,13 +310,11 @@ $currentRole = $_SESSION['user_role'];
       </div>
       <!--END left-->
       <!--Right-->
-<<<<<<< HEAD
+
       <!------------------------------------------- thong ke san pham ------------------------------------>
-=======
-<!------------------------------------------- thong ke san pham ------------------------------------>
+    <!------------------------------------------- thong ke san pham ------------------------------------>
 <?php
 include "connect.php";
->>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
 
 $query = "
     SELECT sp.MaSP, sp.TenSP, SUM(cthd.SoLuong) AS soLuongBanDuoc
@@ -351,147 +349,6 @@ $conn->close();
               </div>
             </div>
           </div>
-<<<<<<< HEAD
-          <!-------------------------------------------- thong ke doanh thu -------------------------------->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <?php
-          include 'connect.php';
-
-          $fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d', strtotime('-7 days'));
-          $toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
-
-          $sql = "SELECT DATE(ngay_ban) as ngay, SUM(tong_tien) AS doanh_thu 
-        FROM donhang 
-        WHERE ngay_ban BETWEEN ? AND ? 
-        GROUP BY DATE(ngay_ban) 
-        ORDER BY DATE(ngay_ban)";
-          $stmt = $conn->prepare($sql);
-          $stmt->bind_param("ss", $fromDate, $toDate);
-          $stmt->execute();
-          $result = $stmt->get_result();
-
-          $labels = [];
-          $data = [];
-          while ($row = $result->fetch_assoc()) {
-            $labels[] = $row['ngay'];
-            $data[] = $row['doanh_thu'] ? $row['doanh_thu'] : 0;
-          }
-          ?>
-          <div class="col-md-12">
-            <div class="tile">
-              <h3 class="tile-title">Thống kê doanh thu</h3>
-              <form method="GET" id="filterForm">
-                <label for="from_date">Từ ngày:</label>
-                <input type="date" id="from_date" name="from_date" value="<?php echo $fromDate; ?>">
-                <label for="to_date">Đến ngày:</label>
-                <input type="date" id="to_date" name="to_date" value="<?php echo $toDate; ?>">
-                <button type="submit">Thống kê</button>
-              </form>
-              <div class="embed-responsive embed-responsive-16by9">
-                <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
-              </div>
-            </div>
-          </div>
-          <style>
-            #filterForm {
-              display: flex;
-              flex-wrap: wrap;
-              align-items: center;
-              gap: 10px;
-              margin-bottom: 20px;
-            }
-
-            #filterForm label {
-              font-size: 16px;
-              font-weight: bold;
-              margin-right: 5px;
-            }
-
-            #filterForm input[type="date"] {
-              padding: 5px 10px;
-              border: 1px solid #ccc;
-              border-radius: 5px;
-              font-size: 14px;
-            }
-
-            #filterForm button {
-              padding: 8px 15px;
-              background-color: #ffc107;
-              /* Màu cam */
-              color: #212529;
-              /* Màu chữ đậm */
-              border: none;
-              border-radius: 5px;
-              font-size: 16px;
-              font-weight: bold;
-              cursor: pointer;
-              transition: background-color 0.3s, transform 0.2s;
-            }
-
-            #filterForm button:hover {
-              background-color: #e0a800;
-              /* Màu cam đậm hơn khi hover */
-              transform: scale(1.05);
-              /* Hiệu ứng phóng to nhẹ */
-            }
-          </style>
-          <!------ thong ke doanh thu ------>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-          <script>
-            var labels = <?php echo json_encode($labels); ?>;
-            var data = <?php echo json_encode($data); ?>;
-
-            var ctx = document.getElementById('barChartDemo').getContext('2d');
-            var barChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                labels: labels,
-                datasets: [{
-                  label: 'Doanh thu (VNĐ)',
-                  data: data,
-                  backgroundColor: '#4e73df',
-                  borderColor: '#4e73df',
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    ticks: {
-                      callback: function(value) {
-                        return value.toLocaleString();
-                      }
-=======
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -557,7 +414,7 @@ $conn->close();
 <div class="col-md-12">
     <div class="tile">
         <h3 class="tile-title">Thống kê doanh thu</h3>
-        <form method="GET" action="">
+<form method="GET" action="">
             <label for="start_date">Từ ngày:</label>
             <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" required>
   
@@ -599,121 +456,140 @@ $conn->close();
                         callback: function(value) {
                             return value.toLocaleString() + ' VNĐ';  
                         }
->>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
                     }
-                  }
                 }
-<<<<<<< HEAD
-              }
-            });
-          </script>
-
-          <!---------------------------------------------------END right------------------------------------------->
-        </div>
-=======
             }
         }
     });
 </script>
-<!---------------------------------------------------END right------------------------------------------->
-    </div>
->>>>>>> f76fe4a136b407bc6f2e037b7f5a32b7d5ba131b
+<style>
+            #filterForm {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 20px;
+            }
 
+            #filterForm label {
+              font-size: 16px;
+              font-weight: bold;
+              margin-right: 5px;
+            }
 
+            #filterForm input[type="date"] {
+              padding: 5px 10px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              font-size: 14px;
+            }
+
+            #filterForm button {
+              padding: 8px 15px;
+              background-color: #ffc107;
+              /* Màu cam */
+              color: #212529;
+              /* Màu chữ đậm */
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              font-weight: bold;
+              cursor: pointer;
+              transition: background-color 0.3s, transform 0.2s;
+            }
+
+            #filterForm button:hover {
+              background-color: #e0a800;
+              /* Màu cam đậm hơn khi hover */
+              transform: scale(1.05);
+              /* Hiệu ứng phóng to nhẹ */
+            }
+          </style>
+          <!------ thong ke doanh thu ------>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            var labels = <?php echo json_encode($labels); ?>;
+            var data = <?php echo json_encode($data); ?>;
+
+            var ctx = document.getElementById('barChartDemo').getContext('2d');
+            var barChart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: labels,
+                    datasets: [{
+                      label: 'Doanh thu (VNĐ)',
+                      data: data,
+                      backgroundColor: '#4e73df',
+                      borderColor: '#4e73df',
+                      borderWidth: 1
+                    }]
+                  },
+                  options: {
+                    responsive: true,
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        ticks: {
+                          callback: function(value) {
+                            return value.toLocaleString();
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              )
+          </script>
+
+          <!-------------------------------------------- thong ke doanh thu -------------------------------->
+          <?php
+          include 'connect.php';
+
+          $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '2024-11-15';
+          $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '2024-11-20';
+          $sql = "SELECT DATE(ngay_ban) AS ngay_ban, SUM(tong_tien) AS doanh_thu
+        FROM donhang
+        WHERE ngay_ban BETWEEN '$start_date' AND '$end_date'
+        GROUP BY DATE(ngay_ban)
+        ORDER BY ngay_ban";
+
+          $result = $conn->query($sql);
+          $dates = [];
+          $revenue = [];
+
+          if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+              $dates[] = $row['ngay_ban'];
+              $revenue[] = $row['doanh_thu'];
+            }
+          } else {
+            $dates[] = 'Không có dữ liệu';
+            $revenue[] = 0;
+          }
+
+          $conn->close();
+          ?>
+
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <main>
+        </div>
         <div class="text-center" style="font-size: 13px">
           <p><b>Copyright
               <script type="text/javascript">
-                document.write(new Date().getFullYear());
+
               </script> Phần mềm quản lý bán hàng
             </b></p>
         </div>
+
   </main>
   <script src="js/jquery-3.2.1.min.js"></script>
-  <!--===============================================================================================-->
   <script src="js/popper.min.js"></script>
   <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
-  <!--===============================================================================================-->
   <script src="js/bootstrap.min.js"></script>
-  <!--===============================================================================================-->
   <script src="js/main.js"></script>
-  <!--===============================================================================================-->
   <script src="js/plugins/pace.min.js"></script>
-  <!--===============================================================================================-->
   <!-- <script type="text/javascript" src="js/plugins/chart.js"></script> -->
-  <!--===============================================================================================-->
-  <script type="text/javascript">
-    var data = {
-      labels: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6"],
-      datasets: [{
-          label: "Dữ liệu đầu tiên",
-          fillColor: "rgba(255, 213, 59, 0.767), 212, 59)",
-          strokeColor: "rgb(255, 212, 59)",
-          pointColor: "rgb(255, 212, 59)",
-          pointStrokeColor: "rgb(255, 212, 59)",
-          pointHighlightFill: "rgb(255, 212, 59)",
-          pointHighlightStroke: "rgb(255, 212, 59)",
-          data: [20, 59, 90, 51, 56, 100]
-        },
-        {
-          label: "Dữ liệu kế tiếp",
-          fillColor: "rgba(9, 109, 239, 0.651)  ",
-          pointColor: "rgb(9, 109, 239)",
-          strokeColor: "rgb(9, 109, 239)",
-          pointStrokeColor: "rgb(9, 109, 239)",
-          pointHighlightFill: "rgb(9, 109, 239)",
-          pointHighlightStroke: "rgb(9, 109, 239)",
-          data: [48, 48, 49, 39, 86, 10]
-        }
-      ]
-    };
-    var ctxl = $("#lineChartDemo").get(0).getContext("2d");
-    var lineChart = new Chart(ctxl).Line(data);
 
-    var ctxb = $("#barChartDemo").get(0).getContext("2d");
-    var barChart = new Chart(ctxb).Bar(data);
-  </script>
-  <script type="text/javascript">
-    //Thời Gian
-    function time() {
-      var today = new Date();
-      var weekday = new Array(7);
-      weekday[0] = "Chủ Nhật";
-      weekday[1] = "Thứ Hai";
-      weekday[2] = "Thứ Ba";
-      weekday[3] = "Thứ Tư";
-      weekday[4] = "Thứ Năm";
-      weekday[5] = "Thứ Sáu";
-      weekday[6] = "Thứ Bảy";
-      var day = weekday[today.getDay()];
-      var dd = today.getDate();
-      var mm = today.getMonth() + 1;
-      var yyyy = today.getFullYear();
-      var h = today.getHours();
-      var m = today.getMinutes();
-      var s = today.getSeconds();
-      m = checkTime(m);
-      s = checkTime(s);
-      nowTime = h + " giờ " + m + " phút " + s + " giây";
-      if (dd < 10) {
-        dd = '0' + dd
-      }
-      if (mm < 10) {
-        mm = '0' + mm
-      }
-      today = day + ', ' + dd + '/' + mm + '/' + yyyy;
-      tmp = '<span class="date"> ' + today + ' - ' + nowTime +
-        '</span>';
-      document.getElementById("clock").innerHTML = tmp;
-      clocktime = setTimeout("time()", "1000", "Javascript");
-
-      function checkTime(i) {
-        if (i < 10) {
-          i = "0" + i;
-        }
-        return i;
-      }
-    }
-  </script>
 
   <?php
 
