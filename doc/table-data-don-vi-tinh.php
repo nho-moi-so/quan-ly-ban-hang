@@ -5,28 +5,28 @@ checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
 
-// Xử lý xóa xuất xứ
-$success = '';
-$error = '';
-
+// Xử lý xóa đơn vị
 if (isset($_GET['xoa']) && isset($_GET['id'])) {
-    $MaXuatXu = $_GET['id'];
-
-    $sql = "DELETE FROM xuatxu WHERE MaXuatXu = ?";
+    $MaDVT = $_GET['id'];
+    $sql = "DELETE FROM donvitinh WHERE MaDVT = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $MaXuatXu);
-
+    $stmt->bind_param("s", $MaDVT);
+    
     if ($stmt->execute()) {
-        $success = "Xóa xuất xứ thành công.";
+        $success = "Xóa đơn vị tính thành công.";
     } else {
         $error = "Lỗi: " . $stmt->error;
     }
 }
+
+// Truy vấn danh sách đơn vị
+$sql = "SELECT * FROM donvitinh ORDER BY MaDVT";
+$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Danh Sách Xuất Xứ | Quản trị Admin</title>
+    <title>Quản Lý Đơn Vị Tính | Quản trị Admin</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,6 +35,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
     <!-- Font-icon css-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
     <style>
         .alert {
             padding: 15px;
@@ -54,25 +55,18 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
             background-color: #f2dede;
             border-color: #ebccd1;
         }
-        .tile-body .table td.text-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
     </style>
 </head>
 <body class="app sidebar-mini rtl">
-    <!-- Navbar -->
+    <!-- Navbar and Sidebar (Same as previous code) -->
     <header class="app-header">
         <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
         <ul class="app-nav">
             <li><a class="app-nav__item" href="logout.php"><i class='bx bx-log-out bx-rotate-180'></i></a></li>
         </ul>
     </header>
-    
-    <!-- Sidebar menu -->
+
+    <!-- Sidebar menu  -->
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
@@ -82,6 +76,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
                 <p class="app-sidebar__user-designation">Chào mừng bạn trở lại</p>
             </div>
         </div>
+
         <hr>
         <ul class="app-menu">
         <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
@@ -111,7 +106,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+              class="app-menu__label">Quản lý đơn xuất xứ</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
@@ -122,73 +117,64 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
             đặt hệ thống</span></a></li>
         </ul>
     </aside>
-
     <main class="app-content">
         <div class="app-title">
-                <ul class="app-breadcrumb breadcrumb">
-                <li class="breadcrumb-item"> Danh sách xuất xứ </li>
-               
+            <ul class="app-breadcrumb breadcrumb">
+                <li class="breadcrumb-item">Danh Sách Đơn Vị Tính</li>
+            </ul>
         </div>
 
         <div class="row">
             <div class="col-md-12">
-                <div class="col-sm-2">
-                  <li class="btn btn-add btn-sm"data-toggle="modal" data-target="#addxuatxu" >
-                    <a href="form-add-xuat-xu.php"><i class="fas fa-plus"></i> Thêm xuất xứ mới</a></li>
-                </div>
-            
-                <?php 
-                // Hiển thị thông báo lỗi hoặc thành công
-                if (!empty($error)): ?>
-                    <div class="alert alert-danger"><?php echo $error; ?></div>
-                <?php endif; ?>
-
-                <?php if (!empty($success)): ?>
-                    <div class="alert alert-success"><?php echo $success; ?></div>
-                <?php endif; ?>
-
                 <div class="tile">
-                    <div class="tile-title d-flex justify-content-between align-items-center">
-                        <h3>Danh Sách Xuất Xứ</h3>
-                    </div>
                     <div class="tile-body">
-                        <table class="table table-hover table-bordered" id="xuatXuTable">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <a class="btn btn-add btn-sm" href="form-add-don-vi-tinh.php">
+                                    <i class="fas fa-plus"></i>Thêm Đơn Vị Tính
+                                </a>
+                            </div>
+                        </div>
+
+                        <?php 
+                        if (isset($error)): ?>
+                            <div class="alert alert-danger"><?php echo $error; ?></div>
+                        <?php endif; ?>
+
+                        <?php if (isset($success)): ?>
+                            <div class="alert alert-success"><?php echo $success; ?></div>
+                        <?php endif; ?>
+
+                        <table class="table table-hover table-bordered" id="donvitinh">
                             <thead>
                                 <tr>
-                                    <th>Mã Xuất Xứ</th>
-                                    <th>Tên Xuất Xứ</th>
+                                    <th>Mã Đơn Vị</th>
+                                    <th>Tên Đơn Vị</th>
                                     <th>Chức Năng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                       
-                                <?php
-                                // Truy vấn lấy danh sách xuất xứ từ database
-                                $sql = "SELECT * FROM xuatxu ORDER BY MaXuatXu";
-                                $result = $conn->query($sql);
-
+                                <?php 
                                 if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
+                                    while($row = $result->fetch_assoc()) {
                                         echo "<tr>";
-                                        echo "<td>" . htmlspecialchars($row['MaXuatXu']) . "</td>";
-                                        echo "<td>" . htmlspecialchars($row['TenXuatXu']) . "</td>";
-                                        echo "<td class='text-center'>
-                                                <a href='sua-xuat-xu.php?sua&id=" . urlencode($row['MaXuatXu']) . "' class='btn btn-primary btn-sm edit' type='button' title='Sửa'>
+                                        echo "<td>" . htmlspecialchars($row['MaDVT']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['TenDVT']) . "</td>";
+                                        echo "<td>
+                                                <a href='form-add-don-vi-tinh.php?sua=1&id=" . htmlspecialchars($row['MaDVT']) . "' 
+                                                   class='btn btn-primary btn-sm'>
                                                     <i class='fas fa-edit'></i>
                                                 </a>
-                                                <a href='?xoa&id=" . urlencode($row['MaXuatXu']) . "' onclick='return confirmDelete()' class='btn btn-danger btn-sm delete ml-2' type='button' title='Xóa'>
-                                                    <i class='fas fa-trash-alt'></i>
+                                                <a href='table-data-don-vi-tinh.php?xoa=1&id=" . htmlspecialchars($row['MaDVT']) . "' 
+                                                   class='btn btn-danger btn-sm btn-delete' 
+                                                   onclick='return confirm(\"Bạn có chắc chắn muốn xóa đơn vị này?\");'>
+                                                   <i class='fas fa-trash'></i>
                                                 </a>
                                               </td>";
                                         echo "</tr>";
                                     }
-                                } else {
-                                    echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu xuất xứ</td></tr>";
                                 }
-                                // Xử lý sửa xuất xứ
-                        
                                 ?>
-
                             </tbody>
                         </table>
                     </div>
@@ -197,31 +183,26 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
         </div>
     </main>
 
-
+    <!-- Scripts -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script>
-        function confirmDelete() {
-            return confirm('Bạn có chắc chắn muốn xóa xuất xứ này không?');
-        }
-
-        // Optional: DataTables initialization if you want advanced table features
         $(document).ready(function() {
-            $('#xuatXuTable').DataTable({
-                "pageLength": 10,
-                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
+            $('#donViTable').DataTable({
                 "language": {
                     "lengthMenu": "Hiển thị _MENU_ dòng",
-                    "zeroRecords": "Không tìm thấy dữ liệu",
+                    "zeroRecords": "Không tìm thấy kết quả",
                     "info": "Trang _PAGE_/_PAGES_",
                     "infoEmpty": "Không có dữ liệu",
+                    "infoFiltered": "(lọc từ _MAX_ tổng số bản ghi)",
                     "search": "Tìm kiếm:",
                     "paginate": {
                         "first": "Đầu",
                         "last": "Cuối",
-                        "next": "Tiếp",
+                        "next": "Sau",
                         "previous": "Trước"
                     }
                 }

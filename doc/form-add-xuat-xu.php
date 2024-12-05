@@ -5,6 +5,69 @@ checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
 
+function generateOriginCode($conn) {
+    // Prepare SQL to get the maximum origin code
+    $sql = "SELECT MaXuatXu FROM xuatxu ORDER BY CAST(MaXuatXu AS UNSIGNED) DESC LIMIT 1";
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['MaXuatXu'];
+        
+        // Safely extract the numeric part and increment
+        $numericPart = intval(preg_replace('/[^0-9]/', '', $lastCode));
+        
+        // Increment the numeric part
+        $newNumericPart = $numericPart + 1;
+        
+        // Format the new code with leading zeros
+        $newCode = str_pad($newNumericPart, 2, '0', STR_PAD_LEFT);
+    } else {
+        // If no existing codes, start with 0001
+        $newCode = '';
+    }
+    
+    return $newCode;
+}
+
+/*function generateOriginCode($conn) {
+    // Find the latest origin code
+    $sql = "SELECT MaXuatXu FROM xuatxu ORDER BY MaXuatXu DESC LIMIT 1";
+    $result = $conn->query($sql);
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $lastCode = $row['MaXuatXu'];
+        
+        // Extract the numeric part and increment
+        $numericPart = intval($lastCode);
+        
+        // Ensure the code doesn't exceed 1000
+        if ($numericPart >= 1000) {
+            return null; // Or handle this case as needed
+        }
+        
+        // Increment and pad to 4 digits
+        $newNumericPart = $numericPart + 1;
+        $newCode = str_pad($newNumericPart, 4, '0', STR_PAD_LEFT);
+    } else {
+        // If no existing codes, start with 0001
+        $newCode = '0001';
+    }
+    
+    return $newCode;
+}
+
+/*function generateOriginCode($conn) {
+    $sql = "SELECT MAX(CAST(MaXuatXu AS UNSIGNED)) AS max_code FROM xuatxu";
+    $result = $conn->query($sql);
+    $row = $result->fetch_assoc();
+    
+    $nextCode = $row['max_code'] !== null ? intval($row['max_code']) + 1 : 0;
+    
+    return str_pad($nextCode, 2, '0', STR_PAD_LEFT);
+}*/
+
 // Xử lý chỉnh sửa - lấy thông tin xuất xứ để điền vào form
 $editOrigin = null;
 if (isset($_GET['sua']) && isset($_GET['id'])) {
@@ -71,20 +134,19 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             background-color: #f2dede;
             border-color: #ebccd1;
         }
-      
     </style> 
 </head>
 <body class="app sidebar-mini rtl">
-    <!-- Navbar -->
+    <!-- Navbar and Sidebar code remains the same -->
     <header class="app-header">
         <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
         <ul class="app-nav">
             <li><a class="app-nav__item" href="logout.php"><i class='bx bx-log-out bx-rotate-180'></i></a></li>
         </ul>
     </header>
-    
-        <!-- Sidebar menu  -->
-    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+
+     <!-- Sidebar menu  -->
+     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
             <img class="app-sidebar__user-avatar" src="../img-sanpham/avatar-trang-2.jpg" width="50px" alt="User Image">
@@ -121,12 +183,25 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
         <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý đơn hàng</span></a></li>
       <?php endif; ?>
+   
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+      <?php endif; ?>
 
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
         </ul>
     </aside>
-
+    
     <main class="app-content">
         <div class="app-title">
                 <ul class="app-breadcrumb breadcrumb">
@@ -150,30 +225,19 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                     // Xử lý thêm, sửa xuất xứ
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (isset($_POST['xuatxu'])) {
-                            $MaXuatXu = $_POST['MaXuatXu'];
+                            // Tự động sinh mã xuất xứ nếu không được cung cấp
+                            $MaXuatXu = generateOriginCode($conn);
                             $TenXuatXu = $_POST['TenXuatXu'];
-                            $moTa = $_POST['MoTa'] ?? '';
 
-                            // Kiểm tra xem mã xuất xứ đã tồn tại chưa
-                            $checkExist = "SELECT * FROM xuatxu WHERE MaXuatXu = ?";
-                            $stmt = $conn->prepare($checkExist);
-                            $stmt->bind_param("s", $MaXuatXu);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
+                            // Chuẩn bị câu truy vấn INSERT
+                            $sql = "INSERT INTO xuatxu (MaXuatXu, TenXuatXu) VALUES (?, ?)";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("ss", $MaXuatXu, $TenXuatXu);
 
-                            if ($result->num_rows > 0) {
-                                $error = "Mã xuất xứ đã tồn tại. Vui lòng chọn mã khác.";
+                            if ($stmt->execute()) {
+                                $success = "Thêm xuất xứ mới thành công. Mã xuất xứ: " . $MaXuatXu;
                             } else {
-                                // Chuẩn bị câu truy vấn INSERT
-                                $sql = "INSERT INTO xuatxu (MaXuatXu, TenXuatXu, MoTa) VALUES (?, ?, ?)";
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("sss", $MaXuatXu, $TenXuatXu, $moTa);
-
-                                if ($stmt->execute()) {
-                                    $success = "Thêm xuất xứ mới thành công.";
-                                } else {
-                                    $error = "Lỗi: " . $stmt->error;
-                                }
+                                $error = "Lỗi: " . $stmt->error;
                             }
                         }
 
@@ -181,16 +245,15 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         if (isset($_POST['SuaXuatXu'])) {
                             $MaXuatXu = $_POST['MaXuatXu'];
                             $TenXuatXu = $_POST['TenXuatXu'];
-                            $moTa = $_POST['MoTa'] ?? '';
-
-                            $sql = "UPDATE xuatxu SET TenXuatXu = ?, MoTa = ? WHERE MaXuatXu = ?";
+                    
+                            $sql = "UPDATE xuatxu SET TenXuatXu = ? WHERE MaXuatXu = ?";
                             $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("sss", $TenXuatXu, $moTa, $MaXuatXu);
+                            $stmt->bind_param("ss", $TenXuatXu, $MaXuatXu);
 
                             if ($stmt->execute()) {
                                 $success = "Cập nhật xuất xứ thành công.";
                                 // Redirect to list page after successful update
-                                header("Location quan-ly-xuat-xu.php");
+                                header("Location: form-add-xuat-xu.php");
                                 exit();
                             } else {
                                 $error = "Lỗi: " . $stmt->error;
@@ -214,8 +277,8 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                 <input class="form-control" 
                                        name="MaXuatXu" 
                                        type="text" 
-                                       value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['MaXuatXu']) : ''; ?>"
-                                       <?php echo $editOrigin ? 'readonly' : ''; ?> 
+                                       value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['MaXuatXu']) : generateOriginCode($conn); ?>"
+                                       <?php echo $editOrigin ? 'readonly' : 'readonly'; ?> 
                                        placeholder="Nhập mã xuất xứ" 
                                        required>
                             </div>
@@ -231,28 +294,24 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             </div>
 
                             <div class="form-group">
-                                <label class="control-label">Mô Tả</label>
-                                <textarea class="form-control" 
-                                          name="MoTa" 
-                                          rows="4" 
-                                          placeholder="Nhập mô tả (tùy chọn)"><?php 
-                                              echo $editOrigin ? htmlspecialchars($editOrigin['MoTa']) : ''; 
-                                          ?></textarea>
-                            </div>
-
-                            <div class="form-group">
                                 <?php if ($editOrigin): ?>
                                     <button class="btn btn-save" type="submit" name="SuaXuatXu">
                                         <i class="fas fa-edit"></i> Cập Nhật
                                     </button>
-                                    <a href="danh-sach-xuat-xu.php" class="btn btn-cancel">
+
+                                    <!-- <a href="table-data-xuat-xu.php" class="btn btn-cancel">
                                         <i class="fas fa-times"></i> Hủy
-                                    </a>
+                                    </a> -->
                                 <?php else: ?>
-                                    <button class="btn btn-save" type="submit" name="xuatxu">
-                                        <i class="fas fa-plus"></i> Thêm Mới
+                                    <div class="form-group col-md-12">
+                                          <button class="btn btn-save" type="submit" name="xuatxu">
+                                        <i class="fas fa-plus"></i> Lưu lại       
                                     </button>
+                                    <a class="btn btn-cancel" href="table-data-xuat-xu.php"> Hủy bỏ </a>
+                                    </div>
+                                  
                                 <?php endif; ?>
+                            
                             </div>
                         </form>
                     </div>
