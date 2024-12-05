@@ -78,9 +78,20 @@ $currentRole = $_SESSION['user_role'];
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn hàng</span></a></li>
+              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
       <?php endif; ?>
-
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./qldanhmuc.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý Danh Mục</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+      <?php endif; ?>
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
     </ul>
@@ -116,56 +127,62 @@ $currentRole = $_SESSION['user_role'];
 
             </div>
 
-            <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0" id="sampleTable">
-              <thead>
-                <tr>
-                  <th width="10"><input type="checkbox" id="select-all"></th>
-                  <th>ID Khách Hàng</th>
-                  <th width="150">Họ và tên</th>
-                  <th>SĐT</th>
-                  <th>Điểm Tich Lũy</th>
-                  <th>Ngày Tích Điểm</th>
-                  <th width="100">Tính năng</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php
-                // Truy vấn sản phẩm và liên kết với bảng hình ảnh
-                $query = "SELECT kh.MaKH, kh.TenKH, kh.DienThoai AS SDT, kh.DiemTichLuy, kh.NgayLap AS NgayTichDiem
-                      FROM khachhang kh ";
-                $result = $conn->query($query);
-                if (!$result) {
-                  die("Lỗi truy vấn: " . $conn->error); // Hiển thị lỗi và dừng thực hiện nếu truy vấn thất bại
-                }
-                if ($result->num_rows > 0) {
-                  // Lặp qua từng dòng dữ liệu và xuất ra bảng
+            <?php
+            // Truy vấn sản phẩm và liên kết với bảng hình ảnh
+            $query = "SELECT kh.MaKH, kh.TenKH, kh.DienThoai AS SDT, kh.DiemTichLuy, kh.NgayLap AS NgayTichDiem
+          FROM khachhang kh ";
+            $result = $conn->query($query);
+
+            if (!$result) {
+              die("Lỗi truy vấn: " . $conn->error);
+            }
+
+            if ($result->num_rows > 0) {
+            ?>
+              <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0" id="sampleTable">
+                <thead>
+                  <tr>
+                    <th width="10"><input type="checkbox" id="select-all"></th>
+                    <th>ID Khách Hàng</th>
+                    <th width="150">Họ và tên</th>
+                    <th>SĐT</th>
+                    <th>Điểm Tich Lũy</th>
+                    <th>Ngày Tích Điểm</th>
+                    <th width="100">Tính năng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
                   while ($row = $result->fetch_assoc()) {
-                    echo "
+                  ?>
                     <tr>
-                        <td width='10'><input type='checkbox' name='check1' value='1'></td>
-                        <td>{$row['MaKH']}</td>
-                        <td>{$row['TenKH']}</td>
-                        <td>{$row['SDT']}</td>
-                        <td>{$row['DiemTichLuy']}</td>
-                        <td>{$row['NgayTichDiem']}</td>
-                        
-                        <td>
-                          <form action='./deleted-kh.php?id={$row['MaKH']}' method='post' onsubmit='return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');'>
-                                <button class='btn btn-primary btn-sm trash' type='submit' title='Xóa'>
-                                    <i class='fas fa-trash-alt'></i>
-                                </button>
-                          </form>
-                                <button class='btn btn-primary btn-sm edit' type='submit' title='Sửa' id='show-emp' data-toggle='modal' data-target='#ModalUP'>
-                                    <i class='fas fa-edit'></i>
-                                </button>
-                          
-                        </td>
-                    </tr>";
+                      <td><input type="checkbox" name="check1[]" value="<?php echo $row['MaKH']; ?>"></td>
+                      <td><?php echo $row['MaKH']; ?></td>
+                      <td><?php echo $row['TenKH']; ?></td>
+                      <td><?php echo $row['SDT']; ?></td>
+                      <td><?php echo $row['DiemTichLuy']; ?></td>
+                      <td><?php echo $row['NgayTichDiem']; ?></td>
+                      <td>
+                        <form action="./deleted-kh.php?id=<?php echo htmlspecialchars($row['MaKH']); ?>" method="post">
+                          <button class="btn btn-primary btn-sm trash" type="submit" title="Xóa">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </form>
+                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" data-toggle="modal" data-target="#ModalUP" data-id="<?php echo $row['MaKH']; ?>">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  <?php
                   }
-                }
-                ?>
-              </tbody>
-            </table>
+                  ?>
+                </tbody>
+              </table>
+            <?php
+            } else {
+              echo "<p>Không có kết quả tìm kiếm.</p>";
+            }
+            ?>
           </div>
         </div>
       </div>
@@ -189,12 +206,12 @@ $currentRole = $_SESSION['user_role'];
               <label for="ho_ten">Họ và tên</label>
               <input class="form-control" type="text" id="ho_ten" name="ho_ten" required>
             </div>
-      
+
             <div class="form-group">
               <label for="sdt">SĐT</label>
               <input class="form-control" type="text" id="sdt" name="sdt" required>
             </div>
-        
+
             <button class="btn btn-primary" type="submit">Cập nhật</button>
           </form>
         </div>

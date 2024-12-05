@@ -1,3 +1,10 @@
+<?php
+session_start();
+require_once 'auth.php';
+checkLogin();
+checkAdmin(['Admin', 'NV']);
+$currentRole = $_SESSION['user_role'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,24 +178,43 @@
     </div>
     <hr>
     <ul class="app-menu">
-      <li><a class="app-menu__item haha" href="phan-mem-ban-hang.html"><i class='app-menu__icon bx bx-cart-alt'></i>
-          <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <li><a class="app-menu__item " href="index.html"><i class='app-menu__icon bx bx-tachometer'></i><span
-            class="app-menu__label">Bảng điều khiển</span></a></li>
-     <li><a class="app-menu__item " href="create-invoice.php"><i class='app-menu__icon bx bx-menu'></i><span
-            class="app-menu__iteml">Lập hóa đơn </span></a></li>
-      <li><a class="app-menu__item " href="table-data-table.html"><i class='app-menu__icon bx bx-id-card'></i>
-          <span class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-            class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <li><a class="app-menu__item" href="table-data-product.php"><i
-            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-      </li>
-      <li><a class="app-menu__item" href="qldanhmuc.php"><i class='app-menu__icon bx bx-tag'></i><span
-        class="app-menu__label">Quản lý danh mục</span></a>
-      </li>
-      <li><a class="app-menu__item active" href="table-data-oder.html"><i class='app-menu__icon bx bx-task'></i><span
-            class="app-menu__label">Quản lý đơn hàng</span></a></li>
+    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+            <span class="app-menu__label">POS Bán Hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+              class="app-menu__label">Bảng điều khiển</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+              class="app-menu__label">Quản lý nhân viên</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+              class="app-menu__label">Quản lý khách hàng</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-product.php"><i
+              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+        </li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./qldanhmuc.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý Danh Mục</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+      <?php endif; ?>
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
     </ul>
