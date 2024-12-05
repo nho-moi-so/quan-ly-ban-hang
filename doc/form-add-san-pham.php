@@ -2,7 +2,7 @@
 include "connect.php";
 require_once 'auth.php';
 checkLogin();
-checkAdmin(['Admin', 'NV']);
+checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
 ?>
 <!DOCTYPE html>
@@ -162,7 +162,7 @@ $currentRole = $_SESSION['user_role'];
     </div>
     <hr>
     <ul class="app-menu">
-    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
         <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
             <span class="app-menu__label">POS Bán Hàng</span></a></li>
       <?php endif; ?>
@@ -185,9 +185,20 @@ $currentRole = $_SESSION['user_role'];
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn hàng</span></a></li>
+              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
       <?php endif; ?>
-
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./qldanhmuc.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý Danh Mục</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+      <?php endif; ?>
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
             đặt hệ thống</span></a></li>
     </ul>
@@ -264,7 +275,7 @@ $currentRole = $_SESSION['user_role'];
                   ?>
                 </select>
               </div>
-              
+
               <div class="form-group col-md-3">
                 <label class="control-label">Đơn Giá</label>
                 <input class="form-control" name="DonGia" type="text">
@@ -273,21 +284,21 @@ $currentRole = $_SESSION['user_role'];
               <div class="form-group col-md-3">
                 <label for="exampleSelect1" name="MaDVT" class="control-label">Đơn Vị Tính</label>
                 <select class="form-control" name="MaDVT" id="exampleSelect1">
-                <option value="null">-- Chọn Đơn Vị Tính --</option>
+                  <option value="null">-- Chọn Đơn Vị Tính --</option>
                   <?php
-                    // Truy vấn lấy đơn vị tính từ database
-                    $sql = "SELECT MaDVT, TenDVT FROM donvitinh";
-                    $result = $conn->query($sql);
+                  // Truy vấn lấy đơn vị tính từ database
+                  $sql = "SELECT MaDVT, TenDVT FROM donvitinh";
+                  $result = $conn->query($sql);
 
-                    if ($result->num_rows > 0) {
+                  if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
-                       echo '<option value="' . $row['MaDVT'] . '">' . $row['TenDVT'] . '</option>';
-                      }
+                      echo '<option value="' . $row['MaDVT'] . '">' . $row['TenDVT'] . '</option>';
                     }
+                  }
                   ?>
                 </select>
               </div>
-              
+
               <div class="form-group col-md-12">
                 <label class="control-label">Ảnh sản phẩm</label>
                 <div id="myfileupload">

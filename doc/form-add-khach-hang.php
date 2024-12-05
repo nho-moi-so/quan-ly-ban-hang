@@ -166,7 +166,7 @@ $currentRole = $_SESSION['user_role'];
     </div>
     <hr>
     <ul class="app-menu">
-    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
         <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
             <span class="app-menu__label">POS Bán Hàng</span></a></li>
       <?php endif; ?>
@@ -189,7 +189,19 @@ $currentRole = $_SESSION['user_role'];
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn hàng</span></a></li>
+              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./qldanhmuc.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý Danh Mục</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý xuất xứ</span></a></li>
+      <?php endif; ?>
+      <?php if (in_array($currentRole, ['Admin'])): ?>
+        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
       <?php endif; ?>
 
       <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài

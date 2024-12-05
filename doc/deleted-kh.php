@@ -1,6 +1,7 @@
 <?php
   session_start();
   include "connect.php";
+  require_once 'auth.php';
   checkLogin();
   checkAdmin((['Admin']));
   $id= $_GET['id'];
