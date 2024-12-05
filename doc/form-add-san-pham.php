@@ -264,16 +264,30 @@ $currentRole = $_SESSION['user_role'];
                   ?>
                 </select>
               </div>
+              
               <div class="form-group col-md-3">
                 <label class="control-label">Đơn Giá</label>
                 <input class="form-control" name="DonGia" type="text">
               </div>
+
               <div class="form-group col-md-3">
-                <label for="selectDVT" class="control-label">Đơn Vị Tính </label>
-                <select class="form-control" name="MaDVT" id="selectDVT">
-                  <option value="VND">VND</option>
+                <label for="exampleSelect1" name="MaDVT" class="control-label">Đơn Vị Tính</label>
+                <select class="form-control" name="MaDVT" id="exampleSelect1">
+                <option value="null">-- Chọn Đơn Vị Tính --</option>
+                  <?php
+                    // Truy vấn lấy đơn vị tính từ database
+                    $sql = "SELECT MaDVT, TenDVT FROM donvitinh";
+                    $result = $conn->query($sql);
+
+                    if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                       echo '<option value="' . $row['MaDVT'] . '">' . $row['TenDVT'] . '</option>';
+                      }
+                    }
+                  ?>
                 </select>
               </div>
+              
               <div class="form-group col-md-12">
                 <label class="control-label">Ảnh sản phẩm</label>
                 <div id="myfileupload">
