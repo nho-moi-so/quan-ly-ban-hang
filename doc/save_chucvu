@@ -1,0 +1,33 @@
+<?php
+include 'connect.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ten_chuc_vu'])) {
+    $tenChucVu = trim($_POST['ten_chuc_vu']);
+    if (!empty($tenChucVu)) {
+        $check_sql = "SELECT * FROM chucvu WHERE TenChucVu = ?";
+        $stmt = $conn->prepare($check_sql);
+        $stmt->bind_param("s", $tenChucVu);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            echo "Lỗi: Chức vụ này đã tồn tại!";
+        } else {
+            $insert_sql = "INSERT INTO chucvu (TenChucVu) VALUES (?)";
+            $stmt = $conn->prepare($insert_sql);
+            $stmt->bind_param("s", $tenChucVu);
+            if ($stmt->execute()) {
+                echo "success";
+            } else {
+                echo "Lỗi: Không thể thêm chức vụ mới!";
+            }
+        }
+        $stmt->close();
+    } else {
+        echo "Lỗi: Tên chức vụ không hợp lệ!";
+    }
+} else {
+    echo "Lỗi: Yêu cầu không hợp lệ!";
+}
+$conn->close();
+?>

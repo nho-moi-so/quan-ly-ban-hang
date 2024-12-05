@@ -87,11 +87,12 @@ $currentRole = $_SESSION['user_role'];
   </aside>
 
 
-<!-- Danh sách nhân viên-->
-<?php
+  <?php
 include 'connect.php';
 
-$sql = "SELECT id, ho_ten, anh_3x4, dia_chi, ngay_sinh, gioi_tinh, sdt, chuc_vu FROM nhanvien";
+$sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
+        FROM nhanvien 
+        LEFT JOIN chucvu ON nhanvien.chuc_vu = chucvu.MaChucVu";
 $result = $conn->query($sql);
 ?>
 
@@ -141,41 +142,45 @@ $result = $conn->query($sql);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            $sql = "SELECT * FROM nhanvien"; 
-                            $result = $conn->query($sql);
-                            if ($result && $result->num_rows > 0) {
-                                while($row = $result->fetch_assoc()) {
-                                    echo "<tr>";
-                                    echo "<td width='10'><input type='checkbox' name='check' value='{$row['id']}'></td>";
-                                    echo "<td>#{$row['id']}</td>";
-                                    echo "<td>{$row['ho_ten']}</td>";
-                                    echo "<td><img class='img-card-person' src='../img-anhthe/{$row['anh_3x4']}' alt=''></td>";
-                                    echo "<td>{$row['dia_chi']}</td>";
-                                    echo "<td>{$row['ngay_sinh']}</td>";
-                                    echo "<td>{$row['gioi_tinh']}</td>";
-                                    echo "<td>{$row['sdt']}</td>";
-                                    echo "<td>{$row['chuc_vu']}</td>";
-                                    echo "<td>
-                                            <form method='POST' action='delete_employee.php'>
-                                                <input type='hidden' name='id' value='{$row['id']}'>
-                                                <button class='btn btn-danger btn-sm' type='submit' title='Xóa'>
-                                                    <i class='fas fa-trash-alt'></i>
-                                                </button>
-                                            </form>
-                                            
-                                            <button class='btn btn-primary btn-sm edit' type='button' title='Sửa' data-toggle='modal' data-target='#ModalUP' onclick='loadEmployeeData({$row['id']})'>
-                                                <i class='fas fa-edit'></i>
-                                            </button>
-                                          </td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='10'>Không có dữ liệu</td></tr>";
-                            }
-                            $conn->close();
-                            ?>
-                        </tbody>
+                          <?php
+                          $sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
+                                  FROM nhanvien 
+                                  LEFT JOIN chucvu ON nhanvien.chuc_vu = chucvu.MaChucVu";
+                          $result = $conn->query($sql);
+
+                          if ($result && $result->num_rows > 0) {
+                              while($row = $result->fetch_assoc()) {
+                                  echo "<tr>";
+                                  echo "<td width='10'><input type='checkbox' name='check' value='{$row['id']}'></td>";
+                                  echo "<td>#{$row['id']}</td>";
+                                  echo "<td>{$row['ho_ten']}</td>";
+                                  echo "<td><img class='img-card-person' src='../img-anhthe/{$row['anh_3x4']}' alt=''></td>";
+                                  echo "<td>{$row['dia_chi']}</td>";
+                                  echo "<td>{$row['ngay_sinh']}</td>";
+                                  echo "<td>{$row['gioi_tinh']}</td>";
+                                  echo "<td>{$row['sdt']}</td>";
+                                  echo "<td>{$row['TenChucVu']}</td>";
+                                  echo "<td>
+                                  <form method='POST' action='delete_employee.php'>
+                                      <input type='hidden' name='id' value='{$row['id']}'>
+                                      <button class='btn btn-danger btn-sm' type='submit' title='Xóa'>
+                                          <i class='fas fa-trash-alt'></i>
+                                      </button>
+                                  </form>
+                                  
+                                  <button class='btn btn-primary btn-sm edit' type='button' title='Sửa' data-toggle='modal' data-target='#ModalUP' onclick='loadEmployeeData({$row['id']})'>
+                                      <i class='fas fa-edit'></i>
+                                  </button>
+                                </td>";
+                                  echo "</tr>";
+                              }
+                          } else {
+                              echo "<tr><td colspan='10'>Không có dữ liệu</td></tr>";
+                          }
+                          $conn->close();
+                          ?>
+                      </tbody>
+
                     </table>
                 </div>
             </div>
@@ -203,7 +208,9 @@ $result = $conn->query($sql);
                     <div class="form-group">
                         <label for="anh_3x4">Ảnh thẻ</label>
                         <input class="form-control" type="text" id="anh_3x4" name="anh_3x4">
+                        <img id="preview_anh_3x4" src="" alt="Ảnh thẻ" style="margin-top: 10px; max-width: 100px; max-height: 100px; display: none;">
                     </div>
+
                     <div class="form-group">
                         <label for="dia_chi">Địa chỉ</label>
                         <input class="form-control" type="text" id="dia_chi" name="dia_chi" required>
@@ -224,8 +231,24 @@ $result = $conn->query($sql);
                         <input class="form-control" type="text" id="sdt" name="sdt" required>
                     </div>
                     <div class="form-group">
-                        <label for="chuc_vu">Chức vụ</label>
-                        <input class="form-control" type="text" id="chuc_vu" name="chuc_vu" required>
+                        <label class="control-label">Chức vụ</label>
+                        <select class="form-control" id="chuc_vu" name="chuc_vu" required>
+                            <option value="">-- Chọn chức vụ --</option>
+                            <?php                    
+                            include 'connect.php';
+                            $sql = "SELECT MaChucVu, TenChucVu FROM chucvu";
+                            $result = $conn->query($sql);
+
+                            if ($result && $result->num_rows > 0) {
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<option value='{$row['MaChucVu']}'>{$row['TenChucVu']}</option>";
+                                }
+                            } else {
+                                echo "<option value=''>Không có dữ liệu chức vụ</option>";
+                            }
+                            $conn->close();
+                            ?>
+                        </select>
                     </div>
                     <button class="btn btn-primary" type="submit">Cập nhật</button>
                 </form>
@@ -346,7 +369,7 @@ function loadEmployeeData(id) {
     $.ajax({
         url: 'get_employee_data.php', 
         type: 'GET',
-        data: {id: id},
+        data: { id: id },
         success: function(response) {
             var data = JSON.parse(response);
             $('#employee_id').val(data.id);
@@ -356,10 +379,24 @@ function loadEmployeeData(id) {
             $('#ngay_sinh').val(data.ngay_sinh);
             $('#gioi_tinh').val(data.gioi_tinh);
             $('#sdt').val(data.sdt);
+
+            // Hiển thị chức vụ tương ứng
             $('#chuc_vu').val(data.chuc_vu);
+
+            // Hiển thị ảnh
+            if (data.anh_3x4) {
+                $('#preview_anh_3x4').attr('src', '../img-anhthe/' + data.anh_3x4).show();
+            } else {
+                $('#preview_anh_3x4').hide();
+            }
+        },
+        error: function() {
+            alert('Không thể tải dữ liệu nhân viên.');
         }
     });
 }
+
+
 </script>
 
 <!-- Xóa các mục đã chọn -->

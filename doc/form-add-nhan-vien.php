@@ -245,15 +245,27 @@ $conn->close();
             <li class="breadcrumb-item"><a href="#">Thêm nhân viên</a></li>
         </ul>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <h3 class="tile-title">Tạo mới nhân viên</h3>
                 <div class="tile-body">
+                <div class="row element-button">
+              <div class="col-sm-2">
+                <a class="btn btn-add btn-sm" data-toggle="modal" data-target="#exampleModalCenter"><i
+                    class="fas fa-folder-plus"></i> Thêm chức vụ</a>
+              </div>
+          
+            </div>
+
+
                     <form class="row" method="POST" enctype="multipart/form-data">
+
+
                         <div class="form-group col-md-4">
                             <label class="control-label">ID nhân viên</label>
-                            <input class="form-control" type="text" name="id_nhan_vien">
+                            <input class="form-control" type="text" name="id_nhan_vien" readonly>
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Họ và tên</label>
@@ -285,19 +297,21 @@ $conn->close();
                         </div>
                         <div class="form-group col-md-4">
                             <label class="control-label">Chức vụ</label>
-                            <select class="form-control" name="chuc_vu">
-                                <option>-- Chọn chức vụ --</option>
-                                <option>Bán hàng</option>
-                                <option>Tư vấn</option>
-                                <option>Dịch vụ</option>
-                                <option>Thu Ngân</option>
-                                <option>Quản kho</option>
-                                <option>Bảo trì</option>
-                                <option>Kiểm hàng</option>
-                                <option>Bảo vệ</option>
-                                <option>Tạp vụ</option>
+                            <select class="form-control" name="ma_chuc_vu" id="chuc_vu" required>
+                                <option value="">-- Chọn chức vụ --</option>
+                                <?php
+                                include 'connect.php';
+                                $sql = "SELECT MaChucVu, TenChucVu FROM chucvu";
+                                $result = $conn->query($sql);
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<option value='" . $row['MaChucVu'] . "'>" . $row['TenChucVu'] . "</option>";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
+
                         <div class="form-group col-md-4">
                             <label class="control-label">Ngày vào làm</label>
                             <input class="form-control" type="date" name="ngay_vao_lam" required>
@@ -314,6 +328,36 @@ $conn->close();
         </div>
     </div>
 </main>
+
+<!--MODAL CHỨC VỤ -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-md-12">
+              <h5>Thêm chức vụ</h5>
+            </div>
+            <div class="form-group col-md-12">
+              <label class="control-label">Nhập tên chức vụ mới</label>
+              <input class="form-control" id="new_chuc_vu" type="text" required>
+            </div>
+            
+          </div>
+          <label class="control-label">Danh sách chức vụ hiện tại</label>
+          <ul id="chuc_vu_list" class="list-group"></ul>
+          <br>
+          <button class="btn btn-save" type="button" id="saveChucVuBtn">Lưu lại</button>
+          <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a>
+          <br>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+</div>
+
 <!-- Essential javascripts for application to work-->
 <script src="js/jquery-3.2.1.min.js"></script>
 <script src="js/popper.min.js"></script>
@@ -324,3 +368,123 @@ $conn->close();
 
 </body>
 </html>
+
+
+
+<!-- them chuc vu -->
+<script>
+  $(document).ready(function () {
+    $('#saveChucVuBtn').click(function () {
+        var newChucVu = $('#new_chuc_vu').val().trim(); 
+        if (newChucVu) {
+            var exists = false;
+            $('#chuc_vu option').each(function () {
+                if ($(this).text() === newChucVu) {
+                    exists = true;
+                    return false; 
+                }
+            });
+
+            if (!exists) {
+                $('#chuc_vu').append(new Option(newChucVu, newChucVu));
+                $('#exampleModalCenter').modal('hide'); 
+                $('#new_chuc_vu').val(''); 
+                alert('Thêm chức vụ thành công!');
+            } else {
+                alert('Chức vụ này đã tồn tại!');
+            }
+        } else {
+            alert('Vui lòng nhập tên chức vụ!');
+        }
+    });
+});
+
+$('#saveChucVuBtn').click(function () {
+    var newTenChucVu = $('#new_chuc_vu').val().trim();
+    if (newTenChucVu) {
+        $.ajax({
+            url: 'save_chucvu.php',
+            method: 'POST',
+            data: { ten_chuc_vu: newTenChucVu },
+            success: function (response) {
+                if (response === 'success') {
+                    location.reload(); 
+                } else {
+                    alert(response);
+                }
+            }
+        });
+    } else {
+        alert('Vui lòng nhập tên chức vụ!');
+    }
+});
+</script>
+
+<?php
+include 'connect.php';
+$sql = "SELECT * FROM chucvu";
+$result = $conn->query($sql);
+
+$chucVuList = [];
+if ($result && $result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $chucVuList[] = $row['TenChucVu']; 
+    }
+}
+$conn->close();
+?>
+
+<!-- hien thi chuc vu -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var chucVuList = <?php echo json_encode($chucVuList); ?>; 
+    var chucVuListElement = document.getElementById("chuc_vu_list");
+
+    chucVuListElement.innerHTML = '';
+    chucVuList.forEach(function(chucVu) {
+        var listItem = document.createElement("li");
+        listItem.classList.add("list-group-item");
+        listItem.textContent = chucVu;
+        chucVuListElement.appendChild(listItem);
+    });
+});
+</script>
+
+<!-- xoa chuc vu -->
+<script>  
+  document.addEventListener("DOMContentLoaded", function() {
+    var chucVuList = <?php echo json_encode($chucVuList); ?>; 
+    var chucVuListElement = document.getElementById("chuc_vu_list");
+
+    chucVuListElement.innerHTML = '';
+    chucVuList.forEach(function(chucVu) {
+        var listItem = document.createElement("li");
+        listItem.classList.add("list-group-item");
+        listItem.textContent = chucVu;
+
+        var deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Xóa";
+        deleteBtn.classList.add("btn", "btn-danger", "btn-sm", "float-right");
+
+        deleteBtn.addEventListener("click", function() {
+            if (confirm("Bạn có chắc chắn muốn xóa chức vụ này?")) {
+                $.ajax({
+                    url: 'delete_chucvu.php', 
+                    method: 'POST',
+                    data: { ten_chuc_vu: chucVu },
+                    success: function(response) {
+                        if (response === 'success') {
+                            listItem.remove();
+                            alert("Chức vụ đã được xóa thành công!");
+                        } else {
+                            alert(response);
+                        }
+                    }
+                });
+            }
+        });
+        listItem.appendChild(deleteBtn);
+        chucVuListElement.appendChild(listItem);
+    });
+});
+</script>

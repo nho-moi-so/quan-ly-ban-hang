@@ -1,8 +1,8 @@
 <?php
 session_start();
 include 'connect.php';
-checkLogin();
-checkAdmin((['Admin']));
+// checkLogin();
+// checkAdmin((['Admin']));
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
