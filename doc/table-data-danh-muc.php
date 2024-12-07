@@ -147,7 +147,8 @@ $result = $stmt->get_result();
                             <thead>
                                 <tr>
                                     <th>Mã Danh Mục</th>
-                                    <th>Tên Danh Mục</th>                               
+                                    <th>Tên Danh Mục</th> 
+                                    <th>Mô Tả</th>                              
                                     <th>Chức Năng</th>
                                 </tr>
                             </thead>
@@ -156,6 +157,8 @@ $result = $stmt->get_result();
                                 <tr>
                                     <td><?php echo htmlspecialchars($row['MaDanhMuc']); ?></td>
                                     <td><?php echo htmlspecialchars($row['TenDanhMuc']); ?></td>
+                                    <td class="truncate"><?php echo htmlspecialchars($row['MoTa'] ?? 'Chưa có mô tả'); ?></td>
+                                    
                                     <td>
                                         <a href="form-add-danh-muc.php?sua=1&id=<?php echo $row['MaDanhMuc']; ?>" 
                                            class="btn btn-primary btn-sm edit">
