@@ -178,7 +178,6 @@ $result = $conn->query($sql);
                         <div class="form-group col-md-10">
                             <label class="control-label">SĐT khách hàng</label>
                             <input class="form-control" type="text" id="sdt" placeholder="Tìm kiếm khách hàng">
-
                         </div>
                         <div class="form-group col-md-2">
                             <label style="text-align: center;" class="control-label">Tìm</label>
@@ -186,6 +185,14 @@ $result = $conn->query($sql);
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
+                        <div class="form-group col-md-10">
+                            <small class="text-danger"></small>
+                        </div>
+                        <style>
+                            .text-danger{
+                                font-size: 14px;
+                            }
+                        </style>
                         <div class="form-group col-md-12">
                             <?php if ($khachhang): ?>
                                 <small class="text-success">Họ và tên: <?php echo $khachhang['TenKH']; ?></small>
@@ -251,7 +258,7 @@ $result = $conn->query($sql);
                         $tongTien = $tongcong;
 
                         $sql = "INSERT INTO donhang (khach_hang, ngay_ban, tong_tien) 
-          VALUES ('$maKH', '$ngayBan', '$tongTien')";
+                                VALUES ('$maKH', '$ngayBan', '$tongTien')";
 
                         if ($conn->query($sql) === TRUE) {
                             $maDonHang = $conn->insert_id;
@@ -268,7 +275,7 @@ $result = $conn->query($sql);
                                 $giaBan = isset($item['DonGia']) ? $item['DonGia'] : 0;
 
                                 $sqlCTHD = "INSERT INTO chitiethoadon (MaHD, MaSP, SoLuong, GiaBan) 
-                      VALUES ('$maDonHang', '$maSP', '$soLuong', '$giaBan')";
+                                            VALUES ('$maDonHang', '$maSP', '$soLuong', '$giaBan')";
                                 $conn->query($sqlCTHD);
                             }
 
@@ -278,7 +285,7 @@ $result = $conn->query($sql);
                                 $soTienChuyenKhoan = $conn->real_escape_string($_POST['so_tien_chuyen_khoan']);
 
                                 $sqlChuyenKhoan = "INSERT INTO chuyenkhoan (MaKH, SoTaiKhoan, NgayChuyenKhoan, SoTienChuyenKhoan) 
-                             VALUES ('$maKH', '$soTaiKhoan', '$ngayChuyenKhoan', '$soTienChuyenKhoan')";
+                                                    VALUES ('$maKH', '$soTaiKhoan', '$ngayChuyenKhoan', '$soTienChuyenKhoan')";
                                 $conn->query($sqlChuyenKhoan);
                             }
 
@@ -287,7 +294,7 @@ $result = $conn->query($sql);
                                 $soTienThua = $soTienNhan - $tongTien;
 
                                 $sqlTienMat = "INSERT INTO thongtintienmat (SotienNhan, SoTienThua, MaKH) 
-                         VALUES ('$soTienNhan', '$soTienThua', '$maKH')";
+                                                VALUES ('$soTienNhan', '$soTienThua', '$maKH')";
                                 $conn->query($sqlTienMat);
                             }
 
@@ -298,8 +305,8 @@ $result = $conn->query($sql);
                             $newDiemTichLuy = $diemTichLuyHienTai + $diemTichLuy;
 
                             $sql_update_diem = "UPDATE khachhang 
-                          SET DiemTichLuy = $newDiemTichLuy 
-                          WHERE MaKH = '$maKH'";
+                                                SET DiemTichLuy = $newDiemTichLuy 
+                                                WHERE MaKH = '$maKH'";
                             $conn->query($sql_update_diem);
 
                             echo "<script> alert('Đơn hàng đã được lưu thành công!');
@@ -357,6 +364,11 @@ $result = $conn->query($sql);
                         <div class="col-md-2 d-flex align-items-center">
                             <button type="button" class="btn btn-info" id="tinh_tien_thoi">Tính tiền thối</button>
                         </div>
+                        <style>
+                            .btn-info{
+                                margin-top: 10px;
+                            }
+                        </style>
                         <div class="col-md-5">
                             <label class="control-label">Tiền thừa: </label>
                             <p id="tienso" class="control-all-money">= 0 VNĐ</p>
@@ -660,6 +672,35 @@ $(document).ready(function(){
         }
     </script>
 
+
+<script>
+    function searchCustomer() {
+    const sdt = document.getElementById('sdt').value;
+
+    if (!sdt) {
+        alert('Vui lòng nhập số điện thoại');
+        return;
+    }
+
+    fetch('search_customer.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `sdt=${encodeURIComponent(sdt)}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            const resultContainer = document.querySelector('.form-group.col-md-12 .text-success, .text-danger');
+
+            if (data.status === 'success') {
+                resultContainer.innerHTML = `Họ và tên: <small class="text-success">${data.TenKH}</small>`;
+            } else {
+                resultContainer.innerHTML = `<small class="text-danger">${data.message}</small>`;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+</script>
 <!------------------------------ tim kiem va gio hang  -------------------------------->
 <script>
 
