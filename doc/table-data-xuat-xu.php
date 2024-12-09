@@ -4,6 +4,7 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 
 // Xử lý xóa xuất xứ
 $success = '';
@@ -25,6 +26,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Danh Sách Xuất Xứ | Quản trị Admin</title>
     <meta charset="utf-8">
@@ -54,15 +56,16 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
             background-color: #f2dede;
             border-color: #ebccd1;
         }
-        .tile-body .table td.text-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
 
+        .tile-body .table td.text-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
 </head>
+
 <body class="app sidebar-mini rtl">
     <!-- Navbar -->
     <header class="app-header">
@@ -71,7 +74,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
             <li><a class="app-nav__item" href="logout.php"><i class='bx bx-log-out bx-rotate-180'></i></a></li>
         </ul>
     </header>
-    
+
     <!-- Sidebar menu -->
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
@@ -84,64 +87,65 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
         </div>
         <hr>
         <ul class="app-menu">
-        <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
-            <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-              class="app-menu__label">Bảng điều khiển</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-              class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-              class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
-              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-        </li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Danh Mục</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý xuất xứ</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
-      <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'index.php') ? 'active' : '' ?>" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Bảng điều khiển</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-table.php') ? 'active' : '' ?>" href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-khachhang.php') ? 'active' : '' ?>" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-product.php') ? 'active' : '' ?>" href="./table-data-product.php"><i
+                            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+                </li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-oder.php') ? 'active' : '' ?>" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-danh-muc.php') ? 'active' : '' ?>" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Danh Mục</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-xuat-xu.php') ? 'active' : '' ?>" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý xuất xứ</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-don-vi-tinh.php') ? 'active' : '' ?>" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+            <?php endif; ?>
 
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+            <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
         </ul>
     </aside>
 
     <main class="app-content">
         <div class="app-title">
-                <ul class="app-breadcrumb breadcrumb">
+            <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"> Danh sách xuất xứ </li>
-               
+
         </div>
 
         <div class="row">
             <div class="col-md-12">
                 <div class="col-sm-2">
-                  <li class="btn btn-add btn-sm"data-toggle="modal" data-target="#addxuatxu" >
-                    <a href="form-add-xuat-xu.php"><i class="fas fa-plus"></i> Thêm xuất xứ mới</a></li>
+                    <li class="btn btn-add btn-sm" data-toggle="modal" data-target="#addxuatxu">
+                        <a href="form-add-xuat-xu.php"><i class="fas fa-plus"></i> Thêm xuất xứ mới</a>
+                    </li>
                 </div>
-            
-                <?php 
+
+                <?php
                 // Hiển thị thông báo lỗi hoặc thành công
                 if (!empty($error)): ?>
                     <div class="alert alert-danger"><?php echo $error; ?></div>
@@ -165,7 +169,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
                                 </tr>
                             </thead>
                             <tbody>
-                       
+
                                 <?php
                                 // Truy vấn lấy danh sách xuất xứ từ database
                                 $sql = "SELECT * FROM xuatxu ORDER BY MaXuatXu";
@@ -190,7 +194,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
                                     echo "<tr><td colspan='4' class='text-center'>Không có dữ liệu xuất xứ</td></tr>";
                                 }
                                 // Xử lý sửa xuất xứ
-                        
+
                                 ?>
 
                             </tbody>
@@ -215,7 +219,10 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
         $(document).ready(function() {
             $('#xuatXuTable').DataTable({
                 "pageLength": 10,
-                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Tất cả"]],
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "Tất cả"]
+                ],
                 "language": {
                     "lengthMenu": "Hiển thị _MENU_ dòng",
                     "zeroRecords": "Không tìm thấy dữ liệu",
@@ -233,8 +240,9 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
         });
     </script>
 </body>
+
 </html>
-<?php 
+<?php
 // Đóng kết nối
-$conn->close(); 
+$conn->close();
 ?>

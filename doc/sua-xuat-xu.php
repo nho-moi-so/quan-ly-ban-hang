@@ -54,6 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Sửa Xuất Xứ | Quản trị Admin</title>
     <meta charset="utf-8">
@@ -65,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 </head>
+
 <body class="app sidebar-mini rtl">
     <!-- Navbar-->
     <header class="app-header">
@@ -76,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <li><a class="app-nav__item" href="logout.php"><i class='bx bx-log-out bx-rotate-180'></i></a></li>
         </ul>
     </header>
-    
+
     <!-- Sidebar menu-->
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
@@ -89,46 +91,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <hr>
         <ul class="app-menu">
-        <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
-            <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-              class="app-menu__label">Bảng điều khiển</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-              class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-              class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
-              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-        </li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Danh Mục</span></a></li>
-      <?php endif; ?>>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý xuất xứ</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
-      <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Bảng điều khiển</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-product.php"><i
+                            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+                </li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Danh Mục</span></a></li>
+                <?php endif; ?>>
+                <?php if (in_array($currentRole, ['Admin'])): ?>
+                    <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+                                class="app-menu__label">Quản lý xuất xứ</span></a></li>
+                <?php endif; ?>
+                <?php if (in_array($currentRole, ['Admin'])): ?>
+                    <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+                                class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+                <?php endif; ?>
 
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+                <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
 
         </ul>
     </aside>
@@ -143,51 +145,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li class="breadcrumb-item">Sửa Xuất Xứ</li>
             </ul>
         </div>
-        
+
         <div class="row">
             <div class="col-md-12">
-            <div class="col-sm-2">
-                  <li class="btn btn-add btn-sm"data-toggle="modal" data-target="#addxuatxu" >
-                    <a href="table-data-xuat-xu.php"><i class="fas fa-plus"></i> Danh sách xuất xứ</a></li>     
-            </div>
+                <div class="col-sm-2">
+                    <li class="btn btn-add btn-sm" data-toggle="modal" data-target="#addxuatxu">
+                        <a href="table-data-xuat-xu.php"><i class="fas fa-plus"></i> Danh sách xuất xứ</a>
+                    </li>
+                </div>
                 <div class="tile">
                     <div class="tile-body">
                         <?php if (isset($error)): ?>
                             <div class="alert alert-danger"><?php echo $error; ?></div>
                         <?php endif; ?>
                         <div class="tile">
-                    <div class="tile-title d-flex justify-content-between align-items-center">
-                        <h3>Sửa Xuất Xứ</h3>
-                    </div>
-                        <form method="POST" action="">
-                            <div class="form-group">
-                                <label class="control-label">Mã Xuất Xứ</label>
-                                <input class="form-control" type="text" value="<?php echo htmlspecialchars($row['MaXuatXu']); ?>" readonly>
+                            <div class="tile-title d-flex justify-content-between align-items-center">
+                                <h3>Sửa Xuất Xứ</h3>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="control-label">Tên Xuất Xứ <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" name="tenxuatxu" 
-                                       value="<?php echo htmlspecialchars($row['TenXuatXu']); ?>" 
-                                       required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="control-label">Mô Tả</label>
-                                <textarea class="form-control" name="mota" rows="4"><?php echo htmlspecialchars($row['MoTa'] ?? ''); ?></textarea>
-                            </div>
-                            
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fas fa-edit"></i> Cập Nhật
-                            </button>
-                            <a href="quan-ly-xuat-xu.php" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Hủy
-                            </a>
-                        </form>
+                            <form method="POST" action="">
+                                <div class="form-group">
+                                    <label class="control-label">Mã Xuất Xứ</label>
+                                    <input class="form-control" type="text" value="<?php echo htmlspecialchars($row['MaXuatXu']); ?>" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Tên Xuất Xứ <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="tenxuatxu"
+                                        value="<?php echo htmlspecialchars($row['TenXuatXu']); ?>"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label">Mô Tả</label>
+                                    <textarea class="form-control" name="mota" rows="4"><?php echo htmlspecialchars($row['MoTa'] ?? ''); ?></textarea>
+                                </div>
+
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-edit"></i> Cập Nhật
+                                </button>
+                                <a href="quan-ly-xuat-xu.php" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     </main>
 
     <!-- JavaScript files -->
@@ -196,4 +199,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>

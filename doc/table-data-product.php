@@ -3,6 +3,7 @@ include "connect.php";
 require_once 'auth.php';
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,45 +54,45 @@ $currentRole = $_SESSION['user_role'];
     </div>
     <hr>
     <ul class="app-menu">
-    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
         <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
             <span class="app-menu__label">POS Bán Hàng</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'index.php') ? 'active' : '' ?>" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
               class="app-menu__label">Bảng điều khiển</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-table.php') ? 'active' : '' ?>" href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
               class="app-menu__label">Quản lý nhân viên</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-khachhang.php') ? 'active' : '' ?>" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
               class="app-menu__label">Quản lý khách hàng</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-product.php') ? 'active' : '' ?>" href="./table-data-product.php"><i
               class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
         </li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-oder.php') ? 'active' : '' ?>" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-danh-muc.php') ? 'active' : '' ?>" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý Danh Mục</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-xuat-xu.php') ? 'active' : '' ?>" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý xuất xứ</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-don-vi-tinh.php') ? 'active' : '' ?>" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý đơn vị tính</span></a></li>
       <?php endif; ?>
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+      <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
     </ul>
   </aside>
   <main class="app-content">
@@ -111,12 +112,12 @@ $currentRole = $_SESSION['user_role'];
                 <a class="btn btn-add btn-sm" href="form-add-san-pham.php" title="Thêm"><i class="fas fa-plus"></i>
                   Tạo mới sản phẩm</a>
               </div>
-      
+
               <div class="col-sm-2">
                 <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
                     class="fas fa-print"></i> In dữ liệu</a>
               </div>
-            
+
               <div class="col-sm-2">
                 <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
                     class="fas fa-trash-alt"></i> Xóa tất cả </a>
@@ -155,12 +156,12 @@ $currentRole = $_SESSION['user_role'];
                         <td>{$row['MaSP']}</td>
                         <td>{$row['TenSP']}</td>
                         <td>";
-                        if (!empty($row['URL']) && file_exists($row['URL'])) {
-                            echo "<img src='{$row['URL']}' alt='{$row['TenSP']}' width='100px'>";
-                        } else {
-                            echo "<img src='../img-sanpham/no-image.svg' alt='No image' width='100px'>";
-                        }
-                        echo "</td>
+                    if (!empty($row['URL']) && file_exists($row['URL'])) {
+                      echo "<img src='{$row['URL']}' alt='{$row['TenSP']}' width='100px'>";
+                    } else {
+                      echo "<img src='../img-sanpham/no-image.svg' alt='No image' width='100px'>";
+                    }
+                    echo "</td>
                         <td>{$row['SoLuong']}</td>
                         <td>" . number_format($row['DonGia']) . " VNĐ</td>
                         <td>{$row['TenDanhMuc']}</td>
@@ -176,7 +177,7 @@ $currentRole = $_SESSION['user_role'];
                           
                         </td>
                     </tr>";
-                } 
+                  }
                 }
                 ?>
               </tbody>

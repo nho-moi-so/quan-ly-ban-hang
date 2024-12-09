@@ -4,9 +4,11 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 
 // Thêm xuất xứ mới
-function themXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa) {
+function themXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa)
+{
     // Kiểm tra xem mã xuất xứ đã tồn tại chưa
     $checkExist = "SELECT * FROM xuatxu WHERE MaXuatXu = ?";
     $stmt = $conn->prepare($checkExist);
@@ -31,7 +33,8 @@ function themXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa) {
 }
 
 // Cập nhật xuất xứ
-function suaXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa) {
+function suaXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa)
+{
     $sql = "UPDATE xuatxu SET TenXuatXu = ?, MoTa = ? WHERE MaXuatXu = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sss", $tenXuatXu, $moTa, $maXuatXu);
@@ -44,7 +47,8 @@ function suaXuatXu($conn, $maXuatXu, $tenXuatXu, $moTa) {
 }
 
 // Xóa xuất xứ
-function xoaXuatXu($conn, $maXuatXu) {
+function xoaXuatXu($conn, $maXuatXu)
+{
     $sql = "DELETE FROM xuatxu WHERE MaXuatXu = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $maXuatXu);
@@ -57,7 +61,8 @@ function xoaXuatXu($conn, $maXuatXu) {
 }
 
 // Lấy thông tin xuất xứ để chỉnh sửa
-function layThongTinXuatXu($conn, $maXuatXu) {
+function layThongTinXuatXu($conn, $maXuatXu)
+{
     $sql = "SELECT * FROM xuatxu WHERE MaXuatXu = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $maXuatXu);
@@ -67,7 +72,8 @@ function layThongTinXuatXu($conn, $maXuatXu) {
 }
 
 // Lấy danh sách xuất xứ
-function layDanhSachXuatXu($conn) {
+function layDanhSachXuatXu($conn)
+{
     $sql = "SELECT * FROM xuatxu";
     return $conn->query($sql);
 }
@@ -102,4 +108,3 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
 if (isset($_GET['sua']) && isset($_GET['id'])) {
     $editOrigin = layThongTinXuatXu($conn, $_GET['id']);
 }
-?>

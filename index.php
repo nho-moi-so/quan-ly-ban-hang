@@ -1,5 +1,7 @@
 <?php
 session_start();
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : '';
+unset($_SESSION['error_message']);
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -26,26 +28,32 @@ session_start();
 
 <body>
     <div class="limiter">
+        <?php if (!empty($error_message)): ?>
+            <div class="alert alert-danger alert-error" role="alert">
+                <?= htmlspecialchars($error_message) ?>
+            </div>
+        <?php endif; ?>
         <div class="container-login100">
             <div class="wrap-login100">
                 <div class="login100-pic js-tilt" data-tilt>
                     <img src="images/team.jpg" alt="IMG">
                 </div>
+
                 <!--=====TIÊU ĐỀ======-->
-                <form action="./doc/xu-li-login.php" method="POST" class="login100-form validate-form">
+                <form action="./xu-li-login.php" method="POST" class="login100-form validate-form">
                     <span class="login100-form-title">
                         <b>ĐĂNG NHẬP HỆ THỐNG POS</b>
                     </span>
                     <!--=====FORM INPUT TÀI KHOẢN VÀ PASSWORD======-->
                     <div class="wrap-input100 validate-input">
-                        <input class="input100" type="text" placeholder="Tài khoản quản trị" name="taikhoan" id="username">
+                        <input class="input100" type="text" placeholder="Tài khoản quản trị" name="taikhoan" id="username" required>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class='bx bx-user'></i>
                         </span>
                     </div>
                     <div class="wrap-input100 validate-input">
-                        <input autocomplete="off" class="input100" type="password" placeholder="Mật khẩu" name="password" id="password-field">
+                        <input autocomplete="off" class="input100" type="password" placeholder="Mật khẩu" name="password" id="password-field" required>
                         <span toggle="#password-field" class="bx fa-fw bx-hide field-icon click-eye"></span>
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
@@ -58,16 +66,18 @@ session_start();
                         <input type="submit" value="Đăng nhập" id="submit" name="submit" />
                     </div>
                     <!--=====LINK TÌM MẬT KHẨU======-->
-                    <div class="text-right p-t-12">
+                    <!-- <div class="text-right p-t-12">
                         <a class="txt2" href="./forgot.php">
                             Bạn quên mật khẩu?
                         </a>
-                    </div>
+                    </div> -->
                 </form>
                 <!--=====FOOTER======-->
                 <div class="text-center p-t-70 txt2">
                     Phần mềm quản lý bán hàng <i class="far fa-copyright" aria-hidden="true"></i>
-                    <script type="text/javascript">document.write(new Date().getFullYear());</script> 
+                    <script type="text/javascript">
+                        document.write(new Date().getFullYear());
+                    </script>
                     <a class="txt2" href="#"></a>
                 </div>
             </div>
@@ -81,7 +91,7 @@ session_start();
     <script src="vendor/select2/select2.min.js"></script>
     <script type="text/javascript">
         //show - hide mật khẩu
-        $(".click-eye").click(function () {
+        $(".click-eye").click(function() {
             $(this).toggleClass("bx-show bx-hide");
             var input = $($(this).attr("toggle"));
             if (input.attr("type") == "password") {

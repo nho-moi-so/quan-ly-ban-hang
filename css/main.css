@@ -484,3 +484,10 @@ input[type=submit]{
   padding-bottom:5px;
   font-weight: 900;
 }
+
+.alert-error {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
+}

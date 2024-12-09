@@ -4,6 +4,7 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 
 // Xử lý xóa đơn vị
 if (isset($_GET['xoa']) && isset($_GET['id'])) {
@@ -11,7 +12,7 @@ if (isset($_GET['xoa']) && isset($_GET['id'])) {
     $sql = "DELETE FROM donvitinh WHERE MaDVT = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $MaDVT);
-    
+
     if ($stmt->execute()) {
         $success = "Xóa đơn vị tính thành công.";
     } else {
@@ -25,6 +26,7 @@ $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Quản Lý Đơn Vị Tính | Quản trị Admin</title>
     <meta charset="utf-8">
@@ -57,6 +59,7 @@ $result = $conn->query($sql);
         }
     </style>
 </head>
+
 <body class="app sidebar-mini rtl">
     <!-- Navbar and Sidebar (Same as previous code) -->
     <header class="app-header">
@@ -79,45 +82,45 @@ $result = $conn->query($sql);
 
         <hr>
         <ul class="app-menu">
-        <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
-            <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-              class="app-menu__label">Bảng điều khiển</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-              class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-              class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
-              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-        </li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Danh Mục</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý xuất xứ</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
-      <?php endif; ?>
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'index.php') ? 'active' : '' ?>" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Bảng điều khiển</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-table.php') ? 'active' : '' ?>" href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-khachhang.php') ? 'active' : '' ?>" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-product.php') ? 'active' : '' ?>" href="./table-data-product.php"><i
+                            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+                </li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-oder.php') ? 'active' : '' ?>" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-danh-muc.php') ? 'active' : '' ?>" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Danh Mục</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-xuat-xu.php') ? 'active' : '' ?>" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý xuất xứ</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-don-vi-tinh.php') ? 'active' : '' ?>" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+            <?php endif; ?>
+            <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
         </ul>
     </aside>
     <main class="app-content">
@@ -139,7 +142,7 @@ $result = $conn->query($sql);
                             </div>
                         </div>
 
-                        <?php 
+                        <?php
                         if (isset($error)): ?>
                             <div class="alert alert-danger"><?php echo $error; ?></div>
                         <?php endif; ?>
@@ -157,9 +160,9 @@ $result = $conn->query($sql);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
+                                <?php
                                 if ($result->num_rows > 0) {
-                                    while($row = $result->fetch_assoc()) {
+                                    while ($row = $result->fetch_assoc()) {
                                         echo "<tr>";
                                         echo "<td>" . htmlspecialchars($row['MaDVT']) . "</td>";
                                         echo "<td>" . htmlspecialchars($row['TenDVT']) . "</td>";
@@ -213,8 +216,9 @@ $result = $conn->query($sql);
         });
     </script>
 </body>
+
 </html>
-<?php 
+<?php
 // Đóng kết nối
-$conn->close(); 
+$conn->close();
 ?>

@@ -4,6 +4,7 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin', 'NV']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,8 +91,8 @@ $currentRole = $_SESSION['user_role'];
         <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý đơn vị tính</span></a></li>
       <?php endif; ?>
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+      <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
     </ul>
   </aside>
   <main class="app-content">

@@ -3,6 +3,7 @@ session_start();
 require_once 'auth.php';
 checkAdmin((['Admin']));
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,123 +56,123 @@ $currentRole = $_SESSION['user_role'];
     </div>
     <hr>
     <ul class="app-menu">
-    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
         <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
             <span class="app-menu__label">POS Bán Hàng</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'index.php') ? 'active' : '' ?>" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
               class="app-menu__label">Bảng điều khiển</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-table.php') ? 'active' : '' ?>" href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
               class="app-menu__label">Quản lý nhân viên</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-khachhang.php') ? 'active' : '' ?>" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
               class="app-menu__label">Quản lý khách hàng</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-product.php') ? 'active' : '' ?>" href="./table-data-product.php"><i
               class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
         </li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-oder.php') ? 'active' : '' ?>" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-danh-muc.php') ? 'active' : '' ?>" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý Danh Mục</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-xuat-xu.php') ? 'active' : '' ?>" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý xuất xứ</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item <?= ($current_page == 'table-data-don-vi-tinh.php') ? 'active' : '' ?>" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý đơn vị tính</span></a></li>
       <?php endif; ?>
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+      <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
     </ul>
   </aside>
 
 
   <?php
-include 'connect.php';
+  include 'connect.php';
 
-$sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
+  $sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
         FROM nhanvien 
         LEFT JOIN chucvu ON nhanvien.chuc_vu = chucvu.MaChucVu";
-$result = $conn->query($sql);
-?>
+  $result = $conn->query($sql);
+  ?>
 
-<main class="app-content">
+  <main class="app-content">
     <div class="app-title">
-        <ul class="app-breadcrumb breadcrumb side">
-            <li class="breadcrumb-item active"><a href="#"><b>Danh sách nhân viên</b></a></li>
-        </ul>
-        <div id="clock"></div>
+      <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><a href="#"><b>Danh sách nhân viên</b></a></li>
+      </ul>
+      <div id="clock"></div>
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="row element-button">
-                        <div class="col-sm-2">
-                            <a class="btn btn-add btn-sm" href="./form-add-nhan-vien.php" title="Thêm"><i class="fas fa-plus"></i> Tạo mới nhân viên</a>
-                        </div>
-                        
-                        <div class="col-sm-2">
-                            <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
-                        </div>
-                       
-                        <div class="col-sm-2">
-                            <button class="btn btn-delete btn-sm" type="button" onclick="deleteSelectedEmployees()">
-                                <i class="fas fa-trash-alt"></i> Xóa các mục đã chọn
-                            </button>
-                        </div>
+      <div class="col-md-12">
+        <div class="tile">
+          <div class="tile-body">
+            <div class="row element-button">
+              <div class="col-sm-2">
+                <a class="btn btn-add btn-sm" href="./form-add-nhan-vien.php" title="Thêm"><i class="fas fa-plus"></i> Tạo mới nhân viên</a>
+              </div>
 
-                        
-                    </div>
+              <div class="col-sm-2">
+                <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
+              </div>
 
-                    <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0" id="sampleTable">
-                        <thead>
-                            <tr>
-                                <th width="10"><input type="checkbox" id="select-all"></th>
-                                <th>ID nhân viên</th>
-                                <th width="150">Họ và tên</th>
-                                <th width="20">Ảnh thẻ</th>
-                                <th width="300">Địa chỉ</th>
-                                <th>Ngày sinh</th>
-                                <th>Giới tính</th>
-                                <th>SĐT</th>
-                                <th>Chức vụ</th>
-                                <th width="100">Tính năng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          <?php
-                          $sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
+              <div class="col-sm-2">
+                <button class="btn btn-delete btn-sm" type="button" onclick="deleteSelectedEmployees()">
+                  <i class="fas fa-trash-alt"></i> Xóa các mục đã chọn
+                </button>
+              </div>
+
+
+            </div>
+
+            <table class="table table-hover table-bordered js-copytextarea" cellpadding="0" cellspacing="0" border="0" id="sampleTable">
+              <thead>
+                <tr>
+                  <th width="10"><input type="checkbox" id="select-all"></th>
+                  <th>ID nhân viên</th>
+                  <th width="150">Họ và tên</th>
+                  <th width="20">Ảnh thẻ</th>
+                  <th width="300">Địa chỉ</th>
+                  <th>Ngày sinh</th>
+                  <th>Giới tính</th>
+                  <th>SĐT</th>
+                  <th>Chức vụ</th>
+                  <th width="100">Tính năng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $sql = "SELECT nhanvien.id, nhanvien.ho_ten, nhanvien.anh_3x4, nhanvien.dia_chi, nhanvien.ngay_sinh, nhanvien.gioi_tinh, nhanvien.sdt, chucvu.TenChucVu 
                                   FROM nhanvien 
                                   LEFT JOIN chucvu ON nhanvien.chuc_vu = chucvu.MaChucVu";
-                          $result = $conn->query($sql);
+                $result = $conn->query($sql);
 
-                          if ($result && $result->num_rows > 0) {
-                              while($row = $result->fetch_assoc()) {
-                                  echo "<tr>";
-                                  echo "<td width='10'><input type='checkbox' name='check' value='{$row['id']}'></td>";
-                                  echo "<td>#{$row['id']}</td>";
-                                  echo "<td>{$row['ho_ten']}</td>";
-                                  echo "<td><img class='img-card-person' src='../img-anhthe/{$row['anh_3x4']}' alt=''></td>";
-                                  echo "<td>{$row['dia_chi']}</td>";
-                                  echo "<td>{$row['ngay_sinh']}</td>";
-                                  echo "<td>{$row['gioi_tinh']}</td>";
-                                  echo "<td>{$row['sdt']}</td>";
-                                  echo "<td>{$row['TenChucVu']}</td>";
-                                  echo "<td>
+                if ($result && $result->num_rows > 0) {
+                  while ($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td width='10'><input type='checkbox' name='check' value='{$row['id']}'></td>";
+                    echo "<td>#{$row['id']}</td>";
+                    echo "<td>{$row['ho_ten']}</td>";
+                    echo "<td><img class='img-card-person' src='../img-anhthe/{$row['anh_3x4']}' alt=''></td>";
+                    echo "<td>{$row['dia_chi']}</td>";
+                    echo "<td>{$row['ngay_sinh']}</td>";
+                    echo "<td>{$row['gioi_tinh']}</td>";
+                    echo "<td>{$row['sdt']}</td>";
+                    echo "<td>{$row['TenChucVu']}</td>";
+                    echo "<td>
                                   <form method='POST' action='delete_employee.php'>
                                       <input type='hidden' name='id' value='{$row['id']}'>
                                       <button class='btn btn-danger btn-sm' type='submit' title='Xóa'>
@@ -183,90 +184,90 @@ $result = $conn->query($sql);
                                       <i class='fas fa-edit'></i>
                                   </button>
                                 </td>";
-                                  echo "</tr>";
-                              }
-                          } else {
-                              echo "<tr><td colspan='10'>Không có dữ liệu</td></tr>";
-                          }
-                          $conn->close();
-                          ?>
-                      </tbody>
+                    echo "</tr>";
+                  }
+                } else {
+                  echo "<tr><td colspan='10'>Không có dữ liệu</td></tr>";
+                }
+                $conn->close();
+                ?>
+              </tbody>
 
-                    </table>
-                </div>
-            </div>
+            </table>
+          </div>
         </div>
+      </div>
     </div>
-</main>
+  </main>
 
-<!----------MODAL------------>
-<div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-labelledby="ModalUPLabel" aria-hidden="true">
+  <!----------MODAL------------>
+  <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-labelledby="ModalUPLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ModalUPLabel">Sửa thông tin nhân viên</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="update_employee.php">
-                    <input type="hidden" id="employee_id" name="id">
-                    <div class="form-group">
-                        <label for="ho_ten">Họ và tên</label>
-                        <input class="form-control" type="text" id="ho_ten" name="ho_ten" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="anh_3x4">Ảnh thẻ</label>
-                        <input class="form-control" type="text" id="anh_3x4" name="anh_3x4">
-                        <img id="preview_anh_3x4" src="" alt="Ảnh thẻ" style="margin-top: 10px; max-width: 100px; max-height: 100px; display: none;">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dia_chi">Địa chỉ</label>
-                        <input class="form-control" type="text" id="dia_chi" name="dia_chi" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ngay_sinh">Ngày sinh</label>
-                        <input class="form-control" type="date" id="ngay_sinh" name="ngay_sinh" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="gioi_tinh">Giới tính</label>
-                        <select class="form-control" id="gioi_tinh" name="gioi_tinh" required>
-                            <option value="Nam">Nam</option>
-                            <option value="Nữ">Nữ</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sdt">Số điện thoại</label>
-                        <input class="form-control" type="text" id="sdt" name="sdt" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Chức vụ</label>
-                        <select class="form-control" id="chuc_vu" name="chuc_vu" required>
-                            <option value="">-- Chọn chức vụ --</option>
-                            <?php                    
-                            include 'connect.php';
-                            $sql = "SELECT MaChucVu, TenChucVu FROM chucvu";
-                            $result = $conn->query($sql);
-
-                            if ($result && $result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='{$row['MaChucVu']}'>{$row['TenChucVu']}</option>";
-                                }
-                            } else {
-                                echo "<option value=''>Không có dữ liệu chức vụ</option>";
-                            }
-                            $conn->close();
-                            ?>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" type="submit">Cập nhật</button>
-                </form>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ModalUPLabel">Sửa thông tin nhân viên</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <form method="POST" action="update_employee.php">
+            <input type="hidden" id="employee_id" name="id">
+            <div class="form-group">
+              <label for="ho_ten">Họ và tên</label>
+              <input class="form-control" type="text" id="ho_ten" name="ho_ten" required>
+            </div>
+            <div class="form-group">
+              <label for="anh_3x4">Ảnh thẻ</label>
+              <input class="form-control" type="text" id="anh_3x4" name="anh_3x4">
+              <img id="preview_anh_3x4" src="" alt="Ảnh thẻ" style="margin-top: 10px; max-width: 100px; max-height: 100px; display: none;">
+            </div>
+
+            <div class="form-group">
+              <label for="dia_chi">Địa chỉ</label>
+              <input class="form-control" type="text" id="dia_chi" name="dia_chi" required>
+            </div>
+            <div class="form-group">
+              <label for="ngay_sinh">Ngày sinh</label>
+              <input class="form-control" type="date" id="ngay_sinh" name="ngay_sinh" required>
+            </div>
+            <div class="form-group">
+              <label for="gioi_tinh">Giới tính</label>
+              <select class="form-control" id="gioi_tinh" name="gioi_tinh" required>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sdt">Số điện thoại</label>
+              <input class="form-control" type="text" id="sdt" name="sdt" required>
+            </div>
+            <div class="form-group">
+              <label class="control-label">Chức vụ</label>
+              <select class="form-control" id="chuc_vu" name="chuc_vu" required>
+                <option value="">-- Chọn chức vụ --</option>
+                <?php
+                include 'connect.php';
+                $sql = "SELECT MaChucVu, TenChucVu FROM chucvu";
+                $result = $conn->query($sql);
+
+                if ($result && $result->num_rows > 0) {
+                  while ($row = $result->fetch_assoc()) {
+                    echo "<option value='{$row['MaChucVu']}'>{$row['TenChucVu']}</option>";
+                  }
+                } else {
+                  echo "<option value=''>Không có dữ liệu chức vụ</option>";
+                }
+                $conn->close();
+                ?>
+              </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Cập nhật</button>
+          </form>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
 
   <!----------------MODAL------------------>
 
@@ -284,31 +285,33 @@ $result = $conn->query($sql);
   <!-- Data table plugin-->
   <script type="text/javascript" src="js/plugins/jquery.dataTables.min.js"></script>
   <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
-  <script type="text/javascript">$('#sampleTable').DataTable();</script>
+  <script type="text/javascript">
+    $('#sampleTable').DataTable();
+  </script>
   <script>
     function deleteRow(r) {
       var i = r.parentNode.parentNode.rowIndex;
       document.getElementById("myTable").deleteRow(i);
     }
-    jQuery(function () {
-      jQuery(".trash").click(function () {
+    jQuery(function() {
+      jQuery(".trash").click(function() {
         swal({
-          title: "Cảnh báo",
-         
-          text: "Bạn có chắc chắn là muốn xóa nhân viên này?",
-          buttons: ["Hủy bỏ", "Đồng ý"],
-        })
+            title: "Cảnh báo",
+
+            text: "Bạn có chắc chắn là muốn xóa nhân viên này?",
+            buttons: ["Hủy bỏ", "Đồng ý"],
+          })
           .then((willDelete) => {
             if (willDelete) {
               swal("Đã xóa thành công.!", {
-                
+
               });
             }
           });
       });
     });
     oTable = $('#sampleTable').dataTable();
-    $('#all').click(function (e) {
+    $('#all').click(function(e) {
       $('#sampleTable tbody :checkbox').prop('checked', $(this).is(':checked'));
       e.stopImmediatePropagation();
     });
@@ -356,8 +359,8 @@ $result = $conn->query($sql);
     }
 
     //In dữ liệu
-    var myApp = new function () {
-      this.printTable = function () {
+    var myApp = new function() {
+      this.printTable = function() {
         var tab = document.getElementById('sampleTable');
         var win = window.open('', '', 'height=700,width=700');
         win.document.write(tab.outerHTML);
@@ -368,84 +371,89 @@ $result = $conn->query($sql);
 
 
     //Modal
-    $("#show-emp").on("click", function () {
-      $("#ModalUP").modal({ backdrop: false, keyboard: false })
+    $("#show-emp").on("click", function() {
+      $("#ModalUP").modal({
+        backdrop: false,
+        keyboard: false
+      })
     });
   </script>
 
 
 
-<script>
-function loadEmployeeData(id) {
-    $.ajax({
-        url: 'get_employee_data.php', 
+  <script>
+    function loadEmployeeData(id) {
+      $.ajax({
+        url: 'get_employee_data.php',
         type: 'GET',
-        data: { id: id },
+        data: {
+          id: id
+        },
         success: function(response) {
-            var data = JSON.parse(response);
-            $('#employee_id').val(data.id);
-            $('#ho_ten').val(data.ho_ten);
-            $('#anh_3x4').val(data.anh_3x4);
-            $('#dia_chi').val(data.dia_chi);
-            $('#ngay_sinh').val(data.ngay_sinh);
-            $('#gioi_tinh').val(data.gioi_tinh);
-            $('#sdt').val(data.sdt);
+          var data = JSON.parse(response);
+          $('#employee_id').val(data.id);
+          $('#ho_ten').val(data.ho_ten);
+          $('#anh_3x4').val(data.anh_3x4);
+          $('#dia_chi').val(data.dia_chi);
+          $('#ngay_sinh').val(data.ngay_sinh);
+          $('#gioi_tinh').val(data.gioi_tinh);
+          $('#sdt').val(data.sdt);
 
-            // Hiển thị chức vụ tương ứng
-            $('#chuc_vu').val(data.chuc_vu);
+          // Hiển thị chức vụ tương ứng
+          $('#chuc_vu').val(data.chuc_vu);
 
-            // Hiển thị ảnh
-            if (data.anh_3x4) {
-                $('#preview_anh_3x4').attr('src', '../img-anhthe/' + data.anh_3x4).show();
-            } else {
-                $('#preview_anh_3x4').hide();
-            }
+          // Hiển thị ảnh
+          if (data.anh_3x4) {
+            $('#preview_anh_3x4').attr('src', '../img-anhthe/' + data.anh_3x4).show();
+          } else {
+            $('#preview_anh_3x4').hide();
+          }
         },
         error: function() {
-            alert('Không thể tải dữ liệu nhân viên.');
+          alert('Không thể tải dữ liệu nhân viên.');
         }
+      });
+    }
+  </script>
+
+  <!-- Xóa các mục đã chọn -->
+  <script>
+    document.getElementById('select-all').addEventListener('change', function() {
+      const checkboxes = document.querySelectorAll('input[name="check"]');
+      checkboxes.forEach(checkbox => checkbox.checked = this.checked);
     });
-}
+  </script>
 
-
-</script>
-
-<!-- Xóa các mục đã chọn -->
-<script>
-document.getElementById('select-all').addEventListener('change', function() {
-    const checkboxes = document.querySelectorAll('input[name="check"]');
-    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-});
-</script>
-
-<script>
-function deleteSelectedEmployees() {
-    const selected = [];
-    document.querySelectorAll('input[name="check"]:checked').forEach(checkbox => {
+  <script>
+    function deleteSelectedEmployees() {
+      const selected = [];
+      document.querySelectorAll('input[name="check"]:checked').forEach(checkbox => {
         selected.push(checkbox.value);
-    });
+      });
 
-    if (selected.length === 0) {
+      if (selected.length === 0) {
         alert("Vui lòng chọn ít nhất một nhân viên để xóa.");
         return;
-    }
+      }
 
-    if (confirm("Bạn có chắc chắn muốn xóa các nhân viên đã chọn?")) {
+      if (confirm("Bạn có chắc chắn muốn xóa các nhân viên đã chọn?")) {
         $.ajax({
-            url: 'delete_selected_employees.php',
-            type: 'POST',
-            data: { ids: selected },
-            success: function(response) {
-                alert('Đã xóa các nhân viên đã chọn thành công!');
-                location.reload(); 
-            },
-            error: function() {
-                alert('Có lỗi xảy ra, vui lòng thử lại.');
-            }
+          url: 'delete_selected_employees.php',
+          type: 'POST',
+          data: {
+            ids: selected
+          },
+          success: function(response) {
+            alert('Đã xóa các nhân viên đã chọn thành công!');
+            location.reload();
+          },
+          error: function() {
+            alert('Có lỗi xảy ra, vui lòng thử lại.');
+          }
         });
+      }
     }
-}
-</script>
+  </script>
 
 </body>
 

@@ -4,6 +4,7 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 
 
 
@@ -177,7 +178,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             <?php endif; ?>
             <?php if (in_array($currentRole, ['Admin'])): ?>
                 <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-                            class="app-menu__label">Quản lý đơn hàng</span></a></li>
+                            class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
             <?php endif; ?>
             <?php if (in_array($currentRole, ['Admin'])): ?>
                 <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
@@ -229,20 +230,20 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             // Prepare INSERT query
                             $sql = "INSERT INTO danhmucsp (MaDanhMuc, TenDanhMuc,MoTa) VALUES (?, ?,?)";
                             $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("sss", $MaDanhMuc, $TenDanhMuc,$MoTa);
+                            $stmt->bind_param("sss", $MaDanhMuc, $TenDanhMuc, $MoTa);
 
                             if ($stmt->execute()) {
                                 $success = "Thêm danh mục mới thành công. Mã danh mục: " . $MaDanhMuc;
                             } else {
                                 $error = "Lỗi: " . $stmt->error;
                             }
-                        
-                                $stmt = $conn->prepare($sql);
-                                $stmt->bind_param("sss", $TenDanhMuc,$MaDanhMuc, $MoTa);
+
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("sss", $TenDanhMuc, $MaDanhMuc, $MoTa);
 
 
-                        // Handle editing category
-                        /*if (isset($_POST['SuaDanhMuc'])) {
+                            // Handle editing category
+                            /*if (isset($_POST['SuaDanhMuc'])) {
                             $MaDanhMuc = $_POST['MaDanhMuc'];
                             $TenDanhMuc = $_POST['TenDanhMuc'];
 
@@ -262,10 +263,9 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                 $error = "Lỗi: " . $stmt->error;
                             }
                         }*/
+                        }
                     }
 
-                }
-                    
 
                     // Display error or success messages
                     if (isset($error)): ?>
@@ -299,12 +299,12 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                     required>
                             </div>
 
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label class="control-label">Mô Tả (Tùy Chọn)</label>
-                                <textarea class="form-control" 
-                                          name="MoTa" 
-                                          placeholder="Nhập mô tả danh mục"><?php echo $editCategory ? htmlspecialchars($editCategory['MoTa']) : ''; ?></textarea>
-                            </div> 
+                                <textarea class="form-control"
+                                    name="MoTa"
+                                    placeholder="Nhập mô tả danh mục"><?php echo $editCategory ? htmlspecialchars($editCategory['MoTa']) : ''; ?></textarea>
+                            </div>
 
                             <div class="form-group">
                                 <?php if ($editCategory): ?>

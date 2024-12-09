@@ -1,12 +1,12 @@
 <?php
 session_start();
-include "connect.php";
+include "./doc/connect.php";
 // Kiểm tra kết nối CSDL
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit']) && !empty($_POST['taikhoan']) && !empty($_POST['password'])) {
     $taikhoan = $_POST['taikhoan'];
     $password = $_POST['password'];
 
@@ -34,11 +34,15 @@ if (isset($_POST['submit'])) {
         $_SESSION['user_role'] = $row['role'];
         echo '<pre>';
         print_r($_SESSION);
-        echo '</pre>'; 
-        header("Location: index.php"); // Chuyển hướng đến trang chủ
+        echo '</pre>';
+        unset($_SESSION['error_message']);
+        header("Location: ./doc/index.php"); // Chuyển hướng đến trang chủ
         exit();
     } else {
-        echo "Tên đăng nhập hoặc mật khẩu không đúng!";
+        // echo "Tên đăng nhập hoặc mật khẩu không đúng!";
+        $_SESSION['error_message'] = "Tài khoản hoặc mật khẩu không đúng!";
+        header("Location: index.php");
+        exit();
     }
 
     // Đảm bảo đóng statement

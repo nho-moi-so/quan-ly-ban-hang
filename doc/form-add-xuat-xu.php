@@ -4,29 +4,31 @@ require_once 'auth.php';
 checkLogin();
 checkAdmin(['Admin']);
 $currentRole = $_SESSION['user_role'];
+$current_page = basename($_SERVER['PHP_SELF']);
 
-function generateOriginCode($conn) {
+function generateOriginCode($conn)
+{
     // Prepare SQL to get the maximum origin code
     $sql = "SELECT MaXuatXu FROM xuatxu ORDER BY CAST(MaXuatXu AS UNSIGNED) DESC LIMIT 1";
     $result = $conn->query($sql);
-    
+
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $lastCode = $row['MaXuatXu'];
-        
+
         // Safely extract the numeric part and increment
         $numericPart = intval(preg_replace('/[^0-9]/', '', $lastCode));
-        
+
         // Increment the numeric part
         $newNumericPart = $numericPart + 1;
-        
+
         // Format the new code with leading zeros
         $newCode = str_pad($newNumericPart, 2, '0', STR_PAD_LEFT);
     } else {
         // If no existing codes, start with 0001
         $newCode = '';
     }
-    
+
     return $newCode;
 }
 
@@ -82,6 +84,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Thêm Xuất Xứ | Quản trị Admin</title>
     <meta charset="utf-8">
@@ -112,7 +115,8 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             padding: 10px 15px;
         }
 
-        .btn-save:hover, .btn-cancel:hover {
+        .btn-save:hover,
+        .btn-cancel:hover {
             opacity: 0.8;
         }
 
@@ -134,8 +138,9 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             background-color: #f2dede;
             border-color: #ebccd1;
         }
-    </style> 
+    </style>
 </head>
+
 <body class="app sidebar-mini rtl">
     <!-- Navbar and Sidebar code remains the same -->
     <header class="app-header">
@@ -145,8 +150,8 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
         </ul>
     </header>
 
-     <!-- Sidebar menu  -->
-     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+    <!-- Sidebar menu  -->
+    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
         <div class="app-sidebar__user">
             <img class="app-sidebar__user-avatar" src="../img-sanpham/avatar-trang-2.jpg" width="50px" alt="User Image">
@@ -158,68 +163,69 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
 
         <hr>
         <ul class="app-menu">
-        <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
-            <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-              class="app-menu__label">Bảng điều khiển</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-              class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-              class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
-              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-        </li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Danh Mục</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý xuất xứ</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn vị tính</span></a></li>
-      <?php endif; ?>
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'index.php') ? 'active' : '' ?>" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Bảng điều khiển</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-table.php') ? 'active' : '' ?>" href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-khachhang.php') ? 'active' : '' ?>" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-product.php') ? 'active' : '' ?>" href="./table-data-product.php"><i
+                            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+                </li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-oder.php') ? 'active' : '' ?>" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-danh-muc.php') ? 'active' : '' ?>" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý Danh Mục</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-xuat-xu.php') ? 'active' : '' ?>" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý xuất xứ</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item <?= ($current_page == 'table-data-don-vi-tinh.php') ? 'active' : '' ?>" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+            <?php endif; ?>
+            <!-- <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+            đặt hệ thống</span></a></li> -->
         </ul>
     </aside>
-    
+
     <main class="app-content">
         <div class="app-title">
-                <ul class="app-breadcrumb breadcrumb">
+            <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item"> Danh sách xuất xứ </li>
-                 <li class="breadcrumb-item"><a href="#">Thêm Xuất Xứ</a></li> 
-                </ul>
+                <li class="breadcrumb-item"><a href="#">Thêm Xuất Xứ</a></li>
+            </ul>
         </div>
 
         <div class="row justify-content-center">
             <div class="col-md-12">
-            <div class="col-sm-2">
-                  <li class="btn btn-add btn-sm"data-toggle="modal" data-target="#addxuatxu" >
-                    <a href="table-data-xuat-xu.php"><i class="fas fa-plus"></i>Danh Sách Xuất Xứ</a></li>
+                <div class="col-sm-2">
+                    <li class="btn btn-add btn-sm" data-toggle="modal" data-target="#addxuatxu">
+                        <a href="table-data-xuat-xu.php"><i class="fas fa-plus"></i>Danh Sách Xuất Xứ</a>
+                    </li>
                 </div>
                 <div class="tile">
                     <h3 class="tile-title">
                         <?php echo $editOrigin ? 'Chỉnh Sửa Xuất Xứ' : 'Thêm Xuất Xứ Mới'; ?>
                     </h3>
 
-                    <?php 
+                    <?php
                     // Xử lý thêm, sửa xuất xứ
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (isset($_POST['xuatxu'])) {
@@ -243,7 +249,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         if (isset($_POST['SuaXuatXu'])) {
                             $MaXuatXu = $_POST['MaXuatXu'];
                             $TenXuatXu = $_POST['TenXuatXu'];
-                    
+
                             $sql = "UPDATE xuatxu SET TenXuatXu = ? WHERE MaXuatXu = ?";
                             $stmt = $conn->prepare($sql);
                             $stmt->bind_param("ss", $TenXuatXu, $MaXuatXu);
@@ -258,7 +264,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             }
                         }
                     }
-                    
+
                     // Hiển thị thông báo lỗi hoặc thành công
                     if (isset($error)): ?>
                         <div class="alert alert-danger"><?php echo $error; ?></div>
@@ -272,23 +278,23 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         <form method="POST" action="" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label class="control-label">Mã Xuất Xứ</label>
-                                <input class="form-control" 
-                                       name="MaXuatXu" 
-                                       type="text" 
-                                       value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['MaXuatXu']) : generateOriginCode($conn); ?>"
-                                       <?php echo $editOrigin ? 'readonly' : 'readonly'; ?> 
-                                       placeholder="Nhập mã xuất xứ" 
-                                       required>
+                                <input class="form-control"
+                                    name="MaXuatXu"
+                                    type="text"
+                                    value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['MaXuatXu']) : generateOriginCode($conn); ?>"
+                                    <?php echo $editOrigin ? 'readonly' : 'readonly'; ?>
+                                    placeholder="Nhập mã xuất xứ"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label">Tên Xuất Xứ</label>
-                                <input class="form-control" 
-                                       name="TenXuatXu" 
-                                       type="text" 
-                                       value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['TenXuatXu']) : ''; ?>" 
-                                       placeholder="Nhập tên xuất xứ" 
-                                       required>
+                                <input class="form-control"
+                                    name="TenXuatXu"
+                                    type="text"
+                                    value="<?php echo $editOrigin ? htmlspecialchars($editOrigin['TenXuatXu']) : ''; ?>"
+                                    placeholder="Nhập tên xuất xứ"
+                                    required>
                             </div>
 
                             <div class="form-group">
@@ -302,19 +308,19 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                     </a> -->
                                 <?php else: ?>
                                     <div class="form-group col-md-12">
-                                          <button class="btn btn-save" type="submit" name="xuatxu">
-                                        <i class="fas fa-plus"></i> Lưu lại       
-                                    </button>
-                                    <a class="btn btn-cancel" href="table-data-xuat-xu.php"> Hủy bỏ </a>
+                                        <button class="btn btn-save" type="submit" name="xuatxu">
+                                            <i class="fas fa-plus"></i> Lưu lại
+                                        </button>
+                                        <a class="btn btn-cancel" href="table-data-xuat-xu.php"> Hủy bỏ </a>
                                     </div>
-                                  
+
                                 <?php endif; ?>
-                            
+
                             </div>
                         </form>
                     </div>
                 </div>
-             </div>
+            </div>
         </div>
     </main>
 
@@ -323,8 +329,9 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
-<?php 
+<?php
 // Đóng kết nối
-$conn->close(); 
+$conn->close();
 ?>
