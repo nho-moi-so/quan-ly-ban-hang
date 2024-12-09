@@ -215,7 +215,7 @@ $result = $conn->query($sql);
                             <textarea class="form-control" rows="4" placeholder="Ghi chú thêm đơn hàng"></textarea>
                         </div>
                     </div>
-                    <!----------------------------------------- HÌNH THỨC THANH TOÁN ----------------------------------------->
+<!----------------------------------------- HÌNH THỨC THANH TOÁN ----------------------------------------->
                     <?php
                     include 'connect.php';
 
@@ -229,8 +229,8 @@ $result = $conn->query($sql);
                     }
                     $tongcong = $tamtinh;
 
-                    $khachhang_dua_tien = isset($_POST['khachhang_dua_tien']) ? $_POST['khachhang_dua_tien'] : 0;
-                    $khachhang_thoi = $khachhang_dua_tien - $tongcong;
+                    // $khachhang_dua_tien = isset($_POST['khachhang_dua_tien']) ? $_POST['khachhang_dua_tien'] : 0;
+                    // $khachhang_thoi = $khachhang_dua_tien - $tongcong;
 
                     $sql_phuongthucthanhtoan = "SELECT * FROM phuongthucthanhtoan";
                     $result_phuongthucthanhtoan = $conn->query($sql_phuongthucthanhtoan);
@@ -350,16 +350,19 @@ $result = $conn->query($sql);
                             <label class="control-label">Tổng cộng thanh toán: </label>
                             <p class="control-all-money-total">= <?php echo number_format($tongcong, 0, ',', '.'); ?> VNĐ</p>
                         </div>
-                        <div class="col-md-5" style="margin-bottom:10px;">
+                        <div class="col-md-5">
                             <label class="control-label">Tiền nhận: </label>
-                            <input class="form-control" type="text" id="khachhang_dua_tien" name="khachhang_dua_tien" value="<?php echo $khachhang_dua_tien; ?>">
+                            <input class="form-control" type="text" id="khachhang_dua_tien" name="khachhang_dua_tien">
                         </div>
                         <div class="col-md-2 d-flex align-items-center">
                             <button type="button" class="btn btn-info" id="tinh_tien_thoi">Tính tiền thối</button>
                         </div>
                         <div class="col-md-5">
                             <label class="control-label">Tiền thừa: </label>
-                            <p id="tienso" class="control-all-money">= <?php echo number_format($khachhang_thoi, 0, ',', '.'); ?> VNĐ</p>
+                            <p id="tienso" class="control-all-money">= 0 VNĐ</p>
+                        </div>
+                        <div class="col-md-12">
+                            <p style="color: red;"><?php echo isset($thongbao) ? $thongbao : ''; ?></p>
                         </div>
 
                         <div class="tile-footer col-md-12">
@@ -381,7 +384,7 @@ $result = $conn->query($sql);
                         });
                     </script>
     </main>
-    <!----------------------------------------MODAL TAO KH MOI--------------------------------------->
+<!----------------------------------------MODAL TAO KH MOI--------------------------------------->
     <?php
     include 'connect.php';
 
@@ -656,24 +659,6 @@ $(document).ready(function(){
             window.location.href = `?sdt=${sdt}`;
         }
     </script>
-<!----------------------- tinh tien thua ---------------------------->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#tinh_tien_thoi').on('click', function() {
-                var khachhang_dua_tien = $('#khachhang_dua_tien').val();
-                var tongcong = <?php echo $tongcong; ?>;
-
-                if (khachhang_dua_tien == '') {
-                    alert('Vui lòng nhập số tiền khách hàng đưa!');
-                    return;
-                }
-                var tien_thoi = khachhang_dua_tien - tongcong;
-                $('#tienso').text('= ' + new Intl.NumberFormat('vi-VN').format(tien_thoi) + ' VNĐ');
-            });
-        });
-    </script>
-
 
 <!------------------------------ tim kiem va gio hang  -------------------------------->
 <script>
@@ -774,7 +759,7 @@ $(document).ready(function() {
         const debt = totalAmount - paymentAmount;
         customerDebt.text(`- ${debt.toLocaleString('vi-VN')} VNĐ`);
     }
-
+    // kiem tra so luong 
     $(document).on('input', '.quantity', function() {
         const quantityInput = $(this);
         const maxQuantity = parseInt(quantityInput.attr('max'));
@@ -794,6 +779,36 @@ $(document).ready(function() {
 });
 
 </script>
+
+
+<!----------------------- tinh tien thua ---------------------------->
+<script>
+   document.getElementById('tinh_tien_thoi').addEventListener('click', function () {
+    const khachDuaTienInput = document.getElementById('khachhang_dua_tien');
+    const tongCongText = document.querySelector('.control-all-money-total').innerText;
+
+    // Lấy giá trị từ giao diện
+    const khachDuaTien = khachDuaTienInput.value.replace(/[^0-9]/g, '');
+    const tongCong = tongCongText.replace(/[^0-9]/g, '');
+
+    // Gửi yêu cầu Ajax đến PHP
+    fetch('calculate_change.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `khachhang_dua_tien=${khachDuaTien}&tongcong=${tongCong}`
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tienso').innerText = `= ${data.change} VNĐ`;
+        })
+        .catch(error => console.error('Error:', error));
+});
+
+
+
+</script>
+
+
 </body>
 
 </html>
