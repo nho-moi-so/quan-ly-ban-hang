@@ -55,172 +55,106 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
         <div class="row">
 
-            <!------------------------------------------ TIM KIEM VA GIO HANG ------------------------------>
-            <?php
-            if (!isset($_SESSION['cart'])) {
-                $_SESSION['cart'] = [];
-            }
-            //tim kiem san pham
-            $searchResult = [];
-            if (isset($_GET['search']) && !empty($_GET['search'])) {
-                $search = $_GET['search'];
-                $searchTerms = explode(' ', $search);
-                $conditions = [];
-                foreach ($searchTerms as $term) {
-                    $conditions[] = "(MaSP LIKE '%$term%' OR TenSP LIKE '%$term%')";
-                }
-                $sql = "SELECT * FROM sanpham WHERE " . implode(" AND ", $conditions);
-                $result = mysqli_query($conn, $sql);
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $searchResult[] = $row;
-                    }
-                }
-            }
-            // them san pham vao gio hang
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_to_cart'])) {
-                $MaSP = $_POST['MaSP'];
-                $quantity = $_POST['quantity'];
+<!------------------------------------------ TIM KIEM VA GIO HANG ------------------------------>
+<?php
+include 'connect.php';
 
-                if ($quantity <= 0) {
-                    $quantity = 1;
-                }
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+$sql = "SELECT * FROM sanpham WHERE TenSP LIKE '%$search%' OR MaSP LIKE '%$search%'";
+$result = $conn->query($sql);
+?>
 
-                $found = false;
-                foreach ($_SESSION['cart'] as &$item) {
-                    if ($item['MaSP'] == $MaSP) {
-                        $item['quantity'] += $quantity;
-                        $found = true;
-                        break;
-                    }
+<div class="row">
+    <div class="col-md-8">
+        <div class="tile">
+            <h3 class="tile-title">Phần mềm bán hàng</h3>
+            <form method="get" action="" class="d-flex">
+                <input type="text" id="myInput" name="search" class="form-control" placeholder="Nhập mã sản phẩm hoặc tên sản phẩm để tìm kiếm..."class="form-control mr-2">
+                <button type="submit" id="search-btn" class="btn btn-primary">Tìm kiếm</button>
+            </form>
+            <style>
+                form.d-flex {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
                 }
-                if (!$found) {
-                    $sqlGetProduct = "SELECT * FROM sanpham WHERE MaSP = '$MaSP'";
-                    $resultProduct = mysqli_query($conn, $sqlGetProduct);
-                    if ($rowProduct = mysqli_fetch_assoc($resultProduct)) {
-                        $_SESSION['cart'][] = [
-                            'MaSP' => $rowProduct['MaSP'],
-                            'TenSP' => $rowProduct['TenSP'],
-                            'DonGia' => $rowProduct['DonGia'],
-                            'quantity' => $quantity
-                        ];
-                    }
+                form.d-flex input {
+                    flex-grow: 1; 
+                    flex-grow: 1;   
                 }
-            }
+                .btn-primary {
+                    margin-left: 10px;
+                }
+            </style>
 
-            // xoa san pham khoi gio hang
-            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['remove_from_cart'])) {
-                $MaSPToRemove = $_POST['MaSPToRemove'];
-                foreach ($_SESSION['cart'] as $key => $item) {
-                    if ($item['MaSP'] == $MaSPToRemove) {
-                        unset($_SESSION['cart'][$key]);
-                        break;
-                    }
-                }
-            }
-            ?>
-            <div class="col-md-8">
-                <div class="tile">
-                    <h3 class="tile-title">Phần mềm bán hàng</h3>
-                    <form method="get" action="" class="d-flex">
-                        <input type="text" id="myInput" name="search" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>" placeholder="Nhập mã sản phẩm hoặc tên sản phẩm để tìm kiếm..." class="form-control mr-2">
-                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-                    </form>
-                    <style>
-                        form.d-flex {
-                            display: flex;
-                            align-items: center;
-                        }
-
-                        form.d-flex input {
-                            flex-grow: 1;
-                        }
-                    </style>
-                    <div class="du--lieu-san-pham">
-                        <table class="table table-hover table-bordered">
-                            <thead>
+            <div class="du--lieu-san-pham" style="display: none;" id="product-section">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Mã hàng</th>
+                            <th>Tên sản phẩm</th>
+                            <!-- <th>Ảnh</th> -->
+                            <th>Số lượng</th>
+                            <th>Giá bán</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-list">
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
                                 <tr>
-                                    <th>Mã SP</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Giá bán</th>
-                                    <th>Thao tác</th>
+                                    <td><?= $row['MaSP'] ?></td>
+                                    <td><?= $row['TenSP'] ?></td>
+                                    <!-- <td><img src="../img-sanpham/uploads' . $product['MaSP'] . '.jpg" alt="" width="50px"></td> -->
+                                    <td><?= $row['Soluong'] ?></td>
+                                    <td><?= number_format($row['DonGia'], 0, ',', '.') ?></td>
+                                    <td>
+                                        <button class="btn btn-success btn-sm add-to-cart" 
+                                                data-id="<?= $row['MaSP'] ?>" 
+                                                data-name="<?= $row['TenSP'] ?>" 
+                                                data-price="<?= $row['DonGia'] ?>" 
+                                                data-quantity="<?= $row['Soluong'] ?>"> 
+                                            Thêm
+                                        </button>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if (!empty($searchResult)) {
-                                    foreach ($searchResult as $product) {
-                                        echo '<tr>';
-                                        echo '<td>' . $product['MaSP'] . '</td>';
-                                        echo '<td>' . $product['TenSP'] . '</td>';
-                                        echo '<td>' . number_format($product['DonGia'], 0, ',', '.') . ' VNĐ</td>';
-                                        echo '<td>
-                                <form action="" method="POST">
-                                    <input type="hidden" name="MaSP" value="' . $product['MaSP'] . '">
-                                    <input type="number" name="quantity" value="1" min="1" class="quantity-input">
-                                    <button type="submit" name="add_to_cart" class="btn btn-primary">Thêm</button>
-                                </form>
-                            </td>';
-                                        echo '</tr>';
-                                    }
-                                } else {
-                                    echo '<tr><td colspan="4">Không có sản phẩm nào phù hợp.</td></tr>';
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="cart-section">
-                        <h4>Giỏ hàng</h4>
-                        <?php if (count($_SESSION['cart']) > 0): ?>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Mã SP</th>
-                                        <th>Tên sản phẩm</th>
-                                        <th>Số lượng</th>
-                                        <th>Giá</th>
-                                        <th>Tổng giá</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $total = 0;
-                                    foreach ($_SESSION['cart'] as $item) {
-                                        $totalPrice = $item['quantity'] * $item['DonGia'];
-                                        $total += $totalPrice;
-                                        echo '<tr>';
-                                        echo '<td>' . $item['MaSP'] . '</td>';
-                                        echo '<td>' . $item['TenSP'] . '</td>';
-                                        echo '<td>' . $item['quantity'] . '</td>';
-                                        echo '<td>' . number_format($item['DonGia'], 0, ',', '.') . ' VNĐ</td>';
-                                        echo '<td>' . number_format($totalPrice, 0, ',', '.') . ' VNĐ</td>';
-                                        echo '<td>
-                                <form action="" method="POST">
-                                    <input type="hidden" name="MaSPToRemove" value="' . $item['MaSP'] . '">
-                                    <button type="submit" name="remove_from_cart" class="btn btn-danger">Xóa</button>
-                                </form>
-                            </td>';
-                                        echo '</tr>';
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
-                            <p><strong>Tổng cộng: <?php echo number_format($total, 0, ',', '.') . ' VNĐ'; ?></strong></p>
+                            <?php endwhile; ?>
                         <?php else: ?>
-                            <p>Giỏ hàng hiện tại không có sản phẩm nào.</p>
+                            <tr>
+                                <td colspan="6" class="text-center">Không tìm thấy sản phẩm nào</td>
+                            </tr>
                         <?php endif; ?>
-                    </div>
-
-                    <div class="alert">
-                        <i class="fas fa-exclamation-triangle"></i> Gõ mã hoặc tên sản phẩm vào thanh tìm kiếm để thêm hàng vào đơn hàng.
-                    </div>
-                </div>
+                    </tbody>
+                </table>
             </div>
+            <div class="cart-section">
+            <h4>Giỏ hàng</h4>    
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Mã hàng</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-list">
+                   
+                </tbody>
+            </table>
+            <!-- <div class="text-right">
+                <h5 class="mt-3">Tổng tiền: <span id="total-amount">0</span> VND</h5>
+            </div> -->
+        </div>
+        
+        <div class="alert">
+            <i class="fas fa-exclamation-triangle"></i> Gõ mã hoặc tên sản phẩm vào thanh tìm kiếm để thêm hàng vào đơn hàng
+        </div>
+    </div>
+</div>
 
-            <!------------------------------ THONG TIN THANH TOAN ---------------------------------->
+<!------------------------------ THONG TIN THANH TOAN ---------------------------------->
             <?php
             include 'connect.php';
 
@@ -368,10 +302,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                           WHERE MaKH = '$maKH'";
                             $conn->query($sql_update_diem);
 
-                            echo "<script>
-              alert('Đơn hàng đã được lưu thành công!');
-              window.location.href = 'table-data-oder.php';
-            </script>";
+                            echo "<script> alert('Đơn hàng đã được lưu thành công!');
+                                    window.location.href = 'table-data-oder.php';
+                                </script>";
                         } else {
                             echo "<script>alert('Lỗi khi lưu đơn hàng: " . $conn->error . "');</script>";
                         }
@@ -644,7 +577,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- <script>
+<!-- <script>
 $(document).ready(function(){
     // Thêm sản phẩm vào giỏ hàng
     $('form.add-to-cart-form').submit(function(e){
@@ -691,7 +624,7 @@ $(document).ready(function(){
 });
 </script> -->
 
-    <!--------------------------- tìm kiếm khách hàng -------------------------------------->
+<!--------------------------- tìm kiếm khách hàng -------------------------------------->
     <script>
         function getCustomerName() {
             const sdt = document.getElementById("sdt").value;
@@ -723,6 +656,7 @@ $(document).ready(function(){
             window.location.href = `?sdt=${sdt}`;
         }
     </script>
+<!----------------------- tinh tien thua ---------------------------->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -739,6 +673,127 @@ $(document).ready(function(){
             });
         });
     </script>
+
+
+<!------------------------------ tim kiem va gio hang  -------------------------------->
+<script>
+
+$(document).ready(function() {
+    const cartList = $('#cart-list');
+    const totalAmount = $('#total-amount');
+    const productSection = $('#product-section');
+    const productList = $('#product-list');
+    const alertMessage = $('.alert'); 
+    const allMoneyTamtinh = $('.control-all-money-tamtinh');
+    const allMoneyTotal = $('.control-all-money-total');
+    const customerPaymentInput = $('input[type="number"]'); 
+    const customerDebt = $('.control-all-money'); 
+
+    productSection.hide();
+
+    //tim kiem sp
+    $('#search-btn').click(function(event) {
+        event.preventDefault(); 
+        const searchTerm = $('#myInput').val().trim();
+        if (searchTerm) {
+            $.ajax({
+                method: 'GET',
+                data: { search: searchTerm },
+                success: function(response) {
+                    const newTableRows = $(response).find('#product-list').html();
+                    productList.html(newTableRows);
+                    if (newTableRows.trim() !== "") {
+                        productSection.show(); 
+                    } else {
+                        productSection.hide();
+                    }
+                },
+                error: function() {
+                    alert('Đã xảy ra lỗi khi tìm kiếm.');
+                }
+            });
+        } else {
+            alert('Vui lòng nhập từ khóa để tìm kiếm.');
+        }
+    });
+
+    //them sp vao gio
+    $(document).on('click', '.add-to-cart', function() {
+        const productId = $(this).data('id');
+        const productName = $(this).data('name');
+        const productPrice = $(this).data('price');
+        const productQuantityInStock = $(this).data('quantity'); 
+        const productRow = cartList.find(`tr[data-id="${productId}"]`);
+        const formattedPrice = productPrice.toLocaleString('vi-VN');
+
+        if (productRow.length) {
+            const quantityInput = productRow.find('.quantity');
+            let currentQuantity = parseInt(quantityInput.val());
+
+            if (currentQuantity >= productQuantityInStock) {
+                alertMessage.text(`Số lượng sản phẩm này đã đạt giới hạn trong kho!`).show();
+                return;
+            }
+            quantityInput.val(currentQuantity + 1);
+        } else {
+            const newRow = `
+                <tr data-id="${productId}">
+                    <td>${productId}</td>
+                    <td>${productName}</td>
+                    <td><input type="number" class="form-control quantity" value="1" min="1" max="${productQuantityInStock}" style="width: 70px;"></td>
+                    <td>${formattedPrice} VND</td>
+                    <td><button class="btn btn-danger btn-sm remove-from-cart">Xóa</button></td>
+                </tr>`;
+            cartList.append(newRow);
+        }
+        updateTotalAmount();
+    });
+
+    //xoa sp trong gio
+    $(document).on('click', '.remove-from-cart', function() {
+        $(this).closest('tr').remove();
+        updateTotalAmount();
+    });
+
+    //update tong tien
+    function updateTotalAmount() {
+        let total = 0;
+        cartList.find('tr').each(function() {
+            const price = parseFloat($(this).find('td:nth-child(4)').text().replace(/,/g, '').replace(' VND', ''));
+            const quantity = parseInt($(this).find('.quantity').val());
+            total += price * quantity;
+        });
+
+        allMoneyTamtinh.text(`= ${total.toLocaleString('vi-VN')} VNĐ`);
+        allMoneyTotal.text(`= ${total.toLocaleString('vi-VN')} VNĐ`);
+        updateCustomerDebt(total);
+    }
+
+    function updateCustomerDebt(totalAmount) {
+        const paymentAmount = parseInt(customerPaymentInput.val()) || 0;
+        const debt = totalAmount - paymentAmount;
+        customerDebt.text(`- ${debt.toLocaleString('vi-VN')} VNĐ`);
+    }
+
+    $(document).on('input', '.quantity', function() {
+        const quantityInput = $(this);
+        const maxQuantity = parseInt(quantityInput.attr('max'));
+        let newQuantity = parseInt(quantityInput.val());
+
+        if (newQuantity > maxQuantity) {
+            alertMessage.text(`Chỉ còn ${maxQuantity} sản phẩm trong kho.`).show();
+            quantityInput.val(maxQuantity); 
+        }
+        updateTotalAmount();
+    });
+
+    customerPaymentInput.on('input', function() {
+        const totalAmountValue = parseInt(allMoneyTotal.text().replace(/[^0-9]/g, ''));
+        updateCustomerDebt(totalAmountValue);
+    });
+});
+
+</script>
 </body>
 
 </html>
