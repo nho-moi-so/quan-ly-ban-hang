@@ -227,25 +227,31 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             $MoTa = $_POST['MoTa'] ?? ''; // Optional description
 
                             // Prepare INSERT query
-                            $sql = "INSERT INTO danhmucsp (MaDanhMuc, TenDanhMuc) VALUES (?, ?)";
+                            $sql = "INSERT INTO danhmucsp (MaDanhMuc, TenDanhMuc,MoTa) VALUES (?, ?,?)";
                             $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("ss", $MaDanhMuc, $TenDanhMuc);
+                            $stmt->bind_param("sss", $MaDanhMuc, $TenDanhMuc,$MoTa);
 
                             if ($stmt->execute()) {
                                 $success = "Thêm danh mục mới thành công. Mã danh mục: " . $MaDanhMuc;
                             } else {
                                 $error = "Lỗi: " . $stmt->error;
                             }
-                        }
+                        
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("sss", $TenDanhMuc,$MaDanhMuc, $MoTa);
+
 
                         // Handle editing category
-                        if (isset($_POST['SuaDanhMuc'])) {
+                        /*if (isset($_POST['SuaDanhMuc'])) {
                             $MaDanhMuc = $_POST['MaDanhMuc'];
                             $TenDanhMuc = $_POST['TenDanhMuc'];
 
                             $sql = "UPDATE danhmucsp SET TenDanhMuc = ? WHERE MaDanhMuc = ?";
                             $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("sss", $TenDanhMuc, $MaDanhMuc);
+
+                            
+                            $stmt->bind_param("ss", $TenDanhMuc,$MaDanhMuc, $MoTa);
+
 
                             if ($stmt->execute()) {
                                 $success = "Cập nhật danh mục thành công.";
@@ -255,8 +261,11 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             } else {
                                 $error = "Lỗi: " . $stmt->error;
                             }
-                        }
+                        }*/
                     }
+
+                }
+                    
 
                     // Display error or success messages
                     if (isset($error)): ?>
@@ -290,12 +299,12 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                     required>
                             </div>
 
-                            <!-- <div class="form-group">
+                             <div class="form-group">
                                 <label class="control-label">Mô Tả (Tùy Chọn)</label>
                                 <textarea class="form-control" 
                                           name="MoTa" 
-                                          placeholder="Nhập mô tả danh mục">?php echo $editCategory ? htmlspecialchars($editCategory['MoTa']) : ''; ?></textarea>
-                            </div> -->
+                                          placeholder="Nhập mô tả danh mục"><?php echo $editCategory ? htmlspecialchars($editCategory['MoTa']) : ''; ?></textarea>
+                            </div> 
 
                             <div class="form-group">
                                 <?php if ($editCategory): ?>

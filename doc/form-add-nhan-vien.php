@@ -322,7 +322,6 @@ $conn->close();
                                 ?>
                             </select>
                         </div>
-
                         <div class="form-group col-md-4">
                             <label class="control-label">Ngày vào làm</label>
                             <input class="form-control" type="date" name="ngay_vao_lam" required>

@@ -53,7 +53,7 @@ $currentRole = $_SESSION['user_role'];
     </div>
     <hr>
     <ul class="app-menu">
-    <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
         <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
             <span class="app-menu__label">POS Bán Hàng</span></a></li>
       <?php endif; ?>
@@ -79,7 +79,7 @@ $currentRole = $_SESSION['user_role'];
               class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
+        <li><a class="app-menu__item" href="./table.data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
               class="app-menu__label">Quản lý Danh Mục</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
@@ -323,157 +323,157 @@ $currentRole = $_SESSION['user_role'];
       <!--Right-->
 
       <!------------------------------------------- thong ke san pham ------------------------------------>
-    <!------------------------------------------- thong ke san pham ------------------------------------>
-<?php
-include "connect.php";
+      <!------------------------------------------- thong ke san pham ------------------------------------>
+      <?php
+      include "connect.php";
 
-$query = "
+      $query = "
     SELECT sp.MaSP, sp.TenSP, SUM(cthd.SoLuong) AS soLuongBanDuoc
     FROM chitiethoadon cthd
     INNER JOIN sanpham sp ON cthd.MaSP = sp.MaSP
     GROUP BY sp.MaSP, sp.TenSP
 ";
 
-$result = $conn->query($query);
-$labels = [];
-$data = [];
+      $result = $conn->query($query);
+      $labels = [];
+      $data = [];
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $labels[] = $row['TenSP'];  
-        $data[] = $row['soLuongBanDuoc']; 
-    }
-} else {
-    echo "Không có dữ liệu!";
-}
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $labels[] = $row['TenSP'];
+          $data[] = $row['soLuongBanDuoc'];
+        }
+      } else {
+        echo "Không có dữ liệu!";
+      }
 
-$conn->close();
-?>
-<div class="col-md-12 col-lg-6">
+      $conn->close();
+      ?>
+      <div class="col-md-12 col-lg-6">
         <div class="row">
           <div class="col-md-12">
             <div class="tile">
               <h3 class="tile-title">Thống kê sản phẩm</h3>
-              
+
               <div class="embed-responsive embed-responsive-16by9">
                 <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
               </div>
             </div>
           </div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
-    var ctx = document.getElementById('lineChartDemo').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',  
-        data: {
-            labels: <?php echo json_encode($labels); ?>, 
-            datasets: [{
-                label: 'Số lượng bán được',
-                data: <?php echo json_encode($data); ?>,  
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-               
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
+          <script>
+            var ctx = document.getElementById('lineChartDemo').getContext('2d');
+            var chart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: <?php echo json_encode($labels); ?>,
+                datasets: [{
+                  label: 'Số lượng bán được',
+                  data: <?php echo json_encode($data); ?>,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1
+
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
                     position: 'top',
-                },
-                tooltip: {
+                  },
+                  tooltip: {
                     callbacks: {
-                        label: function(tooltipItem) {
-                            return 'Số lượng: ' + tooltipItem.raw;
-                        }
+                      label: function(tooltipItem) {
+                        return 'Số lượng: ' + tooltipItem.raw;
+                      }
                     }
+                  }
                 }
-            }
-        }
-    });
-</script>
-<!-------------------------------------------- thong ke doanh thu -------------------------------->
-<?php
-include 'connect.php';
+              }
+            });
+          </script>
+          <!-------------------------------------------- thong ke doanh thu -------------------------------->
+          <?php
+          include 'connect.php';
 
-$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '2024-11-15';
-$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '2024-11-20';
-$sql = "SELECT DATE(ngay_ban) AS ngay_ban, SUM(tong_tien) AS doanh_thu
+          $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : '2024-11-15';
+          $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : '2024-11-20';
+          $sql = "SELECT DATE(ngay_ban) AS ngay_ban, SUM(tong_tien) AS doanh_thu
         FROM donhang
         WHERE ngay_ban BETWEEN '$start_date' AND '$end_date'
         GROUP BY DATE(ngay_ban)
         ORDER BY ngay_ban";
 
-$result = $conn->query($sql);
-$dates = [];
-$revenue = [];
+          $result = $conn->query($sql);
+          $dates = [];
+          $revenue = [];
 
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $dates[] = $row['ngay_ban'];
-        $revenue[] = $row['doanh_thu'];
-    }
-} else {
-    $dates[] = 'Không có dữ liệu';
-    $revenue[] = 0;
-}
+          if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+              $dates[] = $row['ngay_ban'];
+              $revenue[] = $row['doanh_thu'];
+            }
+          } else {
+            $dates[] = 'Không có dữ liệu';
+            $revenue[] = 0;
+          }
 
-$conn->close();
-?>
-<div class="col-md-12">
-    <div class="tile">
-        <h3 class="tile-title">Thống kê doanh thu</h3>
-<form method="GET" action="">
-            <label for="start_date">Từ ngày:</label>
-            <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" required>
-  
-            <label for="end_date">Đến ngày:</label>
-            <input type="date" id="end_date" name="end_date" value="<?php echo $end_date; ?>" required>
+          $conn->close();
+          ?>
+          <div class="col-md-12">
+            <div class="tile">
+              <h3 class="tile-title">Thống kê doanh thu</h3>
+              <form method="GET" action="">
+                <label for="start_date">Từ ngày:</label>
+                <input type="date" id="start_date" name="start_date" value="<?php echo $start_date; ?>" required>
 
-            <button type="submit" class="btn btn-primary">Thống kê</button>
-        </form>
-        <div class="embed-responsive embed-responsive-16by9">
-            <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
-        </div>
-    </div>
-</div>
+                <label for="end_date">Đến ngày:</label>
+                <input type="date" id="end_date" name="end_date" value="<?php echo $end_date; ?>" required>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    var dates = <?php echo json_encode($dates); ?>;
-    var revenue = <?php echo json_encode($revenue); ?>;
+                <button type="submit" class="btn btn-primary">Thống kê</button>
+              </form>
+              <div class="embed-responsive embed-responsive-16by9">
+                <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
+              </div>
+            </div>
+          </div>
 
-    var ctx = document.getElementById('barChartDemo').getContext('2d');
-    var barChartDemo = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: dates,  
-            datasets: [{
-                label: 'Doanh thu (VNĐ)',  
-                data: revenue, 
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script>
+            var dates = <?php echo json_encode($dates); ?>;
+            var revenue = <?php echo json_encode($revenue); ?>;
+
+            var ctx = document.getElementById('barChartDemo').getContext('2d');
+            var barChartDemo = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: dates,
+                datasets: [{
+                  label: 'Doanh thu (VNĐ)',
+                  data: revenue,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString() + ' VNĐ';  
-                        }
+                      callback: function(value) {
+                        return value.toLocaleString() + ' VNĐ';
+                      }
                     }
+                  }
                 }
-            }
-        }
-    });
-</script>
-<style>
+              }
+            });
+          </script>
+          <style>
             #filterForm {
               display: flex;
               flex-wrap: wrap;
@@ -524,32 +524,31 @@ $conn->close();
 
             var ctx = document.getElementById('barChartDemo').getContext('2d');
             var barChart = new Chart(ctx, {
-                  type: 'bar',
-                  data: {
-                    labels: labels,
-                    datasets: [{
-                      label: 'Doanh thu (VNĐ)',
-                      data: data,
-                      backgroundColor: '#4e73df',
-                      borderColor: '#4e73df',
-                      borderWidth: 1
-                    }]
-                  },
-                  options: {
-                    responsive: true,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                        ticks: {
-                          callback: function(value) {
-                            return value.toLocaleString();
-                          }
-                        }
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Doanh thu (VNĐ)',
+                  data: data,
+                  backgroundColor: '#4e73df',
+                  borderColor: '#4e73df',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: function(value) {
+                        return value.toLocaleString();
                       }
                     }
                   }
                 }
-              )
+              }
+            })
           </script>
 
           <!-------------------------------------------- thong ke doanh thu -------------------------------->
