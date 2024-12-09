@@ -7,33 +7,34 @@ $currentRole = $_SESSION['user_role'];
 
 
 
-function generateCategoryCode($conn) {
+function generateCategoryCode($conn)
+{
     // Use MAX to get the highest numeric code, ignoring deleted entries
     $sql = "SELECT MAX(CAST(MaDanhMuc AS UNSIGNED)) AS MaxCode FROM danhmucsp";
     $stmt = $conn->prepare($sql);
-    
+
     if (!$stmt) {
         error_log("SQL Prepare Error: " . $conn->error);
         return '01'; // Default code if query fails
     }
-    
+
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $lastNumericCode = $row['MaxCode'];
-        
+
         // Increment the numeric part
         $newNumericPart = $lastNumericCode ? $lastNumericCode + 1 : 1;
-        
+
         // Format the new code with leading zeros
         $newCode = str_pad($newNumericPart, 2, '0', STR_PAD_LEFT);
     } else {
         // If no existing codes, start with 01
         $newCode = '01';
     }
-    
+
     return $newCode;
 }
 /*function generateCategoryCode($conn) {
@@ -74,6 +75,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Quản Lý Danh Mục | Quản trị Admin</title>
     <meta charset="utf-8">
@@ -104,7 +106,8 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             padding: 10px 15px;
         }
 
-        .btn-save:hover, .btn-cancel:hover {
+        .btn-save:hover,
+        .btn-cancel:hover {
             opacity: 0.8;
         }
 
@@ -126,7 +129,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
             background-color: #f2dede;
             border-color: #ebccd1;
         }
-    </style> 
+    </style>
 </head>
 
 <body class="app sidebar-mini rtl">
@@ -151,49 +154,54 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
 
         <hr>
         <ul class="app-menu">
-        <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
-            <span class="app-menu__label">POS Bán Hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
-              class="app-menu__label">Bảng điều khiển</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
-              class="app-menu__label">Quản lý nhân viên</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
-        <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
-              class="app-menu__label">Quản lý khách hàng</span></a></li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-product.php"><i
-              class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
-        </li>
-      <?php endif; ?>
-      <?php if (in_array($currentRole, ['Admin'])): ?>
-        <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý đơn hàng</span></a></li>
-      <?php endif; ?>
-
-      <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
-            đặt hệ thống</span></a></li>
-    </ul>
-            <!-- Sidebar navigation remains the same as in the original file -->
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item haha" href="./phan-mem-ban-hang.php"><i class='app-menu__icon bx bx-cart-alt'></i>
+                        <span class="app-menu__label">POS Bán Hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item active" href="./index.php"><i class='app-menu__icon bx bx-tachometer'></i><span
+                            class="app-menu__label">Bảng điều khiển</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item " href="./table-data-table.php"><i class='app-menu__icon bx bx-id-card'></i> <span
+                            class="app-menu__label">Quản lý nhân viên</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin', 'NV'])): ?>
+                <li><a class="app-menu__item" href="./table-data-khachhang.php"><i class='app-menu__icon bx bx-user-voice'></i><span
+                            class="app-menu__label">Quản lý khách hàng</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-product.php"><i
+                            class='app-menu__icon bx bx-purchase-tag-alt'></i><span class="app-menu__label">Quản lý sản phẩm</span></a>
+                </li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý đơn hàng</span></a></li>
+            <?php endif; ?>
             <?php if (in_array($currentRole, ['Admin'])): ?>
                 <li><a class="app-menu__item" href="./table-data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span
-                    class="app-menu__label">Quản lý danh mục</span></a></li>
+                            class="app-menu__label">Quản lý Danh Mục</span></a></li>
             <?php endif; ?>
-            <!-- Other menu items -->
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-xuat-xu.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý xuất xứ</span></a></li>
+            <?php endif; ?>
+            <?php if (in_array($currentRole, ['Admin'])): ?>
+                <li><a class="app-menu__item" href="./table-data-don-vi-tinh.php"><i class='app-menu__icon bx bx-task'></i><span
+                            class="app-menu__label">Quản lý đơn vị tính</span></a></li>
+            <?php endif; ?>
+
+            <li><a class="app-menu__item" href="#"><i class='app-menu__icon bx bx-cog'></i><span class="app-menu__label">Cài
+                        đặt hệ thống</span></a></li>
         </ul>
     </aside>
-    
+
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb">
                 <li class="breadcrumb-item">Danh sách danh mục</li>
-                <li class="breadcrumb-item"><a href="#">Thêm Danh Mục</a></li> 
+                <li class="breadcrumb-item"><a href="#">Thêm Danh Mục</a></li>
             </ul>
         </div>
 
@@ -209,7 +217,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         <?php echo $editCategory ? 'Chỉnh Sửa Danh Mục' : 'Thêm Danh Mục Mới'; ?>
                     </h3>
 
-                    <?php 
+                    <?php
                     // Handle adding and editing category
                     if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (isset($_POST['danhmuc'])) {
@@ -234,10 +242,10 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         if (isset($_POST['SuaDanhMuc'])) {
                             $MaDanhMuc = $_POST['MaDanhMuc'];
                             $TenDanhMuc = $_POST['TenDanhMuc'];
-                    
+
                             $sql = "UPDATE danhmucsp SET TenDanhMuc = ? WHERE MaDanhMuc = ?";
                             $stmt = $conn->prepare($sql);
-                            $stmt->bind_param("sss", $TenDanhMuc,$MaDanhMuc);
+                            $stmt->bind_param("sss", $TenDanhMuc, $MaDanhMuc);
 
                             if ($stmt->execute()) {
                                 $success = "Cập nhật danh mục thành công.";
@@ -249,7 +257,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                             }
                         }
                     }
-                    
+
                     // Display error or success messages
                     if (isset($error)): ?>
                         <div class="alert alert-danger"><?php echo $error; ?></div>
@@ -263,23 +271,23 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                         <form method="POST" action="" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label class="control-label">Mã Danh Mục</label>
-                                <input class="form-control" 
-                                       name="MaDanhMuc" 
-                                       type="text" 
-                                       value="<?php echo $editCategory ? htmlspecialchars($editCategory['MaDanhMuc']) : generateCategoryCode($conn); ?>"
-                                       readonly 
-                                       placeholder="Nhập mã danh mục" 
-                                       required>
+                                <input class="form-control"
+                                    name="MaDanhMuc"
+                                    type="text"
+                                    value="<?php echo $editCategory ? htmlspecialchars($editCategory['MaDanhMuc']) : generateCategoryCode($conn); ?>"
+                                    readonly
+                                    placeholder="Nhập mã danh mục"
+                                    required>
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label">Tên Danh Mục</label>
-                                <input class="form-control" 
-                                       name="TenDanhMuc" 
-                                       type="text" 
-                                       value="<?php echo $editCategory ? htmlspecialchars($editCategory['TenDanhMuc']) : ''; ?>" 
-                                       placeholder="Nhập tên danh mục" 
-                                       required>
+                                <input class="form-control"
+                                    name="TenDanhMuc"
+                                    type="text"
+                                    value="<?php echo $editCategory ? htmlspecialchars($editCategory['TenDanhMuc']) : ''; ?>"
+                                    placeholder="Nhập tên danh mục"
+                                    required>
                             </div>
 
                             <!-- <div class="form-group">
@@ -297,7 +305,7 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
                                 <?php else: ?>
                                     <div class="form-group col-md-12">
                                         <button class="btn btn-save" type="submit" name="danhmuc">
-                                            <i class="fas fa-plus"></i> Lưu lại       
+                                            <i class="fas fa-plus"></i> Lưu lại
                                         </button>
                                         <a class="btn btn-cancel" href="table-data-danh-muc.php"> Hủy bỏ </a>
                                     </div>
@@ -315,8 +323,9 @@ if (isset($_GET['sua']) && isset($_GET['id'])) {
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
 </body>
+
 </html>
-<?php 
+<?php
 // Close the connection
-$conn->close(); 
+$conn->close();
 ?>
