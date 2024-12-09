@@ -120,6 +120,11 @@ if ($result && $result->num_rows > 0): ?>
             <div class="col-sm-2">
               <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
             </div>
+            <div class="col-sm-2">
+              <a href="./phan-mem-ban-hang.php" class="btn btn-primary btn-sm" type="button">
+                <i class='bx bx-cart-alt'></i> Tạo hóa đơn mới 
+              </a>
+            </div>
           </div>
           <table class="table table-hover table-bordered" id="table-data-order">
             <thead>
