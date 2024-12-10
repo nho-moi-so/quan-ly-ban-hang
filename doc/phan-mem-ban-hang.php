@@ -155,272 +155,233 @@ $result = $conn->query($sql);
 </div>
 
 <!------------------------------ THONG TIN THANH TOAN ---------------------------------->
-            <?php
-            include 'connect.php';
+<?php
+include 'connect.php';
 
-            $khachhang = null;
-            if (isset($_GET['sdt'])) {
-                $sdt = $_GET['sdt'];
-                $sql_khachhang = "SELECT TenKH FROM khachhang WHERE DienThoai = '$sdt'";
-                $result_khachhang = $conn->query($sql_khachhang);
-                $khachhang = ($result_khachhang && $result_khachhang->num_rows > 0) ? $result_khachhang->fetch_assoc() : null;
-            }
+$khachhang = null;
+if (isset($_GET['sdt'])) {
+  $sdt = $_GET['sdt'];
+  $sql_khachhang = "SELECT TenKH FROM khachhang WHERE DienThoai = '$sdt'";
+  $result_khachhang = $conn->query($sql_khachhang);
+  $khachhang = ($result_khachhang && $result_khachhang->num_rows > 0) ? $result_khachhang->fetch_assoc() : null;
+}
 
-            $sql_nhanvien = "SELECT id, ho_ten FROM nhanvien";
-            $result_nhanvien = $conn->query($sql_nhanvien);
+$sql_nhanvien = "SELECT id, ho_ten FROM nhanvien";
+$result_nhanvien = $conn->query($sql_nhanvien);
 
-            $conn->close();
-            ?>
-            <div class="col-md-4">
-                <div class="tile">
-                    <h3 class="tile-title">Thông tin thanh toán</h3>
-                    <div class="row">
-                        <div class="form-group col-md-10">
-                            <label class="control-label">SĐT khách hàng</label>
-                            <input class="form-control" type="text" id="sdt" placeholder="Tìm kiếm khách hàng">
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label style="text-align: center;" class="control-label">Tìm</label>
-                            <button class="btn btn-primary btn-timkiem" onclick="searchCustomer()">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="form-group col-md-10">
-                            <small class="text-danger"></small>
-                        </div>
-                        <style>
-                            .text-danger{
-                                font-size: 14px;
-                            }
-                        </style>
-                        <div class="form-group col-md-12">
-                            <?php if ($khachhang): ?>
-                                <small class="text-success">Họ và tên: <?php echo $khachhang['TenKH']; ?></small>
-                            <?php elseif (isset($_GET['sdt']) && !$khachhang): ?>
-                                <small class="text-danger">Không tìm thấy thông tin khách hàng với số điện thoại này.</small>
-                            <?php endif; ?>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label style="text-align: center;" class="control-label">Tạo mới</label>
-                            <button class="btn btn-primary btn-them" data-toggle="modal" data-target="#exampleModalCenter">
-                                <i class="fas fa-user-plus"></i>
-                            </button>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">Nhân viên bán hàng</label>
-                            <select class="form-control" id="exampleSelect1">
-                                <option>--- Chọn nhân viên bán hàng ---</option>
-                                <?php while ($row = $result_nhanvien->fetch_assoc()): ?>
-                                    <option value="<?php echo $row['id']; ?>">
-                                        <?php echo $row['id'] . '-' . $row['ho_ten']; ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">Ghi chú đơn hàng</label>
-                            <textarea class="form-control" rows="4" placeholder="Ghi chú thêm đơn hàng"></textarea>
-                        </div>
-                    </div>
+$conn->close();
+?>
+<div class="col-md-4">
+    <div class="tile">
+        <h3 class="tile-title">Thông tin thanh toán</h3>
+        <div class="row">
+            <div class="form-group col-md-10">
+                <label class="control-label">SĐT khách hàng</label>
+                <input class="form-control" type="text" id="sdt" placeholder="Tìm kiếm khách hàng">
+                
+            </div>
+            <div class="form-group col-md-2">
+                <label style="text-align: center;" class="control-label">Tìm</label>
+                <button class="btn btn-primary btn-timkiem" onclick="searchCustomer()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>   
+            <div class="form-group col-md-12">
+                <?php if ($khachhang): ?>
+                    <small class="text-success">Họ và tên: <?php echo $khachhang['TenKH']; ?></small>
+                <?php elseif (isset($_GET['sdt']) && !$khachhang): ?>
+                    <small class="text-danger">Không tìm thấy thông tin khách hàng với số điện thoại này.</small>
+                <?php endif; ?>
+            </div>
+            <div class="form-group col-md-2">
+                <label style="text-align: center;" class="control-label">Tạo mới</label>
+                <button class="btn btn-primary btn-them" data-toggle="modal" data-target="#exampleModalCenter">
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="control-label">Nhân viên bán hàng</label>
+                <select class="form-control" id="exampleSelect1">
+                    <option>--- Chọn nhân viên bán hàng ---</option>
+                    <?php while ($row = $result_nhanvien->fetch_assoc()): ?>
+                        <option value="<?php echo $row['id']; ?>">
+                            <?php echo $row['id'] . '-' . $row['ho_ten']; ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="control-label">Ghi chú đơn hàng</label>
+                <textarea class="form-control" rows="4" placeholder="Ghi chú thêm đơn hàng"></textarea>
+            </div>
+        </div>
 <!----------------------------------------- HÌNH THỨC THANH TOÁN ----------------------------------------->
-                    <?php
-                    include 'connect.php';
-                    include 'save_order.php';
+<?php
+include 'connect.php'; 
 
-// // tinh tien
-//                     $tamtinh = 0;
-//                     if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
-//                         foreach ($_SESSION['cart'] as $item) {
-//                             $soLuong = isset($item['quantity']) ? $item['quantity'] : 0;
-//                             $donGia = isset($item['DonGia']) ? $item['DonGia'] : 0;
-//                             $tamtinh += $soLuong * $donGia;
-//                         }
-//                     }
-//                     $tongcong = $tamtinh;
-// // tien thua
-//                     $khachhang_dua_tien = isset($_POST['khachhang_dua_tien']) ? $_POST['khachhang_dua_tien'] : 0;
-//                     $khachhang_thoi = $khachhang_dua_tien - $tongcong;
+$tamtinh = 0;
+if (isset($_SESSION['cart']) && count($_SESSION['cart']) > 0) {
+    foreach ($_SESSION['cart'] as $item) {
+        $soLuong = isset($item['quantity']) ? $item['quantity'] : 0;
+        $donGia = isset($item['DonGia']) ? $item['DonGia'] : 0;
+        $tamtinh += $soLuong * $donGia;
+    }
+}
+$tongcong = $tamtinh;
 
-//                     $sql_phuongthucthanhtoan = "SELECT * FROM phuongthucthanhtoan";
-//                     $result_phuongthucthanhtoan = $conn->query($sql_phuongthucthanhtoan);
+$khachhang_dua_tien = isset($_POST['khachhang_dua_tien']) ? $_POST['khachhang_dua_tien'] : 0;
+$khachhang_thoi = $khachhang_dua_tien - $tongcong;
 
-//                     $khachhang = null;
-//                     if (isset($_GET['sdt'])) {
-//                         $sdt = $conn->real_escape_string($_GET['sdt']);
-//                         $sql_khachhang = "SELECT * FROM khachhang WHERE DienThoai = '$sdt'";
-//                         $result_khachhang = $conn->query($sql_khachhang);
-//                         $khachhang = ($result_khachhang && $result_khachhang->num_rows > 0) ? $result_khachhang->fetch_assoc() : null;
-//                     }
-// // hinh thuc thanh toan
-//                     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['hinhthucthanhtoan']) && isset($_POST['khachhang_dua_tien'])) {
-//                         $maKH = isset($khachhang['MaKH']) ? $khachhang['MaKH'] : 'NULL';
-//                         $maNV = 1;
-//                         $ngayBan = date('Y-m-d H:i:s'); echo $ngayBan;  
-//                         $phuongThucThanhToan = $_POST['hinhthucthanhtoan'];
-//                         $tongTien = $tongcong;
+$sql_phuongthucthanhtoan = "SELECT * FROM phuongthucthanhtoan";
+$result_phuongthucthanhtoan = $conn->query($sql_phuongthucthanhtoan);
 
-//                        $sql = "INSERT INTO donhang (khach_hang, ngay_ban, tong_tien, ma_nv) 
-//                                 VALUES ('$maKH', NOW(), '$tongTien', '$maNV')";
+$khachhang = null;
+if (isset($_GET['sdt'])) {
+    $sdt = $conn->real_escape_string($_GET['sdt']); 
+    $sql_khachhang = "SELECT * FROM khachhang WHERE DienThoai = '$sdt'";
+    $result_khachhang = $conn->query($sql_khachhang);
+    $khachhang = ($result_khachhang && $result_khachhang->num_rows > 0) ? $result_khachhang->fetch_assoc() : null;
+}
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['hinhthucthanhtoan']) && isset($_POST['khachhang_dua_tien'])) {
+  $maKH = isset($khachhang['MaKH']) ? $khachhang['MaKH'] : 'NULL'; 
+  $maNV = 1; 
+  $ngayBan = date('Y-m-d H:i:s');
+  $phuongThucThanhToan = $_POST['hinhthucthanhtoan'];
+  $tongTien = $tongcong;
 
-//                         if ($conn->query($sql) === TRUE) {
-//                             $maDonHang = $conn->insert_id;
-//                             $ngayHienTai = date('Ymd');
-//                             $soThuTu = str_pad($maDonHang, 3, '0', STR_PAD_LEFT);
-//                             $maDonHangFormatted = "DH-" . $ngayHienTai . "-" . $soThuTu;
+  $sql = "INSERT INTO donhang (khach_hang, ngay_ban, tong_tien) 
+          VALUES ('$maKH', '$ngayBan', '$tongTien')";
 
-//                             $sqlUpdate = "UPDATE donhang SET ma_don_hang = '$maDonHangFormatted' WHERE id_don_hang = $maDonHang";
-//                             $conn->query($sqlUpdate);
+  if ($conn->query($sql) === TRUE) {
+      $maDonHang = $conn->insert_id; 
+      $ngayHienTai = date('Ymd'); 
+      $soThuTu = str_pad($maDonHang, 3, '0', STR_PAD_LEFT);
+      $maDonHangFormatted = "DH-" . $ngayHienTai . "-" . $soThuTu;
 
-//                             foreach ($_SESSION['cart'] as $item) {
-//                                 $maSP = $conn->real_escape_string($item['MaSP']);
-//                                 $soLuong = isset($item['quantity']) ? $item['quantity'] : 0;
-//                                 $giaBan = isset($item['DonGia']) ? $item['DonGia'] : 0;
+      $sqlUpdate = "UPDATE donhang SET ma_don_hang = '$maDonHangFormatted' WHERE id_don_hang = $maDonHang";
+      $conn->query($sqlUpdate);
 
-//                                 $sqlCTHD = "INSERT INTO chitiethoadon (MaHD, MaSP, SoLuong, GiaBan) 
-//                                             VALUES ('$maDonHang', '$maSP', '$soLuong', '$giaBan')";
-//                                 $conn->query($sqlCTHD);
-//                             }
-// // chuyen khoan
-//                             if ($phuongThucThanhToan == "Chuyển khoản") {
-//                                 $soTaiKhoan = $conn->real_escape_string($_POST['so_tai_khoan']);
-//                                 $ngayChuyenKhoan = $conn->real_escape_string($_POST['ngay_chuyen_khoan']);
-//                                 $soTienChuyenKhoan = $conn->real_escape_string($_POST['so_tien_chuyen_khoan']);
+      foreach ($_SESSION['cart'] as $item) {
+          $maSP = $conn->real_escape_string($item['MaSP']);
+          $soLuong = isset($item['quantity']) ? $item['quantity'] : 0;
+          $giaBan = isset($item['DonGia']) ? $item['DonGia'] : 0;
 
-//                                 $sqlChuyenKhoan = "INSERT INTO chuyenkhoan (MaKH, SoTaiKhoan, NgayChuyenKhoan, SoTienChuyenKhoan) 
-//                                                     VALUES ('$maKH', '$soTaiKhoan', '$ngayChuyenKhoan', '$soTienChuyenKhoan')";
-//                                 $conn->query($sqlChuyenKhoan);
-//                             }
-// // tien mat
-//                             if ($phuongThucThanhToan == "Tiền mặt") {
-//                                 $soTienNhan = $conn->real_escape_string($_POST['khachhang_dua_tien']);
-//                                 $soTienThua = $soTienNhan - $tongTien;
+          $sqlCTHD = "INSERT INTO chitiethoadon (MaHD, MaSP, SoLuong, GiaBan) 
+                      VALUES ('$maDonHang', '$maSP', '$soLuong', '$giaBan')";
+          $conn->query($sqlCTHD);
+      }
 
-//                                 $sqlTienMat = "INSERT INTO thongtintienmat (SotienNhan, SoTienThua, MaKH) 
-//                                                 VALUES ('$soTienNhan', '$soTienThua', '$maKH')";
-//                                 $conn->query($sqlTienMat);
-//                             }
-// // diem tich luy
-//                             $diemTichLuy = $tongTien * 0.01;
-//                             $sql_get_diem = "SELECT DiemTichLuy FROM khachhang WHERE MaKH = '$maKH'";
-//                             $result_diem = $conn->query($sql_get_diem);
-//                             $diemTichLuyHienTai = ($result_diem && $result_diem->num_rows > 0) ? $result_diem->fetch_assoc()['DiemTichLuy'] : 0;
-//                             $newDiemTichLuy = $diemTichLuyHienTai + $diemTichLuy;
+      if ($phuongThucThanhToan == "Chuyển khoản") {
+          $soTaiKhoan = $conn->real_escape_string($_POST['so_tai_khoan']);
+          $ngayChuyenKhoan = $conn->real_escape_string($_POST['ngay_chuyen_khoan']);
+          $soTienChuyenKhoan = $conn->real_escape_string($_POST['so_tien_chuyen_khoan']);
 
-//                             $sql_update_diem = "UPDATE khachhang 
-//                                                 SET DiemTichLuy = $newDiemTichLuy 
-//                                                 WHERE MaKH = '$maKH'";
-//                             $conn->query($sql_update_diem);
+          $sqlChuyenKhoan = "INSERT INTO chuyenkhoan (MaKH, SoTaiKhoan, NgayChuyenKhoan, SoTienChuyenKhoan) 
+                             VALUES ('$maKH', '$soTaiKhoan', '$ngayChuyenKhoan', '$soTienChuyenKhoan')";
+          $conn->query($sqlChuyenKhoan);
+      }
 
-//                             echo "<script> alert('Đơn hàng đã được lưu thành công!');
-//                                     window.location.href = 'table-data-oder.php';
-//                                 </script>";
-//                         } else {
-//                             echo "<script>alert('Lỗi khi lưu đơn hàng: " . $conn->error . "');</script>";
-//                         }
-//                     }
+      if ($phuongThucThanhToan == "Tiền mặt") {
+          $soTienNhan = $conn->real_escape_string($_POST['khachhang_dua_tien']);
+          $soTienThua = $soTienNhan - $tongTien;
 
-//                     $conn->close();
-//                     ?>
+          $sqlTienMat = "INSERT INTO thongtintienmat (SotienNhan, SoTienThua, MaKH) 
+                         VALUES ('$soTienNhan', '$soTienThua', '$maKH')";
+          $conn->query($sqlTienMat);
+      }
 
-                    <form method="POST" id="orderForm">
-                        <div class="form-group col-md-12">
-                            <label class="control-label">Mã đơn hàng</label>
-                            <input class="form-control" type="text" id="ma_don_hang" name="ma_don_hang" value="<?php echo isset($maDonHang) ? $maDonHang : ''; ?>" readonly>
-                        </div>
+      $diemTichLuy = $tongTien * 0.01;
+      $sql_get_diem = "SELECT DiemTichLuy FROM khachhang WHERE MaKH = '$maKH'";
+      $result_diem = $conn->query($sql_get_diem);
+      $diemTichLuyHienTai = ($result_diem && $result_diem->num_rows > 0) ? $result_diem->fetch_assoc()['DiemTichLuy'] : 0;
+      $newDiemTichLuy = $diemTichLuyHienTai + $diemTichLuy;
 
-                        <div class="form-group col-md-12">
-                            <label class="control-label">Hình thức thanh toán</label><br>
-                            <input type="radio" id="tienmat" name="hinhthucthanhtoan" value="Tiền mặt" required>
-                            <label for="tienmat">Tiền mặt</label><br>
-                            <input type="radio" id="chuyenkhoan" name="hinhthucthanhtoan" value="Chuyển khoản" required>
-                            <label for="chuyenkhoan">Chuyển khoản</label><br>
-                        </div>
+      $sql_update_diem = "UPDATE khachhang 
+                          SET DiemTichLuy = $newDiemTichLuy 
+                          WHERE MaKH = '$maKH'";
+      $conn->query($sql_update_diem);
 
-                        <div id="chuyen_khoan_fields" style="display:none;">
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Số tài khoản</label>
-                                <input class="form-control" type="text" name="so_tai_khoan" id="so_tai_khoan">
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Tên tài khoản</label>
-                                <input class="form-control" type="text" name="ten_tai_khoan" id="ten_tai_khoan">
-                            </div>
-                            <div class="form-group col-md-12">
-                            <label class="control-label">Ngân hàng</label>
-                            <input class="form-control" list="ngan_hang_list" name="ten_ngan_hang" id="ten_ngan_hang" placeholder="Chọn hoặc nhập ngân hàng">
-                                <datalist id="ngan_hang_list">
-                                    <option value="Vietcombank">
-                                    <option value="Techcombank">
-                                    <option value="BIDV">
-                                    <option value="ACB">
-                                    <option value="MB Bank">
-                                    <option value="VietinBank">
-                                    <option value="Sacombank">
-                                </datalist>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Ngày chuyển khoản</label>
-                                <input class="form-control" type="date" name="ngay_chuyen_khoan" id="ngay_chuyen_khoan">
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label class="control-label">Số tiền chuyển khoản</label>
-                                <input class="form-control" type="text" name="so_tien_chuyen_khoan" id="so_tien_chuyen_khoan" readonly>
-                            </div>
-                        </div>
+      echo "<script>
+              alert('Đơn hàng đã được lưu thành công!');
+              window.location.href = 'table-data-oder.php';
+            </script>";
+  } else {
+      echo "<script>alert('Lỗi khi lưu đơn hàng: " . $conn->error . "');</script>";
+  }
+}
 
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Tạm tính tiền hàng: </label>
-                            <p class="control-all-money-tamtinh">= <?php echo number_format($tamtinh, 0, ',', '.'); ?> VNĐ</p>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Tổng cộng thanh toán: </label>
-                            <p class="control-all-money-total">= <?php echo number_format($tongcong, 0, ',', '.'); ?> VNĐ</p>
-                        </div>
+$conn->close(); 
+?>
 
-                        <div id="tienmat_fields" style="display:none;">
-                            <div class="col-md-5">
-                                <label class="control-label">Tiền nhận: </label>
-                                <input class="form-control" type="text" id="khachhang_dua_tien" name="khachhang_dua_tien">
-                            </div>
-                            <div class="col-md-2 d-flex align-items-center">
-                                <button type="button" class="btn btn-info" id="tinh_tien_thoi">Tính tiền thối</button>
-                            </div>
-                            <style>
-                                .btn-info{
-                                    margin-top: 10px;
-                                }
-                            </style>
-                            <div class="col-md-5">
-                                <label class="control-label">Tiền thừa: </label>
-                                <p id="tienso" class="control-all-money">= 0 VNĐ</p>
-                            </div>
-                        </div>
-                        <div class="tile-footer col-md-12">
-                            <button class="btn btn-primary luu-san-pham" type="submit">Lưu đơn hàng</button>
-                            <button class="btn btn-primary luu-va-in" type="submit">In hóa đơn</button>
-                            <a class="btn btn-secondary luu-va-in" href="index.php">Quay về</a>
-                        </div>
-                    </form>
+<form method="POST" id="orderForm">
+    <div class="form-group col-md-12">
+        <label class="control-label">Mã đơn hàng</label>
+        <input class="form-control" type="text" id="ma_don_hang" name="ma_don_hang" value="<?php echo isset($maDonHang) ? $maDonHang : ''; ?>" readonly>
+    </div>
 
-                    <script>
-                        document.querySelectorAll('input[name="hinhthucthanhtoan"]').forEach((elem) => {
-                            elem.addEventListener('change', function() {
-                                if (this.value == 'Chuyển khoản') {
+    <div class="form-group col-md-12">
+        <label class="control-label">Hình thức thanh toán</label><br>
+        <input type="radio" id="tienmat" name="hinhthucthanhtoan" value="Tiền mặt" required>
+        <label for="tienmat">Tiền mặt</label><br>
+        <input type="radio" id="chuyenkhoan" name="hinhthucthanhtoan" value="Chuyển khoản" required>
+        <label for="chuyenkhoan">Chuyển khoản</label><br>
+    </div>
 
-                                    document.getElementById('chuyen_khoan_fields').style.display = 'block';
-                                    document.getElementById('tienmat_fields').style.display = 'none';
-                                    
-                                } else if (this.value == 'Tiền mặt') {
+    <div id="chuyen_khoan_fields" style="display:none;">
+        <div class="form-group col-md-12">
+            <label class="control-label">Số tài khoản</label>
+            <input class="form-control" type="text" name="so_tai_khoan" id="so_tai_khoan">
+        </div>
+        <div class="form-group col-md-12">
+            <label class="control-label">Ngày chuyển khoản</label>
+            <input class="form-control" type="date" name="ngay_chuyen_khoan" id="ngay_chuyen_khoan">
+        </div>
+        <div class="form-group col-md-12">
+            <label class="control-label">Số tiền chuyển khoản</label>
+            <input class="form-control" type="text" name="so_tien_chuyen_khoan" id="so_tien_chuyen_khoan">
+        </div>
+    </div>
 
-                                    document.getElementById('tienmat_fields').style.display = 'block';
-                                    document.getElementById('chuyen_khoan_fields').style.display = 'none';
-                                }
-                            });
-                        });
+    <div class="form-group col-md-6">
+        <label class="control-label">Tạm tính tiền hàng: </label>
+        <p class="control-all-money-tamtinh">= <?php echo number_format($tamtinh, 0, ',', '.'); ?> VNĐ</p>
+    </div>
+    <div class="form-group col-md-6">
+        <label class="control-label">Tổng cộng thanh toán: </label>
+        <p class="control-all-money-total">= <?php echo number_format($tongcong, 0, ',', '.'); ?> VNĐ</p>
+    </div>
+    <div class="col-md-5" style="margin-bottom:10px;">
+        <label class="control-label">Tiền nhận: </label>
+        <input class="form-control" type="text" id="khachhang_dua_tien" name="khachhang_dua_tien" value="<?php echo $khachhang_dua_tien; ?>">
+    </div>
+    <div class="col-md-2 d-flex align-items-center">
+        <button type="button" class="btn btn-info" id="tinh_tien_thoi">Tính tiền thối</button>
+    </div>
+    <div class="col-md-5">
+        <label class="control-label">Tiền thừa: </label>
+        <p id="tienso" class="control-all-money">= <?php echo number_format($khachhang_thoi, 0, ',', '.'); ?> VNĐ</p>
+    </div>
 
-                    </script>
-    </main>
+    <div class="tile-footer col-md-12">
+        <button class="btn btn-primary luu-san-pham" type="submit">Lưu đơn hàng</button>
+        <button class="btn btn-primary luu-va-in" type="submit">In hóa đơn</button>
+        <a class="btn btn-secondary luu-va-in" href="index.php">Quay về</a>
+    </div>
+</form>
+
+<script>
+    document.querySelectorAll('input[name="hinhthucthanhtoan"]').forEach((elem) => {
+        elem.addEventListener('change', function() {
+            if (this.value == 'Chuyển khoản') {
+                document.getElementById('chuyen_khoan_fields').style.display = 'block';
+            } else {
+                document.getElementById('chuyen_khoan_fields').style.display = 'none';
+            }
+        });
+    });
+</script>
+ </main>
 <!----------------------------------------MODAL TAO KH MOI--------------------------------------->
     <?php
     include 'connect.php';
@@ -665,42 +626,12 @@ $(document).ready(function(){
 </script> -->
 
 <!--------------------------- tìm kiếm khách hàng -------------------------------------->
-    <script>
-        function getCustomerName() {
-            const sdt = document.getElementById("sdt").value;
-
-            if (sdt.length >= 10) {
-                fetch(`fetch_customer.php?sdt=${sdt}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const messageBox = document.querySelector("#customerMessage");
-                        if (data.success) {
-                            messageBox.innerHTML = `<small class="text-success">${data.data.ho_ten}</small>`;
-                            document.getElementById("khach_hang").value = data.data.MaKH;
-                        } else {
-                            messageBox.innerHTML = `<small class="text-danger">${data.message}</small>`;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching customer:', error);
-                    });
-            }
-        }
-
-        function searchCustomer() {
-            const sdt = document.getElementById('sdt').value;
-            if (sdt.trim() === '') {
-                alert('Vui lòng nhập số điện thoại để tìm kiếm.');
-                return;
-            }
-            window.location.href = `?sdt=${sdt}`;
-        }
- 
-        function searchCustomer() {
+<script>
+    function searchCustomer() {
         const sdt = document.getElementById('sdt').value;
 
-        if (!sdt) {
-            alert('Vui lòng nhập số điện thoại');
+        if (sdt.trim() === '') {
+            alert('Vui lòng nhập số điện thoại để tìm kiếm.');
             return;
         }
 
@@ -709,20 +640,21 @@ $(document).ready(function(){
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `sdt=${encodeURIComponent(sdt)}`
         })
-            .then(response => response.json())
-            .then(data => {
-                const resultContainer = document.querySelector('.form-group.col-md-12 .text-success, .text-danger');
+        .then(response => response.json())
+        .then(data => {
+            const resultContainer = document.querySelector('.form-group.col-md-12');
 
-                if (data.status === 'success') {
-                    resultContainer.innerHTML = `Họ và tên: <small class="text-success">${data.TenKH}</small>`;
-                } else {
-                    resultContainer.innerHTML = `<small class="text-danger">${data.message}</small>`;
-                }
-            })
-            .catch(error => console.error('Error:', error));
+            if (data.status === 'success') {
+                resultContainer.innerHTML = `Họ và tên: <small class="text-success">${data.TenKH}</small>`;
+            } else {
+                resultContainer.innerHTML = `<small class="text-danger">${data.message}</small>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
-
-    </script>
+</script>
 <!------------------------------ tim kiem va gio hang  -------------------------------->
 <script>
 $(document).ready(function() {
@@ -846,68 +778,74 @@ $(document).ready(function () {
         }
     });
 });
-//luu don hang
+
+</script>
+
+<!-- luu tong tien -->
+<script>
 $(document).ready(function () {
     $('#orderForm').on('submit', function (e) {
         e.preventDefault(); 
 
         const totalAmount = parseInt($('.control-all-money-total').text().replace(/[^0-9]/g, '')) || 0;
 
+        const formData = $(this).serialize() + `&tong_tien=${totalAmount}`;
+
         $.ajax({
-            url: 'save_order.php', 
+            url: 'save_order.php',  
             type: 'POST',
-            data: $(this).serialize() + `&tong_tien=${totalAmount}`,
+            data: formData,
             success: function (response) {
                 const result = JSON.parse(response);
                 if (result.success) {
                     alert('Lưu đơn hàng thành công!');
                     location.reload(); 
                 } else {
-                    alert(`Có lỗi xảy ra: ${result.error}`);
+                    alert('Có lỗi xảy ra: ' + result.error);
                 }
             },
             error: function () {
                 alert('Lỗi khi gửi dữ liệu!');
-            },
+            }
         });
     });
 });
+
 </script>
-
-
 <!----------------------- tinh tien thua ---------------------------->
 <script>
 document.getElementById('tinh_tien_thoi').addEventListener('click', function () {
     const khachDuaTienInput = document.getElementById('khachhang_dua_tien');
     const tongCongText = document.querySelector('.control-all-money-total').innerText;
 
-    const khachDuaTien = khachDuaTienInput.value.replace(/[^0-9]/g, '');
-    const tongCong = tongCongText.replace(/[^0-9]/g, '');
+    const khachDuaTien = parseFloat(khachDuaTienInput.value.replace(/[^0-9]/g, '')) || 0;
+    const tongCong = parseFloat(tongCongText.replace(/[^0-9]/g, '')) || 0;
 
     fetch('calculate_change.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `khachhang_dua_tien=${khachDuaTien}&tongcong=${tongCong}`
     })
-        .then(response => response.json())
-        .then(data => {
-            const tienThuaElement = document.getElementById('tienso');
-            if (data.status === 'error') {
-                tienThuaElement.style.color = 'red'; 
-                tienThuaElement.innerText = `= ${data.change} VNĐ (Không đủ)`;
-            } else {
-                tienThuaElement.style.color = 'green'; 
-                tienThuaElement.innerText = `= ${data.change} VNĐ`;
-            }
-        })
-        .catch(error => console.error('Error:', error));
+    .then(response => response.json())
+    .then(data => {
+        const tienThuaElement = document.getElementById('tienso');
+        if (data.status === 'error') {
+            tienThuaElement.style.color = 'red'; 
+            tienThuaElement.innerText = `= ${data.change} VNĐ (Không đủ)`;
+        } else {
+            tienThuaElement.style.color = 'green'; 
+            tienThuaElement.innerText = `= ${data.change} VNĐ`;
+        }
+    })
+    .catch(error => console.error('Error:', error));
 });
+
 </script>
 
 <!---------------------------------- luu don hang ------------------------------->
-<script>
-    document.querySelector('.luu-san-pham').addEventListener('click', function(e) {
-    e.preventDefault(); 
+<!-- <script>
+  document.querySelector('.luu-san-pham').addEventListener('click', function(e) {
+    e.preventDefault();
 
     const maDonHang = document.getElementById('ma_don_hang')?.value || '';
     const hinhThucThanhToan = document.querySelector('input[name="hinhthucthanhtoan"]:checked')?.value || '';
@@ -919,7 +857,7 @@ document.getElementById('tinh_tien_thoi').addEventListener('click', function () 
     const tienNhan = document.getElementById('khachhang_dua_tien')?.value || 0; 
     const khachHangThoi = tienNhan - tongCong;
 
-//gio hang
+    // Giỏ hàng
     const cart = <?php echo json_encode($_SESSION['cart']); ?>;
     sessionStorage.setItem('cart', JSON.stringify(cart));
 
@@ -943,7 +881,7 @@ document.getElementById('tinh_tien_thoi').addEventListener('click', function () 
     .then(data => {
         if (data.success) {
             alert('Đơn hàng đã lưu thành công!');
-            window.location.reload(); 
+            window.location.reload();
         } else {
             alert('Có lỗi xảy ra: ' + data.error);
         }
@@ -951,7 +889,7 @@ document.getElementById('tinh_tien_thoi').addEventListener('click', function () 
     .catch(error => console.error('Lỗi:', error));
 });
 
-</script>
+</script> -->
 
 </body>
 

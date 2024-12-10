@@ -13,22 +13,22 @@ $response = array('success' => false, 'error' => '');
                         }
                     $tongcong = $tamtinh;
                     // tien thua
-                    $soTienNhan = intval($_POST['khachhang_dua_tien']); 
+                    $soTienNhan = isset($_POST['khachhang_dua_tien']) ? intval($_POST['khachhang_dua_tien']) : 0; 
                     $tongTien = intval($tongcong);
-                    $soTienThua = $soTienNhan - $tongTien; 
+                    $soTienThua = $soTienNhan - $tongTien;
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $maKH = isset($_POST['khach_hang']) ? $_POST['khach_hang'] : null;
-    $maNV = isset($_POST['ma_nv']) ? $_POST['ma_nv'] : null;
+    // $maNV = isset($_POST['ma_nv']) ? $_POST['ma_nv'] : null;
     $tongTien = isset($_POST['tong_tien']) ? $_POST['tong_tien'] : 0;
     $ngayBan = date('Y-m-d H:i:s');
     $phuongThucThanhToan = isset($_POST['hinhthucthanhtoan']) ? $_POST['hinhthucthanhtoan'] : null;
     $khachhang_dua_tien = isset($_POST['khachhang_dua_tien']) ? $_POST['khachhang_dua_tien'] : 0;
     
 //them vao bang don hang
-    $sql = "INSERT INTO donhang (khach_hang, ngay_ban, tong_tien, ma_nv) 
-            VALUES ('$maKH', NOW() , '$tongTien', '$maNV')";
+    $sql = "INSERT INTO donhang (khach_hang, ngay_ban, tong_tien) 
+            VALUES ('$maKH', NOW() , '$tongTien')";
     if ($conn->query($sql) === TRUE) {
 
         $maDonHang = $conn->insert_id;
@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $conn->query($sqlCTHD);
             }
         }
-
 //luu thong tin chuyen khoan
         if ($phuongThucThanhToan == "Chuyển khoản") {
             $soTaiKhoan = $_POST['so_tai_khoan'];
