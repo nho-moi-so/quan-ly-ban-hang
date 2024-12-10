@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode([
             'status' => 'error',
             'message' => 'Tiền khách đưa không đủ để thanh toán!',
-            'change' => 0
+            'change' => number_format($khachhang_thoi, 0, ',', '.') 
         ]);
     } else {
         echo json_encode([
@@ -20,3 +20,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     exit;
 }
+?>

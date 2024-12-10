@@ -105,6 +105,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
   $result = $conn->query($sql);
 
+
   if ($result && $result->num_rows > 0): ?>
     <main class="app-content">
       <div class="app-title">
