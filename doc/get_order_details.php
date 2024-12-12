@@ -1,26 +1,30 @@
 <?php
 include 'connect.php';
-$order_id = isset($_GET['order_id']) ? $_GET['order_id'] : 0;
 
-if ($order_id > 0) {
-    $sql = "SELECT c.MaSP, s.TenSP, c.SoLuong, c.GiaBan 
-            FROM chitiethoadon c
-            JOIN sanpham s ON c.MaSP = s.MaSP
-            WHERE c.MaHD = $order_id";
-    
-    $result = $conn->query($sql);
-    
-    if ($result && $result->num_rows > 0) {
-        $details = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $orderId = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
+
+    if ($orderId > 0) {
+        $sql = "SELECT chitiethoadon.MaSP, sanpham.TenSP, chitiethoadon.SoLuong, chitiethoadon.GiaBan 
+                FROM chitiethoadon
+                JOIN sanpham ON chitiethoadon.MaSP = sanpham.MaSP
+                WHERE chitiethoadon.MaHD = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $orderId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $orderDetails = [];
         while ($row = $result->fetch_assoc()) {
-            $details[] = $row;
+            $orderDetails[] = $row;
         }
-        echo json_encode($details);
+
+        echo json_encode($orderDetails);
     } else {
-        echo json_encode([]);
+        echo json_encode(['error' => 'Invalid order ID']);
     }
 } else {
-    echo json_encode([]);
+    echo json_encode(['error' => 'Invalid request method']);
 }
 
 $conn->close();

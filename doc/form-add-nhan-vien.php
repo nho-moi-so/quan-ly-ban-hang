@@ -287,7 +287,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
               </div>
               <div class="form-group col-md-4">
                 <label class="control-label">Số điện thoại</label>
-                <input class="form-control" type="number" name="sdt" required>
+                <input class="form-control" type="text" name="sdt" required>
               </div>
               <div class="form-group col-md-4">
                 <label class="control-label">Ngày sinh</label>
@@ -295,7 +295,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
               </div>
               <div class="form-group col-md-4">
                 <label class="control-label">Số CCCD</label>
-                <input class="form-control" type="number" name="cmnd" required>
+                <input class="form-control" type="text" name="cmnd" required>
               </div>
               <div class="form-group col-md-4">
                 <label class="control-label">Giới tính</label>

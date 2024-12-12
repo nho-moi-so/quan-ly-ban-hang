@@ -161,7 +161,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                       <td><?php echo $row['MaKH']; ?></td>
                       <td><?php echo $row['TenKH']; ?></td>
                       <td><?php echo $row['SDT']; ?></td>
-                      <td><?php echo $row['DiemTichLuy']; ?></td>
+                      <td><?php echo number_format($row['DiemTichLuy'], 0, ',', '.') . ' VND'; ?></td>
                       <td><?php echo $row['NgayTichDiem']; ?></td>
                       <td>
                         <form action="./deleted-kh.php?id=<?php echo htmlspecialchars($row['MaKH']); ?>" method="post">
