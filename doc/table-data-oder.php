@@ -96,38 +96,38 @@ $current_page = basename($_SERVER['PHP_SELF']);
   </aside>
 
   <!--------------------------------- danh sach don hang ------------------------------------------------>
-  <?php
-  include 'connect.php';
 
-  // Thực thi câu lệnh SQL để lấy dữ liệu từ 2 bảng
-  $sql = "SELECT donhang.*, khachhang.MaKH, khachhang.TenKH, khachhang.DienThoai, khachhang.DiemTichLuy
-        FROM donhang
-        LEFT JOIN khachhang ON donhang.khach_hang = khachhang.MaKH";
-
-  $result = $conn->query($sql);
-
-  if ($result && $result->num_rows > 0): ?>
-    <main class="app-content">
-      <div class="app-title">
-        <ul class="app-breadcrumb breadcrumb side">
-          <li class="breadcrumb-item active"><a href="#"><b>Danh sách đơn hàng</b></a></li>
-        </ul>
-        <div id="clock"></div>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <div class="tile">
-            <div class="tile-body">
-              <div class="row element-button">
-                <div class="col-sm-2">
-                  <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
-                </div>
-                <div class="col-sm-2">
-                  <a href="./phan-mem-ban-hang.php" class="btn btn-primary btn-sm" type="button">
-                    <i class='bx bx-cart-alt'></i> Tạo hóa đơn mới
-                  </a>
-                </div>
+  <main class="app-content">
+    <div class="app-title">
+      <ul class="app-breadcrumb breadcrumb side">
+        <li class="breadcrumb-item active"><a href="#"><b>Danh sách đơn hàng</b></a></li>
+      </ul>
+      <div id="clock"></div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tile">
+          <div class="tile-body">
+            <div class="row element-button">
+              <div class="col-sm-2">
+                <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="printTable()"><i class="fas fa-print"></i> In dữ liệu</a>
               </div>
+              <div class="col-sm-2">
+                <a href="./phan-mem-ban-hang.php" class="btn btn-primary btn-sm" type="button">
+                  <i class='bx bx-cart-alt'></i> Tạo hóa đơn mới
+                </a>
+              </div>
+            </div>
+            <?php
+            include 'connect.php';
+
+            // Thực thi câu lệnh SQL để lấy dữ liệu từ 2 bảng
+            $sql = "SELECT donhang.*, khachhang.MaKH, khachhang.TenKH, khachhang.DienThoai, khachhang.DiemTichLuy
+                    FROM donhang
+                    LEFT JOIN khachhang ON donhang.khach_hang = khachhang.MaKH";
+
+            $result = $conn->query($sql);
+            if ($result && $result->num_rows > 0): ?>
               <table class="table table-hover table-bordered" id="table-data-order">
                 <thead>
                   <tr>
@@ -170,55 +170,54 @@ $current_page = basename($_SERVER['PHP_SELF']);
                   <?php endwhile; ?>
                 </tbody>
               </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-
-    <!-------------------------- MODAL XEM ĐƠN HÀNG --------------------------->
-    <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="viewOrderModalLabel">Chi tiết đơn hàng</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p><strong>ID đơn hàng:</strong> <span id="order-id"></span></p>
-            <p><strong>Mã khách hàng:</strong> <span id="customer-id"></span></p>
-            <p><strong>Ngày bán:</strong> <span id="order-date"></span></p>
-            <p><strong>Tổng tiền:</strong> <span id="total-amount"></span></p>
-
-            <h5>Chi tiết các sản phẩm:</h5>
-            <table class="table table-bordered" id="order-details-table">
-              <thead>
-                <tr>
-                  <th>Mã sản phẩm</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Số lượng</th>
-                  <th>Đơn giá</th>
-                  <th>Tổng</th>
-                </tr>
-              </thead>
-              <tbody id="order-details-body">
-              </tbody>
-            </table>
-          </div>
-          <div class="modal-footer">
-            <!-- <button class="btn btn-primary" onclick="printOrderDetails()">In chi tiết đơn hàng</button> -->
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <?php else: ?>
+              <p>Không có dữ liệu đơn hàng nào.</p>
+            <?php endif; ?>
           </div>
         </div>
       </div>
     </div>
+  </main>
 
-  <?php else: ?>
-    <p>Không có dữ liệu đơn hàng nào.</p>
-  <?php endif; ?>
+
+  <!-------------------------- MODAL XEM ĐƠN HÀNG --------------------------->
+  <div class="modal fade" id="viewOrderModal" tabindex="-1" role="dialog" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewOrderModalLabel">Chi tiết đơn hàng</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p><strong>ID đơn hàng:</strong> <span id="order-id"></span></p>
+          <p><strong>Mã khách hàng:</strong> <span id="customer-id"></span></p>
+          <p><strong>Ngày bán:</strong> <span id="order-date"></span></p>
+          <p><strong>Tổng tiền:</strong> <span id="total-amount"></span></p>
+
+          <h5>Chi tiết các sản phẩm:</h5>
+          <table class="table table-bordered" id="order-details-table">
+            <thead>
+              <tr>
+                <th>Mã sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Tổng</th>
+              </tr>
+            </thead>
+            <tbody id="order-details-body">
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <!-- <button class="btn btn-primary" onclick="printOrderDetails()">In chi tiết đơn hàng</button> -->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!----------------- MODAL XEM DON HANG --------------------->
 
