@@ -132,7 +132,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <thead>
                   <tr>
                     <th>ID đơn hàng</th>
-                    <th>Mã khách hàng</th>
+                    <th>Khách hàng</th>
                     <th>Ngày bán</th>
                     <th>Tổng tiền</th>
                     <th>Tính năng</th>
@@ -147,7 +147,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         if (isset($row['MaKH']) && isset($row['TenKH'])) {
                           echo $row['MaKH'] . ' - ' . $row['TenKH'];
                         } else {
-                          echo 'Không có dữ liệu';
+                          echo '-';
                         }
                         ?>
                       </td>

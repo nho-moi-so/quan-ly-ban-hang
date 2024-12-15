@@ -154,20 +154,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
 
         <!------------------------------ THONG TIN THANH TOAN ---------------------------------->
-        <?php
-        $khachhang = null;
-        if (isset($_GET['sdt'])) {
-          $sdt = $_GET['sdt'];
-          $sql_khachhang = "SELECT MaKH, TenKH FROM khachhang WHERE DienThoai = '$sdt'";
-          $result_khachhang = $conn->query($sql_khachhang);
-          $khachhang = ($result_khachhang && $result_khachhang->num_rows > 0) ? $result_khachhang->fetch_assoc() : null;
-        }
-
-        $sql_nhanvien = "SELECT id, ho_ten FROM nhanvien";
-        $result_nhanvien = $conn->query($sql_nhanvien);
-
-        $conn->close();
-        ?>
+        
         <div class="col-md-4">
           <div class="tile">
             <h3 class="tile-title">Thông tin thanh toán</h3>
@@ -192,18 +179,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                   <i class="fas fa-user-plus"></i>
                 </a>
               </div>
-
-              <!-- <div class="form-group col-md-12">
-                <label class="control-label">Nhân viên bán hàng</label>
-                <select class="form-control" id="exampleSelect1">
-                  <option>--- Chọn nhân viên bán hàng ---</option>
-                  <?php while ($row = $result_nhanvien->fetch_assoc()): ?>
-                    <option value="<?php echo $row['id']; ?>">
-                      <?php echo $row['id'] . '-' . $row['ho_ten']; ?>
-                    </option>
-                  <?php endwhile; ?>
-                </select>
-              </div> -->
               <!-- <div class="form-group col-md-12">
                 <label class="control-label">Ghi chú đơn hàng</label>
                 <textarea class="form-control" rows="4" placeholder="Ghi chú thêm đơn hàng"></textarea>
@@ -277,7 +252,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
             <form id="orderForm" method="POST" action="save_order.php">
               <!-- Các phần khác của form -->
-              <input id="ma_kh" type="hidden" name="ma_kh" value="<?php echo isset($khachhang['MaKH']) ? $khachhang['MaKH'] : ''; ?>">
               <div class="tile-footer col-md-12">
                 <button class="btn btn-primary luu-san-pham" type="submit">Lưu đơn hàng</button>
                 <!-- <button class="btn btn-primary luu-va-in" type="submit">In hóa đơn</button> -->
@@ -418,6 +392,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
   <script type="text/javascript" src="js/plugins/dataTables.bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
+    let paymentMethod = "";
+    let maKH = "";
+
     function formatCurrencyVND(amount) {
       if (isNaN(amount)) return '0 VND';
       return amount.toLocaleString('vi-VN', {
@@ -486,6 +463,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
           if (data.status === 'success') {
             resultContainer.innerHTML = `Mã khách hàng: <normal class="text-success">${data.MaKH}</normal> - Họ và tên: <normal class="text-success">${data.TenKH}</normal>`;
+            maKH = data.MaKH;
           } else {
             resultContainer.innerHTML = `<normal class="text-danger">${data.message}</normal>`;
           }
@@ -498,8 +476,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
   <!------------------------------ tim kiem va gio hang  -------------------------------->
   <script>
-    let paymentMethod = ""
-
     $(document).ready(function() {
       const cartList = $('#cart-list');
       const allMoneyTamtinh = $('.control-all-money-tamtinh');
@@ -654,7 +630,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         const ten_ngan_hang = $('#ten_ngan_hang').val();
         const ngay_chuyen_khoan = $('#ngay_chuyen_khoan').val();
         const so_tien_chuyen_khoan = $('#so_tien_chuyen_khoan').val();
-        const maKH = $("#ma_kh").val();
         const cartItems = getCartItems()
         let formData = `&ma_kh=${maKH}&tong_tien=${totalAmount}&cart_items=${JSON.stringify(cartItems)}&phuong_thuc_thanh_toan=${paymentMethod}`;
 
@@ -690,9 +665,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             formData += `&so_tai_khoan=${so_tai_khoan}&ten_tai_khoan=${ten_tai_khoan}&ten_ngan_hang=${ten_ngan_hang}&ngay_chuyen_khoan=${ngay_chuyen_khoan}&so_tien_chuyen_khoan=${parseCurrencyVND(so_tien_chuyen_khoan)}`
           }
         }
-
-
-        console.log(formData);
 
         $.ajax({
           url: 'save_order.php',
