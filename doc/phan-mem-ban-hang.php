@@ -68,7 +68,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="col-md-8">
           <div class="tile">
             <h3 class="tile-title">Phần mềm bán hàng</h3>
-            <form method="get" action="" class="d-flex">
+            <form method="get" action="" class="d-flex" style="gap: 16px">
               <input type="text" id="myInput" name="search" class="form-control" placeholder="Nhập mã sản phẩm hoặc tên sản phẩm để tìm kiếm..." class="form-control mr-2">
               <button type="submit" id="search-btn" class="btn btn-primary">Tìm kiếm</button>
             </form>
@@ -82,6 +82,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
               form.d-flex input {
                 flex-grow: 1;
                 flex-grow: 1;
+              }
+
+              .btn-timkiem {
+                height: 45px;
               }
             </style>
 
@@ -200,11 +204,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                   <?php endwhile; ?>
                 </select>
               </div> -->
-              <div class="form-group col-md-12">
+              <!-- <div class="form-group col-md-12">
                 <label class="control-label">Ghi chú đơn hàng</label>
                 <textarea class="form-control" rows="4" placeholder="Ghi chú thêm đơn hàng"></textarea>
               </div>
-            </div>
+            </div> -->
             <div class="form-group col-md-12">
               <label class="control-label">Hình thức thanh toán</label><br>
               <input type="radio" id="tienmat" name="hinhthucthanhtoan" value="Tiền mặt">
@@ -250,7 +254,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
             <div class="form-group col-md-12">
               <label class="control-label">Tổng cộng thanh toán: </label>
-              <p id="tong-tien" class="control-all-money-total">0 ₫</p>
+              <p id="tong_tien" class="control-all-money-total">0 ₫</p>
             </div>
 
             <div id="tienmat_fields" style="display:none;">
@@ -274,7 +278,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <form id="orderForm" method="POST" action="save_order.php">
               <!-- Các phần khác của form -->
               <input id="ma_kh" type="hidden" name="ma_kh" value="<?php echo isset($khachhang['MaKH']) ? $khachhang['MaKH'] : ''; ?>">
-              <input id="tong_tien" type="hidden" name="tong_tien" value="<?php echo $tongcong; ?>">
               <div class="tile-footer col-md-12">
                 <button class="btn btn-primary luu-san-pham" type="submit">Lưu đơn hàng</button>
                 <!-- <button class="btn btn-primary luu-va-in" type="submit">In hóa đơn</button> -->
@@ -435,7 +438,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     }
 
     function calculateChange() {
-      const total = parseCurrencyVND($('#tong-tien').text()) || 0;
+      const total = parseCurrencyVND($('#tong_tien').text()) || 0;
       const paid = parseCurrencyVND($('#tien_nhan').val()) || 0;
       const paidEle = $("#tienso");
       const change = paid - total;
@@ -644,7 +647,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
       $('#orderForm').on('submit', function(e) {
         e.preventDefault();
-        const totalAmount = parseCurrencyVND($('#tong-tien').text());
+        const totalAmount = parseCurrencyVND($('#tong_tien').text());
         const tien_nhan = parseCurrencyVND($('#tien_nhan').val());
         const so_tai_khoan = $('#so_tai_khoan').val();
         const ten_tai_khoan = $('#ten_tai_khoan').val();
@@ -700,7 +703,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
             if (result.success) {
               alert('Lưu đơn hàng thành công!');
-              location.reload();
+              window.location.href = window.location.origin + window.location.pathname;
             } else {
               alert('Có lỗi xảy ra: ' + result.error);
             }

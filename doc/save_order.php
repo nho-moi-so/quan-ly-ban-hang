@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phuongThucThanhToan = $_POST['phuong_thuc_thanh_toan'] ?? null;
 
     // Kiểm tra dữ liệu hợp lệ
-    if ($tongTien <= 0 || empty($maKH) || empty($phuongThucThanhToan) || empty($cartItems)) {
+    if ($tongTien <= 0 || empty($phuongThucThanhToan) || empty($cartItems)) {
         echo json_encode(['success' => false, 'error' => 'Đơn hàng không hợp lệ']);
         exit;
     }
@@ -51,12 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        // Cập nhật điểm tích lũy khách hàng
-        $sqlDiemTichLuy = "UPDATE khachhang SET DiemTichLuy = DiemTichLuy + ? WHERE MaKH = ?";
-        $stmtDiemTichLuy = $conn->prepare($sqlDiemTichLuy);
-        $stmtDiemTichLuy->bind_param('di', $diemTichLuy, $maKH);
-        if (!$stmtDiemTichLuy->execute()) {
-            throw new Exception("Lỗi khi cập nhật điểm tích lũy: " . $stmtDiemTichLuy->error);
+        if (!empty($maKH)) {
+            // Cập nhật điểm tích lũy khách hàng
+            $sqlDiemTichLuy = "UPDATE khachhang SET DiemTichLuy = DiemTichLuy + ? WHERE MaKH = ?";
+            $stmtDiemTichLuy = $conn->prepare($sqlDiemTichLuy);
+            $stmtDiemTichLuy->bind_param('di', $diemTichLuy, $maKH);
+            if (!$stmtDiemTichLuy->execute()) {
+                throw new Exception("Lỗi khi cập nhật điểm tích lũy: " . $stmtDiemTichLuy->error);
+            }
         }
 
         $sqlTienMat = "INSERT INTO thongtintienmat (SotienNhan, SoTienThua, MaKH, MaHD) 
