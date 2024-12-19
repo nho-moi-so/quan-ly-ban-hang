@@ -77,7 +77,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table-data-oder.php"><i class='app-menu__icon bx bx-task'></i><span
-              class="app-menu__label">Quản lý Hóa Đơn</span></a></li>
+              class="app-menu__label">Xem Chi Tiết Hóa Đơn</span></a></li>
       <?php endif; ?>
       <?php if (in_array($currentRole, ['Admin'])): ?>
         <li><a class="app-menu__item" href="./table.data-danh-muc.php"><i class='app-menu__icon bx bx-task'></i><span

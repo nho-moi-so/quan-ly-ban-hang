@@ -130,7 +130,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
               </table>
             </div>
             <div class="cart-section">
-              <h4>Giỏ hàng</h4>
+              <h4>Chi Tiết Hóa Đơn</h4>
               <table class="table table-hover table-bordered">
                 <thead>
                   <tr>
