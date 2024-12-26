@@ -164,12 +164,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
                       <td><?php echo number_format($row['DiemTichLuy'], 0, ',', '.') . ' VND'; ?></td>
                       <td><?php echo $row['NgayTichDiem']; ?></td>
                       <td>
-                        <form action="./deleted-kh.php?id=<?php echo htmlspecialchars($row['MaKH']); ?>" method="post">
+                        <form action="./deleted-kh.php?id=<?php echo htmlspecialchars($row['MaKH']); ?>" method="post" style="display: inline;">
                           <button class="btn btn-primary btn-sm trash" type="submit" title="Xóa">
                             <i class="fas fa-trash-alt"></i>
                           </button>
                         </form>
-                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" data-toggle="modal" data-target="#ModalUP" data-id="<?php echo $row['MaKH']; ?>">
+                        <button
+                          class="btn btn-primary btn-sm edit"
+                          type="button"
+                          title="Sửa"
+                          data-toggle="modal"
+                          data-target="#ModalUP"
+                          data-id="<?php echo $row['MaKH']; ?>"
+                          data-name="<?php echo $row['TenKH']; ?>"
+                          data-phone="<?php echo $row['SDT']; ?>">
                           <i class="fas fa-edit"></i>
                         </button>
                       </td>
@@ -191,8 +199,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
   </main>
 
   <!----------MODAL------------>
-  <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-labelledby="ModalUPLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="ModalUP" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="ModalUPLabel">Sửa thông tin Khách Hàng</h5>
@@ -201,25 +210,29 @@ $current_page = basename($_SERVER['PHP_SELF']);
           </button>
         </div>
         <div class="modal-body">
-          <form method="POST" action="update_employee.php">
-            <input type="hidden" id="employee_id" name="id">
-            <div class="form-group">
-              <label for="ho_ten">Họ và tên</label>
-              <input class="form-control" type="text" id="ho_ten" name="ho_ten" required>
+          <form action="sua_thong_tin.php" method="post">
+            <input type="hidden" id="maKH" name="maKH">
+            <div class="row">
+              <div class="form-group col-md-6">
+                <label class="control-label" for="hoten">Họ và tên:</label>
+                <input class="form-control" type="text" id="hoten" name="hoten" required>
+              </div>
+              <div class="form-group col-md-6">
+                <label class="control-label" for="sdt">Số điện thoại:</label>
+                <input class="form-control" type="text" id="sdt" name="sdt" required>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label for="sdt">SĐT</label>
-              <input class="form-control" type="text" id="sdt" name="sdt" required>
+            <div class="row justify-content-end px-3" style="gap: 8px">
+              <button class="btn btn-primary" type="submit">Cập nhật</button>
+              <button class="btn btn-danger border-0" type="reset">Hủy</button>
             </div>
-
-            <button class="btn btn-primary" type="submit">Cập nhật</button>
           </form>
+        </div>
+        <div class="modal-footer">
         </div>
       </div>
     </div>
   </div>
-
   <!----------------MODAL------------------>
 
   <!-- Essential javascripts for application to work-->
@@ -328,13 +341,25 @@ $current_page = basename($_SERVER['PHP_SELF']);
         keyboard: false
       })
     });
-  </script>
 
-  <!-- Xóa các mục đã chọn -->
-  <script>
     document.getElementById('select-all').addEventListener('change', function() {
       const checkboxes = document.querySelectorAll('input[name="check"]');
       checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+    });
+
+    $(document).ready(function() {
+      $('.btn.edit').on('click', function() {
+        const maKH = $(this).data('id');
+        const tenKH = $(this).data('name');
+        const sdt = $(this).data('phone');
+
+        // Gán dữ liệu vào các trường trong modal
+        $('#ModalUP #hoten').val(tenKH);
+        $('#ModalUP #sdt').val(sdt);
+
+        // Nếu có trường ẩn để lưu ID, gán giá trị vào
+        $('#ModalUP #maKH').val(maKH);
+      });
     });
   </script>
 

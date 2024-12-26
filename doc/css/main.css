@@ -15626,9 +15626,9 @@ text-align:center;
 
 /* The Close Button */
 .close {
-  color: white !important;
+  color: #212529 !important;
   float: right;
-  font-size: 13px;
+  font-size: 24px;
   font-weight: 500;
   opacity: 1 !important;
   border: 1px solid black;
@@ -15651,10 +15651,10 @@ text-align:center;
 .modal-header {
   padding: 5px 16px;
   background-color: white;
-  color: white;
+  color: #212529;
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {padding: 16px 16px;}
 
 .modal-footer {
   padding: 5px 16px;
